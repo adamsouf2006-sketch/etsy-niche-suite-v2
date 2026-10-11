@@ -1,11 +1,11 @@
 ---
 name: etsy-strategie-video
-description: Stratégie Etsy pour produits numériques issue de 4 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
+description: Stratégie Etsy pour produits numériques issue de 5 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
 ---
 
-# Stratégie Etsy – produits numériques (synthèse de 4 vidéos)
+# Stratégie Etsy – produits numériques (synthèse de 5 vidéos)
 
-Source unique : transcriptions de 4 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent de l'outil Profit Tree (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
+Source unique : transcriptions de 5 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
 
 ## 1. Principes de base
 - Produit numérique = livré par lien/fichier (ebook, template modifiable, cours, art/coloriage imprimable, planner). Modèle passif : pas d'expédition, chaque produit s'ajoute aux revenus existants.
@@ -108,11 +108,28 @@ Etsy = moteur de recherche : l'algorithme compare les mots-clés des fiches à l
 - Inutile d'être sur toutes les plateformes : seulement là où va **votre** client.
 - Démarche : rechercher la demande organique sur Etsy → si oui, maîtriser le SEO ; si non, décider si l'on accepte de faire de la promotion (pas forcément une mauvaise idée, mais il faudra bâtir une présence là où sont les clients et les rediriger vers les produits).
 
-## 10. Checklist rapide d'une nouvelle fiche
+## 10. Trouver un best-seller à recréer (méthode EverBee, sur Etsy)
+1. Taper un mot large dans la recherche Etsy (ex. « digital ») → les suggestions (digital prints, digital planner, digital drawings and illustrations, digital products) affichent le **nb de recherches mensuelles** via l'extension EverBee.
+2. Cliquer sur une fiche du haut → ventes et revenu mensuels estimés. Ex. : un digital planner ~106 ventes/mois, ~627 $/mois (chiffre tel que transcrit).
+3. **Shop details / Product analytics** : voir tous les produits de la boutique avec ventes et revenus.
+   - Se concentrer sur les best-sellers ; **ignorer ce qui fait 0 vente** même si facile (ex. to-do list imprimable).
+   - Planner généraliste (6 000 $+/mois) = plusieurs jours de travail et dur à concurrencer pour un débutant → préférer un **planner spécifique** (budget/finances, ADHD, homeschool) : moins de concurrence, plus rapide à créer.
+4. **Copier les tags** du best-seller (bouton copy) → les coller dans un Google Doc ou dans la **description d'un brouillon de fiche** Etsy, enregistré pour plus tard.
+5. Adapter les tags non pertinents au design (invitation girafe → teddy bear : remplacer « elephant giraffe » par « it's a boy », « teddy bear »).
+
+Exemples :
+- **Invitation baby shower** : < 15 min à créer, ~414 $/mois pour une seule invitation ; la boutique n'a que des best-sellers baby shower à plusieurs centaines $/mois chacun. Modèle « créer une fois, vendre pour toujours ».
+- **Print on demand (T-shirts Halloween)** : produits saisonniers (badge « popular now » plutôt que « bestseller », pas de volume de recherche stable). Un T-shirt fantôme : **15 000 $+ en un mois**, mais pas 100 % profit (frais du service d'impression à chaque commande, contrairement au numérique). Les vendeurs varient les saisons (Halloween → Noël → Saint-Valentin). Méthode : choisir un design qui marche dans la boutique, en faire un meilleur sur le même thème, reprendre mots-clés et tags.
+- ⚠️ **Jamais de contrefaçon** : pas de personnages (ex. copie de Bluey), équipes de sport ou marques → procès pour violation du droit d'auteur.
+
+Un best-seller = bon produit **+** couvertures soignées **+** bons mots-clés (titre, description, tags) **+** bon prix.
+
+## 11. Checklist rapide d'une nouvelle fiche
 - [ ] Idée liée à mon client cible et à mon unfair advantage
 - [ ] Demande organique sur Etsy vérifiée (sinon prévoir où promouvoir)
 - [ ] Validée : best-sellers existants, niche score correct, revenu mensuel, saisonnalité
 - [ ] Produit passif (pas de personnalisation vendeur)
+- [ ] Aucun personnage, marque ou équipe protégés
 - [ ] Prix aligné sur le marché, valeur ajoutée claire
 - [ ] Couverture : style du client + bénéfice/usage/public affichés
 - [ ] 13 tags (catégoriels + descriptifs), mots-clés verbatim
