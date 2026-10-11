@@ -17,7 +17,7 @@ uid=T.split(".")[0]; shop=call(f"users/{uid}/shops")["shop_id"]
 L=json.load(open("listing.json"))
 tax=int(os.environ.get("ETSY_TAXONOMY","12487"))  # Personal Finance Templates
 d=call(f"shops/{shop}/listings",{"quantity":999,"title":L["title"],"description":L["description"],"price":L["price"],
-  "who_made":"i_did","when_made":"made_to_order","taxonomy_id":tax,"type":"download","is_supply":"false","tags":",".join(L["tags"]),"state":"draft"})
+  "who_made":"i_did","when_made":"2020_2026","taxonomy_id":tax,"type":"download","is_supply":"false","tags":",".join(L["tags"]),"state":"draft"})
 lid=d["listing_id"]; print("brouillon créé",lid)
 for i,p in enumerate(["img/main_A.jpg","img/main_C.jpg","img/main_B.jpg"],1):
     call(f"shops/{shop}/listings/{lid}/images",{"rank":i},{"image":(os.path.basename(p),open(p,"rb").read(),"image/jpeg")}); print("photo",i)
