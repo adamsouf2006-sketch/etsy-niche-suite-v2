@@ -12,16 +12,16 @@ def donut(size):
     for i,(g,v) in enumerate(D["groups"].items()):
         a=acc/tot*360; acc+=v; b=acc/tot*360; stops.append(f"{PAL[[0,3,1,5][i]]} {a:.1f}deg {b:.1f}deg")
     leg="".join(f'<div style="display:flex;align-items:center;gap:.5em;font-size:.82em;margin:.25em 0"><span style="width:.8em;height:.8em;border-radius:3px;background:{PAL[[0,3,1,5][i]]}"></span>{g}<b style="margin-left:auto">{v/tot:.0%}</b></div>' for i,(g,v) in enumerate(D["groups"].items()))
-    return f'''<div style="display:flex;align-items:center;gap:1.2em"><div style="width:{size}em;height:{size}em;border-radius:50%;background:conic-gradient({",".join(stops)});display:grid;place-items:center;flex:none"><div style="width:62%;height:62%;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;font-size:.8em"><div><div style="color:{MUT};font-size:.8em">Spent</div><b style="font-size:1.25em">{money(D["spent"])}</b></div></div></div><div style="flex:1">{leg}</div></div>'''
+    return f'''<div style="display:flex;align-items:center;gap:1.2em"><div class=dn style="width:{size}em;height:{size}em;border-radius:50%;background:conic-gradient({",".join(stops)});display:grid;place-items:center;flex:none"><div style="width:62%;height:62%;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center;font-size:.8em"><div><div style="color:{MUT};font-size:.8em">Spent</div><b style="font-size:1.25em">{money(D["spent"])}</b></div></div></div><div style="flex:1">{leg}</div></div>'''
 def bars(h):
     mx=max(Y); m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    cols="".join(f'<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.3em;height:100%"><div style="width:62%;height:{(Y[i]/mx*88 if i<6 else 3):.0f}%;background:{G if i==0 else "#A8D5BA" if i<6 else "#E6EBE7"};border-radius:.25em .25em 0 0"></div><span style="font-size:.62em;color:{MUT}">{m[i]}</span></div>' for i in range(12))
+    cols="".join(f'<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.3em;height:100%"><div class=mb style="width:62%;height:{(Y[i]/mx*88 if i<6 else 3):.0f}%;background:{G if i==0 else "#A8D5BA" if i<6 else "#E6EBE7"};border-radius:.25em .25em 0 0"></div><span style="font-size:.62em;color:{MUT}">{m[i]}</span></div>' for i in range(12))
     return f'<div style="display:flex;height:{h}em;gap:.2em;align-items:flex-end">{cols}</div>'
 def cat_table(n=16):
     r=""
     for c,g,b,a in sorted(D["rows"],key=lambda x:-x[3])[:n]:
         p=a/b if b else 0; col=CO if p>1 else G
-        r+=f'<tr><td>{c}</td><td class=n>{money(b)}</td><td class=n>{money(a,0)}</td><td style="width:32%"><div style="height:.55em;background:#EEF1EE;border-radius:1em;overflow:hidden"><div style="width:{min(p,1)*100:.0f}%;height:100%;background:{col}"></div></div></td><td class=n style="color:{col};font-weight:700">{p:.0%}</td></tr>'
+        r+=f'<tr><td>{c}</td><td class=n>{money(b)}</td><td class=n>{money(a,0)}</td><td style="width:32%"><div class=tbar style="height:.55em;background:#EEF1EE;border-radius:1em;overflow:hidden"><div style="width:{min(p,1)*100:.0f}%;height:100%;background:{col}"></div></div></td><td class=n style="color:{col};font-weight:700">{p:.0%}</td></tr>'
     return f'<table class=ct><tr><th>Category</th><th class=n>Budget</th><th class=n>Actual</th><th></th><th class=n>Used</th></tr>{r}</table>'
 CSS=f'''<style>.dash{{background:#fff;font-size:var(--f);height:100%;display:flex;flex-direction:column}}
 .tb{{height:2.4em;background:#F6F8F6;border-bottom:1px solid #E3E8E4;display:flex;align-items:center;gap:.5em;padding:0 1em;font-size:.8em;color:{MUT}}}
