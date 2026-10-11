@@ -40,6 +40,11 @@ Etsy pour débuter : simple, et forte **autorité de domaine** (les fiches Etsy 
 | Top boutique « wedding templates » | — | ~14 912 $ (950+ produits, 2 ans) | A élargi : baby shower, diplômes |
 | Top boutique « lesson plans » | — | 712 $ → 5 721 $ ; ex. 29 produits, 1 an : ~3 783 $ | Résultat réaliste pour débutant |
 
+Détails complémentaires (même vidéo) :
+- Wedding planner tableur : une boutique le vend 17,99 $, une autre le brade < 2 $ (markdown) → absurde vu les frais Etsy (~0,20 $ par mise en ligne/renouvellement + ~6,5 % de frais selon l'auteure) ; cette boutique (800+ produits aux titres quasi identiques) plafonne à ~6 451 $/mois.
+- Billet de concert : l'option « ajouter une personnalisation » (facultative) ne déclenche aucun travail vendeur, elle renvoie juste vers le vendeur en cas de souci d'édition → possible astuce de visibilité, le produit reste DIY/passif. Ne pas cocher « personnalisé » si on ne personnalise pas.
+- L'auteure a testé une boutique d'art mural imprimable : bien moins d'élan au lancement que sa boutique de templates Canva (niche saturée).
+
 Leçons : 1–2 best-sellers font l'essentiel du CA ; qualité/demande > quantité ; éviter l'IA floue/pixelisée ; une boutique dispersée plafonne.
 
 Profils : débutant pressé → templates Canva (invitations, billets, panneaux) ; artiste → junk journals, kits scrapbooking/clipart ; crochet/textile → patrons PDF ; Excel/Sheets → planners ; enseignant → plans de cours courts (~25 fiches, ~8 $), déclinables (rentrée, automne, sensoriel, sciences, comptage, alphabet). Mariage = esthétique exigeante ; si débutant en design → fêtes d'enfants, baby showers.
