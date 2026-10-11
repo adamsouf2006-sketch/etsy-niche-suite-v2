@@ -1,11 +1,11 @@
 ---
 name: etsy-strategie-video
-description: Stratégie Etsy pour produits numériques issue de 5 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
+description: Stratégie Etsy pour produits numériques issue de 6 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee, comparatif de 5 niches). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
 ---
 
-# Stratégie Etsy – produits numériques (synthèse de 5 vidéos)
+# Stratégie Etsy – produits numériques (synthèse de 6 vidéos)
 
-Source unique : transcriptions de 5 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
+Source unique : transcriptions de 6 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
 
 ## 1. Principes de base
 - Produit numérique = livré par lien/fichier (ebook, template modifiable, cours, art/coloriage imprimable, planner). Modèle passif : pas d'expédition, chaque produit s'ajoute aux revenus existants.
@@ -124,7 +124,20 @@ Exemples :
 
 Un best-seller = bon produit **+** couvertures soignées **+** bons mots-clés (titre, description, tags) **+** bon prix.
 
-## 11. Checklist rapide d'une nouvelle fiche
+## 11. Comparatif de 5 niches (Profit Tree, filtre « Hot on Etsy »)
+Les niches diffèrent par la demande, la concurrence et le **prix acceptable** → revenu attendu très variable. Ignorer les « shop bundles » complets en tête de résultats (inaccessibles à un débutant).
+
+| Niche | Produit observé | Boutiques observées | À retenir |
+|---|---|---|---|
+| **Art mural imprimable** | 1 seul design imprimable : 2 500 $+/mois | Boutique 1 an, 130 fiches, 100 % imprimable : 4 000 $+/mois | Se spécialiser dans **un style artistique cohérent** → achats multiples et clients fidèles |
+| **Fiches homeschool** | Programme préscolaire 1 an (bundle) : 5 000 $+/mois ; 5 achats en 24 h | 6 400 $+/mois : produits très simples (flashcards image + mot, fiches), prix bas mais gros volume, branding cohérent | Commencer par des fiches, regrouper plus tard en bundle annuel ; quasi pas de service client |
+| **Invitations baby shower** | Template « little cutie pie on the way » : 750 $+/mois, 20+ paniers | Top : **56 000 $+/mois** (2 ans ; baby shower, gender reveal, bridal shower, mariage ; versions imprimables + e-vite). Nouvelle : 6 mois, 273 produits, ~1 200 $/mois | Rapide à créer, gain unitaire plus faible ; très bonne niche débutant |
+| **Planner ADHD** | « Editable ADHD brain dump » PDF imprimable + template Canva : 1 600 $+/mois, 20+ paniers | Boutique de **3 mois**, 123 produits, **11 500 $/mois** : tout pour personnes handicapées et aidants, couvertures claires | Choisir un **type de planner spécifique** ; PDF imprimable = pas d'hyperliens complexes ; comparer plusieurs types avant de choisir |
+| **Faire-part de décès / mémorial** (sous-estimée) | 312 $/mois, 20+ paniers, 2 formats (imprimable + e-vite) | ~5 000 $/mois, 2 ans, 14 000+ ventes, boutique 100 % mémorial au style marqué | Demande toute l'année ; proposer des designs reflétant personnalités, esthétiques, symboles |
+
+Rappels : mockups OK mais le titre doit dire « template / digital download » ; éviter tout personnage protégé (ex. Winnie l'ourson) → signalement puis procès.
+
+## 12. Checklist rapide d'une nouvelle fiche
 - [ ] Idée liée à mon client cible et à mon unfair advantage
 - [ ] Demande organique sur Etsy vérifiée (sinon prévoir où promouvoir)
 - [ ] Validée : best-sellers existants, niche score correct, revenu mensuel, saisonnalité
@@ -139,5 +152,5 @@ Un best-seller = bon produit **+** couvertures soignées **+** bons mots-clés (
 - [ ] Suivi des stats planifié à J+30
 
 ## Remarques
-- Les vidéos font la promotion de Profit Tree (lien affilié, offre à vie 67 $) et d'un kit de démarrage de l'auteure ; d'autres outils de recherche peuvent servir.
+- Les vidéos font la promotion de Profit Tree (lien affilié, offre à vie 65–67 $ selon la vidéo) et d'un kit de démarrage de l'auteure ; d'autres outils de recherche peuvent servir.
 - « Etsy prend ~6,5 % » : affirmation non certaine de l'auteure elle-même.
