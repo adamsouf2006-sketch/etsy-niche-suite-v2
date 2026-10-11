@@ -1,0 +1,46 @@
+Your budget in one app, your to-do list in another, habits on paper and meal plans nowhere? This life planner puts all of it in one spreadsheet that updates itself.
+
+Works in Google Sheets (free) and Microsoft Excel. Undated, so you can start any month and reuse it every year.
+
+WHAT YOU GET
+• Life-Planner-Blank.xlsx — ready for your own data
+• Life-Planner-Example.xlsx — filled with sample data so you can see every tab working
+• START HERE guide (PDF, 2 pages) — how to open it in Google Sheets or Excel and set it up
+
+THE 14 TABS
+1. Start Here — a one-page tour
+2. Dashboard — income, expenses, balance, safe to spend per day, next tasks, habits, cleaning due, savings and today's meals
+3. Setup — your name, currency symbol, month and your own budget categories (10 income, 20 expense)
+4. Money Log — the only place you type money (500 rows)
+5. Monthly Budget — planned vs actual, amount left and percent used per category
+6. Annual Overview — all 12 months, built automatically from the Money Log
+7. Savings & Debt — 12 savings goals and 12 debts with progress bars
+8. Task List — 100 tasks with category, due date, priority, status and days left
+9. Habit Tracker — 20 habits x 31 days with total, month score and streak
+10. Cleaning Schedule — daily to yearly chores; next due date and Overdue status are calculated
+11. Goal Tracker — 10 goals, each with why, deadline, 5 steps and a reward
+12. Weekly Planner — your week hour by hour, 6:00 to 22:00
+13. Meal Planner & Grocery List — breakfast, lunch, dinner and snacks, plus a shopping list by aisle
+14. Monthly Calendar — the number of open tasks due on each day
+
+WHY YOU'LL LIKE IT
+✓ Type once: one row in the Money Log updates your budget, annual view and dashboard
+✓ White cells for typing, colored cells for formulas, so nothing breaks
+✓ Rename any category and every tab follows
+✓ Any currency: type your symbol in Setup
+
+HOW IT WORKS
+1. Download the files after purchase.
+2. Excel: open the .xlsx. Google Sheets: upload it to Google Drive, then File > Save as Google Sheets.
+3. Fill in Setup (2 minutes) and start logging.
+
+WHAT YOU NEED
+Google Sheets (free Google account) or Microsoft Excel 2016 or newer, including Excel for the web. Apple Numbers is not supported.
+
+GOOD TO KNOW
+• Digital download: nothing is shipped.
+• Because it is a digital file, returns and exchanges are not accepted, but message me if anything does not work and I will help.
+• Personal use only. Please do not share or resell the files.
+• These are planning templates, not financial advice.
+
+Questions? Send me a message: I answer within 24 hours.

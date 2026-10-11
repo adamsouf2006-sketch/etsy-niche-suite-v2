@@ -1,0 +1,59 @@
+<html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box} body{width:1080px;height:1080px;overflow:hidden;background:#FBF7F1;font-family:Inter,Arial,sans-serif;color:#1E2B2F}
+.a{position:absolute} .img{border-radius:10px;box-shadow:0 20px 50px rgba(20,40,45,.28)}
+.h{font-weight:900;letter-spacing:-1.5px;line-height:.95}
+.chip{display:inline-block;background:#fff;border:3px solid #1F4E5A;color:#1F4E5A;border-radius:14px;padding:12px 22px;font-size:34px;font-weight:800}
+</style></head><body>
+<div id="s1" class="a" style="inset:0">
+ <div class="a h" id="t1" style="top:110px;width:100%;text-align:center;font-size:120px;color:#1F4E5A">Life Planner</div>
+ <div class="a h" id="t2" style="top:240px;width:100%;text-align:center;font-size:96px;color:#E07A5F">Spreadsheet</div>
+ <div class="a" id="badge" style="right:60px;top:330px;width:190px;height:190px;border-radius:50%;background:#E07A5F;color:#fff;text-align:center;font-weight:900;padding-top:36px;z-index:3"><div style="font-size:88px;line-height:1">14</div><div style="font-size:30px">TABS</div></div>
+ <img class="a img" id="d0" src="../r/dash.png" style="left:90px;top:440px;width:900px">
+</div>
+<div id="s2" class="a" style="inset:0;opacity:0">
+ <img class="a img" id="c1" src="../r/budget.png" style="left:60px;top:90px;width:400px">
+ <img class="a img" id="c2" src="../r/habits.png" style="left:420px;top:160px;width:620px">
+ <img class="a img" id="c3" src="../r/savings.png" style="left:120px;top:560px;width:460px">
+ <img class="a img" id="c4" src="../r/meals.png" style="left:470px;top:640px;width:580px">
+</div>
+<div id="s3" class="a" style="inset:0;opacity:0;overflow:hidden">
+ <div class="a" id="zw" style="left:0;top:0;width:1080px;height:1080px;transform-origin:22% 45%"><img src="../r/dash.png" style="position:absolute;left:40px;top:200px;width:1000px">
+  <div class="a" id="ring" style="left:36px;top:320px;width:352px;height:94px;border:5px solid #E07A5F;border-radius:10px"></div></div>
+ <div class="a" id="lab" style="left:90px;right:90px;top:50px;text-align:center;font-size:52px;font-weight:900;color:#fff;background:#E07A5F;border-radius:20px;padding:18px;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.2)">Type once — everything updates</div>
+</div>
+<div id="s4" class="a" style="inset:0;opacity:0">
+ <div class="a h" style="top:200px;width:100%;text-align:center;font-size:80px;color:#1F4E5A">Works in</div>
+ <div class="a" id="k1" style="top:360px;width:100%;text-align:center"><span class="chip" style="font-size:64px;padding:22px 40px">Google Sheets</span></div>
+ <div class="a" id="k2" style="top:520px;width:100%;text-align:center"><span class="chip" style="font-size:64px;padding:22px 40px">Microsoft Excel</span></div>
+ <div class="a" id="k3" style="top:700px;width:100%;text-align:center;font-size:44px;font-weight:700;color:#4a5a5e">Undated · Any currency · Reusable</div>
+</div>
+<div id="s5" class="a" style="inset:0;opacity:0;background:#1F4E5A;color:#fff">
+ <div class="a" id="b1" style="top:260px;width:100%;text-align:center;font-size:62px;font-weight:800">✓ Budget &amp; savings</div>
+ <div class="a" id="b2" style="top:370px;width:100%;text-align:center;font-size:62px;font-weight:800">✓ Tasks &amp; calendar</div>
+ <div class="a" id="b3" style="top:480px;width:100%;text-align:center;font-size:62px;font-weight:800">✓ Habits &amp; goals</div>
+ <div class="a" id="b4" style="top:590px;width:100%;text-align:center;font-size:62px;font-weight:800">✓ Meals &amp; cleaning</div>
+ <div class="a" id="brand" style="top:800px;width:100%;text-align:center;font-size:50px;font-weight:900;color:#E9DCC9;letter-spacing:6px">OAKFOLD</div>
+</div>
+<script>
+const E=t=>t<0?0:t>1?1:1-Math.pow(1-t,3), B=t=>{t=t<0?0:t>1?1:t;const c=1.70158;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)};
+const g=id=>document.getElementById(id), seg=(t,a,b)=>(t-a)/(b-a);
+function fade(id,t,a,b,c,d){let o=E(seg(t,a,b));if(c!==undefined)o=Math.min(o,1-E(seg(t,c,d)));g(id).style.opacity=o}
+window.seek=function(t){
+ fade('s1',t,-1,0,2.4,2.8);
+ g('t1').style.transform='translateY('+(1-E(seg(t,0,.6)))*-60+'px)';g('t1').style.opacity=E(seg(t,0,.6));
+ g('t2').style.transform='translateY('+(1-E(seg(t,.2,.8)))*-60+'px)';g('t2').style.opacity=E(seg(t,.2,.8));
+ g('badge').style.transform='scale('+B(seg(t,.7,1.2))+') rotate(8deg)';
+ g('d0').style.transform='translateY('+(1-E(seg(t,.3,1.1)))*300+'px)';
+ fade('s2',t,2.4,2.8,5,5.4);
+ ['c1','c2','c3','c4'].forEach((id,i)=>{const p=E(seg(t,2.6+i*.3,3.2+i*.3));g(id).style.opacity=p;g(id).style.transform='translateY('+(1-p)*80+'px) translateX('+(-(t-2.6)*6)+'px)'});
+ fade('s3',t,5,5.4,8.3,8.7);
+ g('zw').style.transform='scale('+(1+.6*E(seg(t,5.4,7.2)))+')';
+ g('ring').style.opacity=E(seg(t,6.8,7.1));
+ fade('s4',t,8.3,8.7,10.4,10.8);
+ g('k1').style.transform='translateX('+(1-E(seg(t,8.6,9.2)))*-1100+'px)';g('k2').style.transform='translateX('+(1-E(seg(t,8.9,9.5)))*1100+'px)';g('k3').style.opacity=E(seg(t,9.5,10));
+ fade('s5',t,10.4,10.8);
+ ['b1','b2','b3','b4'].forEach((id,i)=>{const p=E(seg(t,10.7+i*.25,11.2+i*.25));g(id).style.opacity=p;g(id).style.transform='translateY('+(1-p)*40+'px)'});
+ g('brand').style.opacity=E(seg(t,11.8,12.3));
+};
+seek(0);
+</script></body></html>
