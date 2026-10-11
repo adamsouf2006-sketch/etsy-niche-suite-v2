@@ -1,11 +1,11 @@
 ---
 name: etsy-strategie-video
-description: Stratégie Etsy pour produits numériques issue de 3 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
+description: Stratégie Etsy pour produits numériques issue de 4 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
 ---
 
-# Stratégie Etsy – produits numériques (synthèse de 3 vidéos)
+# Stratégie Etsy – produits numériques (synthèse de 4 vidéos)
 
-Source unique : transcriptions de 3 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent de l'outil Profit Tree (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
+Source unique : transcriptions de 4 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent de l'outil Profit Tree (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
 
 ## 1. Principes de base
 - Produit numérique = livré par lien/fichier (ebook, template modifiable, cours, art/coloriage imprimable, planner). Modèle passif : pas d'expédition, chaque produit s'ajoute aux revenus existants.
@@ -98,8 +98,19 @@ Etsy = moteur de recherche : l'algorithme compare les mots-clés des fiches à l
 - Peu de temps ? **Retarder l'ouverture** et constituer un stock (quelques semaines à quelques mois) pour publier régulièrement dès le jour 1.
 - Une fois la boutique établie, publier à son rythme.
 
-## 9. Checklist rapide d'une nouvelle fiche
+## 9. Réseaux sociaux et promotion : en faut-il ?
+- L'auteure n'a **jamais** utilisé réseaux sociaux, autre plateforme ni pub payante : tout vient du SEO Etsy/Google.
+- Si les ventes s'arrêtent dès qu'on arrête de poster/promouvoir, ce n'est **pas du revenu passif** (« du porte-à-porte sur Internet »).
+- Clé : la **demande organique** = les gens cherchent déjà ce produit sur Etsy et Google. Alors il suffit de publier et d'optimiser le SEO (mots-clés populaires + très spécifiques dans titre, description, tags).
+- **Entonnoir marketing** : se demander si Etsy est le **haut de l'entonnoir** (là où le client découvre le produit).
+  - Oui → laisser Etsy faire le travail.
+  - Non → promouvoir là où le client cherche des solutions : groupes Facebook, subreddits, Pinterest (déco/esthétique), Instagram/TikTok ou influenceurs (ex. imprimables, homeschool, déco). Dépend de la niche.
+- Inutile d'être sur toutes les plateformes : seulement là où va **votre** client.
+- Démarche : rechercher la demande organique sur Etsy → si oui, maîtriser le SEO ; si non, décider si l'on accepte de faire de la promotion (pas forcément une mauvaise idée, mais il faudra bâtir une présence là où sont les clients et les rediriger vers les produits).
+
+## 10. Checklist rapide d'une nouvelle fiche
 - [ ] Idée liée à mon client cible et à mon unfair advantage
+- [ ] Demande organique sur Etsy vérifiée (sinon prévoir où promouvoir)
 - [ ] Validée : best-sellers existants, niche score correct, revenu mensuel, saisonnalité
 - [ ] Produit passif (pas de personnalisation vendeur)
 - [ ] Prix aligné sur le marché, valeur ajoutée claire
