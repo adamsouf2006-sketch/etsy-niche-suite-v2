@@ -1,11 +1,11 @@
 ---
 name: etsy-strategie-video
-description: "Stratégie Etsy pour produits numériques issue de 8 vidéos YouTube de vendeuses top-sellers (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee, comparatif de 5 niches, niches sous-estimées 2026 : funéraire, B2B beauté, Notion, tableurs ; produits B2B : pitch decks, formulaires/contrats, workbooks, branding kits, templates réseaux sociaux). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas."
+description: "Stratégie Etsy pour produits numériques issue de 9 vidéos YouTube de vendeuses top-sellers (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee, comparatif de 5 niches, niches sous-estimées 2026 : funéraire, B2B beauté, Notion, tableurs ; produits B2B : pitch decks, formulaires/contrats, workbooks, branding kits, templates réseaux sociaux ; 10 niches débutants dont immobilier/Airbnb, CV, fitness). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas."
 ---
 
 # Stratégie Etsy – produits numériques (synthèse de 7 vidéos)
 
-Sources : transcriptions de 7 vidéos d'une vendeuse Etsy (sections 1–12) + 1 vidéo d'une autre vendeuse (section 13). Vendeuse principale (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
+Sources : transcriptions de 7 vidéos d'une vendeuse Etsy (sections 1–12) + 2 vidéos d'autres vendeuses (sections 13 et 14). Vendeuse principale (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
 
 ## 1. Principes de base
 - Produit numérique = livré par lien/fichier (ebook, template modifiable, cours, art/coloriage imprimable, planner). Modèle passif : pas d'expédition, chaque produit s'ajoute aux revenus existants.
@@ -171,7 +171,26 @@ Source différente des 7 autres vidéos : vendeuse de templates pour entreprises
 - ⚠️ **Contrats** : on vend la mise en page, pas un conseil juridique → disclaimer dans la description (« à titre informatif et de design uniquement, ne constitue pas un conseil juridique ; faire relire par un professionnel »).
 - Recoupe les sections 5 et 12 : un même client pro (ex. métiers de la beauté) → plusieurs types de produits × couleurs × métiers voisins.
 
-## 14. Checklist rapide d'une nouvelle fiche
+## 14. 10 niches « prouvées » pour débutants (9e vidéo, Karen, ex-graphiste, 2 business à 6 chiffres)
+Source : autre vendeuse ; promo de son guide gratuit, d'un « niche bot » et de la formation « Canva to Cash ». **Aucun chiffre de vente** → valider chaque niche avec les méthodes des sections 3, 10 et 12.
+
+| # | Niche | Exemples | Pourquoi ça vend |
+|---|---|---|---|
+| 1 | **Mariage & événements** | Invitation → menus, plan de table, cartes de remerciement, site RSVP ; baby shower, anniversaires, diplômes | Grand moment de vie = budget plus élevé ; **un design devient un bundle** |
+| 2 | **Business & réseaux sociaux (B2B)** | Carrousels Instagram, calendriers de contenu, brand kits, grilles tarifaires (coachs, photographes, petites boutiques) | Le pro voit un investissement → paie plus et revient |
+| 3 | **Art mural imprimable** | Minimaliste, boho, vintage, nursery, citations | Énorme demande ; collections larges ou une seule esthétique |
+| 4 | **Planners & journaux** | ADHD, shadow work, meal prep mamans occupées, planner enseignant | **Saturé** → seulement en angle très spécifique |
+| 5 | **Finances & budget** | Budget tracker, plan de remboursement de dettes | Évergreen ; on vend « la tranquillité d'esprit », pas un tableur |
+| 6 | **Éducation / enseignants** | Planners de cours, flashcards, fiches d'activités, suivis homeschool | Demande constante ; enseignants paient pour gagner du temps |
+| 7 | **CV & carrière** | Templates de CV, kits candidature, portfolios | Évergreen quelle que soit l'économie ; enjeu émotionnel |
+| 8 | **Fitness & nutrition** | Suivi d'entraînement, meal planners | Toute l'année + **pic en janvier** (publier avant) |
+| 9 | **Immobilier & Airbnb (B2B)** | Supports marketing agents immo, welcome book / règlement intérieur Airbnb | **Niche négligée** ; l'outil les aide à gagner de l'argent |
+| 10 | **Activités & imprimables enfants** | Coloriages, fiches d'activités, tableaux de tâches, jeux éducatifs, imprimables d'anniversaire | Évergreen ; idéal pour un parent (expérience réelle) |
+
+- Conseil clé : **ne pas tout faire** — choisir une niche qui motive ou qu'on connaît, un premier produit, puis élargir (cf. section 5).
+- Recoupements : mariage/événements, planners spécifiques, tableurs budget et éducation confirment les sections 4, 11 et 12 ; B2B confirme la section 13.
+
+## 15. Checklist rapide d'une nouvelle fiche
 - [ ] Idée liée à mon client cible et à mon unfair advantage
 - [ ] Demande organique sur Etsy vérifiée (sinon prévoir où promouvoir)
 - [ ] Validée : best-sellers existants, niche score correct, revenu mensuel, saisonnalité
