@@ -1,11 +1,11 @@
 ---
 name: etsy-strategie-video
-description: Stratégie Etsy pour produits numériques issue de 6 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee, comparatif de 5 niches). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
+description: Stratégie Etsy pour produits numériques issue de 7 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant, réseaux sociaux vs demande organique, recherche de best-sellers avec EverBee, comparatif de 5 niches, niches sous-estimées 2026 : funéraire, B2B beauté, Notion, tableurs). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
 ---
 
-# Stratégie Etsy – produits numériques (synthèse de 6 vidéos)
+# Stratégie Etsy – produits numériques (synthèse de 7 vidéos)
 
-Source unique : transcriptions de 6 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
+Source unique : transcriptions de 7 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent des outils Profit Tree ou EverBee (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
 
 ## 1. Principes de base
 - Produit numérique = livré par lien/fichier (ebook, template modifiable, cours, art/coloriage imprimable, planner). Modèle passif : pas d'expédition, chaque produit s'ajoute aux revenus existants.
@@ -137,7 +137,27 @@ Les niches diffèrent par la demande, la concurrence et le **prix acceptable** �
 
 Rappels : mockups OK mais le titre doit dire « template / digital download » ; éviter tout personnage protégé (ex. Winnie l'ourson) → signalement puis procès.
 
-## 12. Checklist rapide d'une nouvelle fiche
+## 12. « Est-ce encore rentable en 2026 ? » – niches sous-estimées
+- Etsy est saturé surtout de vendeurs « argent facile » (produits bâclés, IA, sans demande). Ceux qui réussissent bâtissent une boutique qui **résout des problèmes précis pour un client précis**.
+- Méthode de recherche : commencer par un **terme générique de type de produit** (ex. « funeral invitation ») plutôt qu'ultra-spécifique ; si les meilleurs produits de la catégorie vendent peu, toute la niche ne vaut pas le coup. Noter les « top related keywords ». Tri par ventes ≠ tri par rentabilité.
+- **Demand badge** = ajouts au panier sur 24 h → indicateur de demande régulière.
+- Étudier les **détails des couvertures** des best-sellers. Ex. faire-part de décès Canva : « aucun logiciel ni police requis », « modifiable sur navigateur, ordinateur, mobile, tablette », icônes des moyens d'envoi (Facebook, Instagram, e-mail) → rassure sur la facilité d'usage.
+- Ne **pas copier** les boutiques : étudier leurs stratégies.
+
+| Niche | Produit | Boutique | Leçon |
+|---|---|---|---|
+| **Faire-part de décès** | Template Canva minimaliste, 5,20 $, ~65 ventes, ~332 $/mois, 7 achats/24 h | ~1 998 $/mois (50 000 $+ au total) ; seulement 1/4 des produits funéraires, le reste dispersé (grossesse, anniversaire, baptême, mariage) | Tous les produits ne seront pas des best-sellers ; expérimenter puis **miser à fond sur ce qui marche** |
+| **Annonce de grossesse/naissance** | Annonce neutre (photo mockup entière = l'annonce, imprimable ou réseaux sociaux) ~1 000 $/mois | 1 an, 255 produits, ~3 000 $/mois : surtout des **déclinaisons de couleurs/thèmes** (ex. Pâques) d'un même produit ; rubriques = thèmes | Dupliquer en variantes = beaucoup de fiches pour peu de travail |
+| **Nail tech (B2B)** | Flyer « new clients wanted » ~143 $/mois ; template Acuity (prise de RDV), 2 achats/24 h | 161 produits, ~916 $/mois : templates Acuity/stories pour lash techs, nail techs, esthéticiennes, maquilleuses, déclinés en couleurs | ~10 types de templates (Acuity, story Instagram, carte de visite…) × couleurs × métiers ; facile de se démarquer et fidéliser |
+| **Barbier** | Résultats décevants (surtout physiques) | — | Niche à écarter selon ces données |
+| **Lash tech** | **Ebook de formation modifiable** que la lash tech personnalise et revend : ~1 000 $/mois, best-seller, 16 paniers | 3 ans, ~4 000 $/mois ; ce produit = ~25 % du CA | « Mine d'or » sous-servie, nécessite une expertise du métier |
+| **Template Notion** | « 2026 Advanced Girl Notion » ~1 600 $/mois, ~45 ventes, 40 000 $+ au total ; couverture riche, féminine, organisée | ~5 000 $/mois avec **45 produits** (life planner, business, ADHD, Google Sheets) | Prix élevé → peu de ventes suffisent ; courbe d'apprentissage (création + partage) ; moins de concurrence car pas « en un clic » |
+| **Tableurs (Excel/Google Sheets)** | Budget annuel : ~18 000 $/mois, 47 achats/24 h ; wedding planner : ~8 000–9 000 $/mois | Même boutique : **~103 000 $/mois** | Surtout budget/finances ; wedding planner tableur = moins de concurrence que les faire-parts ; long et pénible à créer, déconseillé aux non-technophiles |
+
+- **Suivi concurrentiel** (Profit Tree Pro) : enregistrer une boutique/un produit comme concurrent → ventes et revenus jour par jour sur 30 jours.
+- L'auteure elle-même : ~120–130 produits, environ 2 000–2 500 $/mois (« la moitié » des 5 000 $ de la boutique Notion).
+
+## 13. Checklist rapide d'une nouvelle fiche
 - [ ] Idée liée à mon client cible et à mon unfair advantage
 - [ ] Demande organique sur Etsy vérifiée (sinon prévoir où promouvoir)
 - [ ] Validée : best-sellers existants, niche score correct, revenu mensuel, saisonnalité
