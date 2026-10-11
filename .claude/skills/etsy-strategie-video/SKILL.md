@@ -1,0 +1,115 @@
+---
+name: etsy-strategie-video
+description: Stratégie Etsy pour produits numériques issue de 3 vidéos YouTube d'une vendeuse top-seller (exemples de revenus par niche, méthode SEO en 5 étapes, blueprint débutant). À utiliser pour choisir une niche, valider un produit, écrire titre/tags/description, fixer un prix, planifier un lancement ou diagnostiquer une fiche qui ne vend pas.
+---
+
+# Stratégie Etsy – produits numériques (synthèse de 3 vidéos)
+
+Source unique : transcriptions de 3 vidéos d'une vendeuse Etsy (~2,5 ans d'expérience, ex-enseignante, 5–10 h/semaine). Les chiffres viennent de l'outil Profit Tree (estimations, pas des ventes vérifiées). Ne pas présenter comme des faits ce qui n'y figure pas ; signaler tout ajout extérieur.
+
+## 1. Principes de base
+- Produit numérique = livré par lien/fichier (ebook, template modifiable, cours, art/coloriage imprimable, planner). Modèle passif : pas d'expédition, chaque produit s'ajoute aux revenus existants.
+- Penser **outil** (résout un problème) plutôt que **produit**.
+- **Unfair advantage** : lister compétences, intérêts, expériences, métiers, langues, passions → trouver les problèmes des gens de ces milieux qu'un produit numérique résout (parent → planners ; enseignant → plans de cours/fiches ; investisseur → guides/cours).
+- Rester **vraiment passif** : refuser les produits qui exigent une personnalisation par le vendeur (préférer « DIY / modifiable par l'acheteur »).
+
+## 2. Où vendre
+Etsy pour débuter : simple, et forte **autorité de domaine** (les fiches Etsy remontent sur Google). Image : salsa sur l'étagère de Walmart vs cabane au bord de la route (site perso).
+
+## 3. Validation produit (Profit Tree ou équivalent)
+1. Taper l'idée (issue de la liste « unfair advantage »), option « Hot on Etsy » / « Selling now ».
+2. **Niche score** : viser ≥ 90 (vert) pour débuter. Score faible sur un mot-clé vague (« digital download ») ≠ mauvaise niche : c'est un score de mot-clé.
+3. Trier par **revenu mensuel**, pas par nombre de ventes (76 ventes → 74,99 $ vs 29 ventes → 700 $+).
+4. Ouvrir sur Etsy : vérifier type (numérique ? passif ?), badge bestseller, nb de paniers, promo ou non (pas de promo + beaucoup de paniers = demande organique forte).
+5. Onglet **Shops** : revenu total de la boutique, âge, nb de produits, 100 % numérique ?
+6. Courbe de performance 12 mois → détecter la **saisonnalité** et publier avant le pic.
+7. Garder les idées « trop lourdes » en réserve (doc/notes) et commencer par des versions courtes.
+
+## 4. Exemples de revenus observés (Profit Tree)
+| Produit | Produit/mois | Boutique/mois | Note |
+|---|---|---|---|
+| Junk journal imprimable (Book of Days) | ~3 763 $ (471 ventes) | ~23 498 $ (459 produits, 5 ans) | Craft supplies, bonne alternative à l'art mural saturé |
+| Patron crochet (poupée) | ~3 544 $ | ~3 800 $ (6 produits) | Complément pour vendeurs de physique |
+| Wedding planner (Sheets/Excel) | ~4 026 $ (chiffre incertain) | ~6 451 $ (800+ produits) ; autre boutique ~103 000 $ | Long à créer |
+| Panneau photo « Senior Year » (Canva) | ~1 258 $ | ~5 717 $ (1 500+ produits, beaucoup d'IA) | Saisonnier (juil.–oct.) |
+| Billet de concert modifiable (Canva) | ~538 $ | ~1 096 $ | ~1 h de création |
+| Planning homeschool modifiable (tableur) | ~3 240 $ (122 ventes, 25 $) | — | 20+ paniers |
+| Programme préscolaire 1 an (900+ pages) | ~710 $ | — | Trop lourd pour débuter |
+| Activités d'été tout-petits (25 fiches, ~8 $) | ~240 $ | — | Format débutant idéal |
+| Faire-part minimaliste N&B (17–20 $) | 1 700 $+ | ~4 800 $ | Instructions de pliage = valeur ajoutée |
+| Top boutique « wedding templates » | — | ~14 912 $ (950+ produits, 2 ans) | A élargi : baby shower, diplômes |
+| Top boutique « lesson plans » | — | 712 $ → 5 721 $ ; ex. 29 produits, 1 an : ~3 783 $ | Résultat réaliste pour débutant |
+
+Leçons : 1–2 best-sellers font l'essentiel du CA ; qualité/demande > quantité ; éviter l'IA floue/pixelisée ; une boutique dispersée plafonne.
+
+Profils : débutant pressé → templates Canva (invitations, billets, panneaux) ; artiste → junk journals, kits scrapbooking/clipart ; crochet/textile → patrons PDF ; Excel/Sheets → planners ; enseignant → plans de cours courts (~25 fiches, ~8 $), déclinables (rentrée, automne, sensoriel, sciences, comptage, alphabet). Mariage = esthétique exigeante ; si débutant en design → fêtes d'enfants, baby showers.
+
+## 5. Stratégie client (niche = une personne, pas un format)
+- Construire la boutique autour d'**un client cible** et lui résoudre plusieurs problèmes (« j'aide les enseignants à décorer leur classe → quoi d'autre pour eux ? »).
+- Clients fidèles + avis positifs → Etsy donne plus de visibilité.
+- Aller **en profondeur d'abord** (ex. 30–50 produits mariage), puis élargir via des **rubriques de boutique** au même public ou à un public voisin.
+- « Plus facile de garder un client que d'en gagner un nouveau. »
+
+## 6. Prix et valeur
+- **Jamais casser les prix** : course vers le bas, et prix bas = valeur perçue faible (face à 30 produits à ~30 $, personne ne risque 10 $). S'aligner sur le marché.
+- Ajouter de la valeur :
+  - **Quantité** (6 affiches au lieu de 3) — efficace mais long.
+  - **Utilité communiquée** sur les images de couverture : « 30 fiches » → « un mois de plans de cours » ; « facile à utiliser », « modifiable », « pour enseignants débordés / homeschool », public et bénéfice précis.
+- Couvertures = **art** (style adapté au client, tester, remplacer si ça ne vend pas). Titre/description/tags = **science**.
+
+## 7. SEO Etsy – méthode en 5 étapes
+Etsy = moteur de recherche : l'algorithme compare les mots-clés des fiches à la recherche de l'acheteur.
+
+**Étape 1 – Recherche de mots-clés**
+- Terme large → noter les « top related keywords » en 2 listes : **génériques** (digital download, home decor, instant download – réutilisables partout) et **descriptifs** (idées de produits ; garder en réserve ceux non pertinents).
+- Affiner (ex. « printable nursery decor »), choisir un best-seller du **même type exact** (numérique, même format).
+- Relever : titre, premières lignes de description (mots répétés du titre), et les **13 tags** (visibles via l'outil).
+- Ne pas deviner : « editable » ≠ « customizable » en volume. Reprendre les mots-clés **mot pour mot**.
+
+**Étape 2 – Tags**
+- **Toujours 13**, tous très pertinents pour CETTE fiche.
+- Grouper les mots tapés ensemble (« wall art » = 1 tag).
+- Groupe 1 **catégoriels** (dire à Etsy ce que c'est) : printable, wall art, nursery decor, digital download.
+- Groupe 2 **descriptifs** (style + contexte d'usage, moins de volume mais acheteurs qualifiés) : vintage, baby girl, baby shower gift, teddy bear, playroom, kids room, gender reveal, watercolor art, pink kids room.
+- Pas de tags vagues/hors sujet (leçon météo → « earth science », pas « rainbow »).
+- Tags uniques par fiche (quelques mots centraux communs possibles).
+
+**Étape 3 – Titre**
+- Tisser les tags dans une phrase lisible, segments séparés par « | » ou virgules ; se lit comme plusieurs titres.
+- Ex. : « Vintage Kids Room Wall Art for Baby Girl Nursery | Teddy Bear Watercolor Art for Playroom, Pink Baby Shower Gift ».
+- **Broad matching** : Etsy recombine les mots (→ « vintage teddy bear wall art », « baby shower gift for baby girl »).
+- **Pas de keyword stuffing** (spam, fait fuir les acheteurs).
+- Varier titres/tags/photos entre ses propres fiches pour qu'elles ne se cannibalisent pas.
+
+**Étape 4 – Description**
+- Les **premières lignes** comptent pour le SEO : commencer par **reformuler le titre**, puis texte lisible riche en mots-clés recombinés (longue traîne).
+- Ex. : « Looking for the perfect pink wall decor for your baby girl's vintage nursery, or a baby shower gift for a baby girl? This beautiful vintage print set… nursery, playroom, or kids' room… printable wall art… instant download… perfect last minute gift. »
+- Suite : infos pratiques (dimensions, usage, livraison).
+
+**Étape 5 – Suivi (le plus important)**
+- Analyser par fiche : d'où viennent les visiteurs, quels mots-clés, convertissent-ils ?
+- Documenter (captures des stats, planner) et comparer à **30 jours**.
+- **Trafic ↑ mais ventes stables = alerte** → changer **un seul** facteur (prix, images ou mots-clés), attendre ~30 jours.
+- **Pas d'Etsy Ads** avant de bons résultats en SEO seul (sinon on paie pour toucher les mauvaises personnes).
+
+## 8. Lancement (vers les 100 premières ventes)
+- Etsy booste les nouvelles boutiques **actives**.
+- **≥ 3 produits dans les 48 h** suivant l'ouverture, puis **1 produit tous les 2–3 jours** pendant 30 jours.
+- Peu de temps ? **Retarder l'ouverture** et constituer un stock (quelques semaines à quelques mois) pour publier régulièrement dès le jour 1.
+- Une fois la boutique établie, publier à son rythme.
+
+## 9. Checklist rapide d'une nouvelle fiche
+- [ ] Idée liée à mon client cible et à mon unfair advantage
+- [ ] Validée : best-sellers existants, niche score correct, revenu mensuel, saisonnalité
+- [ ] Produit passif (pas de personnalisation vendeur)
+- [ ] Prix aligné sur le marché, valeur ajoutée claire
+- [ ] Couverture : style du client + bénéfice/usage/public affichés
+- [ ] 13 tags (catégoriels + descriptifs), mots-clés verbatim
+- [ ] Titre lisible en segments, sans bourrage
+- [ ] Description : 1re ligne = titre reformulé, puis texte riche en mots-clés
+- [ ] Fiche différenciée de mes autres fiches
+- [ ] Suivi des stats planifié à J+30
+
+## Remarques
+- Les vidéos font la promotion de Profit Tree (lien affilié, offre à vie 67 $) et d'un kit de démarrage de l'auteure ; d'autres outils de recherche peuvent servir.
+- « Etsy prend ~6,5 % » : affirmation non certaine de l'auteure elle-même.
