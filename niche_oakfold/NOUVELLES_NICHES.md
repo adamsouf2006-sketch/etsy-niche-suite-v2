@@ -20,3 +20,19 @@ Pourquoi elle convient : patrons géométriques (calculs de coupe, métrage, sch
 - Patrons de couture : ~10 boutiques, ~30 avis 30 j — gradation complexe.
 - Presets Lightroom : ~8 boutiques, ~22 avis 30 j.
 - Clipart PNG : ~8 boutiques, ~17 avis 30 j (réutilise la chaîne d'illustrations Agnès).
+
+## Mise à jour 2026-10-12 : hors religion et fêtes, ventes fortes ET récentes
+Source 1 : BOUTIQUES_NUMERIQUES_2MOIS.md (326 boutiques ≤ 2 mois, ≥ 50 ventes/mois), 137 exclues (religion, fêtes, licences).
+Source 2 : validation API (`suivi24h/couture.py`, `couture.json`) : ≥ 3 boutiques distinctes, annonces ≤ 120 j vendues dans les 30 j.
+
+| Produit précis | Résultats | Boutiques récentes qui vendent | Avis 30 j (top 10 récentes) |
+|---|---|---|---|
+| **Memory bear (ours souvenir) — patron de couture PDF, 10 tailles** | **1 696** | **9** | **92** (31, 20, 12, 7, 5, 5, 5, 4, 2) |
+| Patchwork quilt pattern | 46 714 | 8 | 22 |
+| Crossbody bag sewing pattern | 13 344 | 7 | 18 |
+| Tote bag sewing pattern | 44 434 | 7 | 20 |
+| Coffee cup sleeve pattern | 2 153 | 5 | 9 |
+| Zipper pouch sewing pattern | 6 720 | 4 | 8 |
+| Teddy bear sewing pattern | 30 619 | 3 | 8 |
+| Felt food sewing pattern | 2 150 | 2 | 9 (non validé) |
+Jeunes boutiques memory bear : SewinggiftCrafts 52 j / 347 ventes/mois, MahaPatterns 11 j / 235 ventes/mois.
