@@ -54,3 +54,12 @@ Critère : plusieurs annonces de ≤ 180 j avec ≥ 3 vues/j **et** des avis (ve
 
 ### « airbnb welcome guide » (2026-10-12, 17 requêtes)
 6 313 résultats, 197 numériques dont 55 récents. Les 15 annonces les plus vues : **1 seul avis sur 30 jours**. Les annonces les plus vues ont 4 à 6 ans et 0 à 4 avis. Beaucoup de vues, très peu d'achats → non validé.
+
+## Recherche « niche parfaite » à partir des jeunes boutiques qui vendent (2026-10-12, ~110 requêtes)
+- Sur les 326 jeunes boutiques de BOUTIQUES_NUMERIQUES_2MOIS.md, en écartant crochet, SVG et 3D, il en reste 57. Le type dominant (une vingtaine de boutiques) est l'**invitation d'anniversaire enfant sous Canva**. Mais les thèmes qui gagnent sont sous licence : Dino Rescue = Paw Patrol, Fort Game = Fortnite, Frozen, Mario, Spider-Man → interdits. Thèmes libres : squishy (95 annonces toutes récentes, 4 avis/30 j), berry first (17 495 résultats, un seul gagnant) → faibles.
+- **Validé par plusieurs boutiques : tableur budget / finances.**
+  - BudgetwithRozCanada : 27 j, 1 vraie fiche *Annual Finance Planner and Tracker Spreadsheet* (8,50 CAD), **60 vues/j, 115 ventes**.
+  - XclusivetemplatesArt : 31 j, 120 ventes, *Budget Planner Google Sheet Paycheck Budget* à 1,99 $.
+  - Smarbudget : 5 j, 7 ventes, budgets spécialisés (construction, féminin).
+  - Plus 2 annonces « paycheck budget » récentes avec avis (voir plus haut).
+- **Constat sur Oakfold (98 fiches, 5 ventes)** : les fiches font 0 à 30 vues au total. Le problème n'est pas le choix de niche mais la **dispersion** (thérapie, CV, Kobo, presets Lightroom, PLR, contrats…) et **5 fiches budget qui se cannibalisent**. Fiche budget Oakfold : 8 vues en 20 j, contre 60 vues/j pour le gagnant.
