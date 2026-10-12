@@ -51,3 +51,6 @@ Critère : plusieurs annonces de ≤ 180 j avec ≥ 3 vues/j **et** des avis (ve
 - Les ventes vont à de grosses boutiques déjà établies : Templates4branding (43 720 ventes), DesignByMinsiPrincy (36 066), LuvionStudio (11 511), ByPantherStudio (8 528).
 - Guerre des prix : 3,99 $, 1,80 $, 0,87 $.
 - Langues : demande quasi nulle en français (37 annonces, ≤ 1 vue/j), en espagnol et en allemand.
+
+### « airbnb welcome guide » (2026-10-12, 17 requêtes)
+6 313 résultats, 197 numériques dont 55 récents. Les 15 annonces les plus vues : **1 seul avis sur 30 jours**. Les annonces les plus vues ont 4 à 6 ans et 0 à 4 avis. Beaucoup de vues, très peu d'achats → non validé.
