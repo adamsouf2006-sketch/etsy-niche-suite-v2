@@ -63,3 +63,16 @@ Critère : plusieurs annonces de ≤ 180 j avec ≥ 3 vues/j **et** des avis (ve
   - Smarbudget : 5 j, 7 ventes, budgets spécialisés (construction, féminin).
   - Plus 2 annonces « paycheck budget » récentes avec avis (voir plus haut).
 - **Constat sur Oakfold (98 fiches, 5 ventes)** : les fiches font 0 à 30 vues au total. Le problème n'est pas le choix de niche mais la **dispersion** (thérapie, CV, Kobo, presets Lightroom, PLR, contrats…) et **5 fiches budget qui se cannibalisent**. Fiche budget Oakfold : 8 vues en 20 j, contre 60 vues/j pour le gagnant.
+
+## Test strict niche finances (2026-10-12, `suivi24h/finance.py`, 138 requêtes)
+Critère : boutiques différentes avec une annonce de ≤ 120 j et ≥ 1 avis dans les 30 derniers jours (12 mots-clés × 200 annonces, top 10 récentes).
+**8 boutiques distinctes** passent → niche confirmée, avec des volumes modestes (1 à 6 avis/30 j ≈ 10 à 60 ventes/mois par annonce).
+
+| Produit précis | Boutiques récentes qui vendent | Preuves |
+|---|---|---|
+| Debt Payoff Tracker (snowball/avalanche) | 2 | 120 j/42 vues/j/5 avis 30 j à 3,95 $ ; 18 j/3 avis 30 j à 7,46 $ |
+| Annual Finance Planner / Annual Spreadsheet | 2 | 26 j/6 avis 30 j à 9,99 € ; BudgetwithRoz 27 j/115 ventes |
+| Monthly Budget Spreadsheet (Excel + Sheets) | 3 | 6 j/2 avis, 4 j/1 avis, 28 j/1 avis |
+| Paycheck Budget (bill calendar, safe-to-spend) | 2 | 30 j/2 avis à 7,98 $ ; 175 j/13 avis à 22 € |
+| Budget planner en français | 1 (signal) | 76 j/14 vues/j/3 avis 30 j |
+Non validés : biweekly, zero based, savings, couples, bookkeeping (0 vente récente).
