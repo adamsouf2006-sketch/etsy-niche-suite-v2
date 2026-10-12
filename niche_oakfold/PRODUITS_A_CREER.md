@@ -87,3 +87,13 @@ Non validés : biweekly, zero based, savings, couples, bookkeeping (0 vente réc
 | **Stickers de planner numériques** (PNG GoodNotes) | 4 | 5, 3, 3, 1… |
 | **Fiches enfants / homeschool** (alphabet, lecture, préscolaire) | 4 | 5, 5, 4, 2 |
 | Tableurs finances | 3 | 5, 4, 1 |
+
+## Collection Ember & Oak : 4 brouillons créés (2026-10-12)
+| Fiche | ID Etsy | Prix |
+|---|---|---|
+| Autumn Junk Journal Kit (52 pages, 124 pièces, 4 PDF) | 4594029657 | 6,99 € |
+| Autumn Paper Pack (20 papiers, 2 PDF) | 4594047442 | 3,49 € |
+| Envelopes & Pockets (12 gabarits, 20 pièces, 2 PDF) | 4594030513 | 3,49 € |
+| Journaling Cards (62 cartes + 4 pages, 2 PDF) | 4594030883 | 3,49 € |
+Chaque brouillon : 10 photos, 1 vidéo, 13 tags, catégorie 6844, type téléchargement. Fabrication : `jj_ember/` (build, photos, video, verify : 0 échec).
+À faire à la main : cocher « Avec un générateur d'IA », choisir la rubrique, publier.
