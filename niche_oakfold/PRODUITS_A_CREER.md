@@ -76,3 +76,14 @@ Critère : boutiques différentes avec une annonce de ≤ 120 j et ≥ 1 avis da
 | Paycheck Budget (bill calendar, safe-to-spend) | 2 | 30 j/2 avis à 7,98 $ ; 175 j/13 avis à 22 € |
 | Budget planner en français | 1 (signal) | 76 j/14 vues/j/3 avis 30 j |
 Non validés : biweekly, zero based, savings, couples, bookkeeping (0 vente récente).
+
+## Balayage large sans deviner (2026-10-12, `suivi24h/large.py`, 228 requêtes)
+30 recherches génériques → 5 914 annonces numériques → 170 récentes (≤ 120 j, hors licences) les plus vues → **75 vendent sur les 30 derniers jours**. Regroupement par type :
+
+| Type précis | Boutiques récentes qui vendent | Avis 30 j (≈ ×10 ventes) |
+|---|---|---|
+| **Junk journal imprimable vintage** (kits, papiers, éphémères, enveloppes/pochettes, cartes) | **7** (Peculiar Pages, Miss Tiffany, grimoire, Book Lover, fussy cuts, Letter Keeper, October Journal) | Peculiar Pages : 39 + 36 + 32 + 30 sur 4 annonces de 16–36 j à 3,99–7,99 $ ; grimoire 8 ; Miss Tiffany 8 + 3 |
+| **Planner / journal 2027** (bundle imprimable, GoodNotes) | **9** | BIG Journal Bundle 37 j : 69 ; bullet journal 19 ; GoodNotes 17 ; 8 ; 4… — saisonnier (oct.–janv.) |
+| **Stickers de planner numériques** (PNG GoodNotes) | 4 | 5, 3, 3, 1… |
+| **Fiches enfants / homeschool** (alphabet, lecture, préscolaire) | 4 | 5, 5, 4, 2 |
+| Tableurs finances | 3 | 5, 4, 1 |
