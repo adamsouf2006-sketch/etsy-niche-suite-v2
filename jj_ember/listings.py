@@ -26,10 +26,10 @@ LISTINGS = {
 WHO IT'S FOR
 Junk journalers, scrapbookers and paper crafters who love vintage botanicals, dark academia and warm fall colors.
 
-WHAT YOU GET: 52 printable pages in US Letter and A4, 120 pieces in total
+WHAT YOU GET: 52 printable pages in US Letter and A4, 124 pieces in total
 1. 20 full-page papers: botanicals, ledger and sheet music, owl moon, fern hollow, damask, plaid and 2 solids
 2. 6 sheets of cut-apart ephemera: 18 pieces in 14 illustrated designs (oak, maple, fern, mushrooms, moth, owl, crow, key, apothecary bottle, wreath and more)
-3. 12 envelope and pocket templates (16 pieces): 6 envelopes in 3 shapes, 4 library card pockets, 2 tuck-in page pockets, 4 tall tags, 4 belly bands
+3. 12 envelope and pocket templates (20 pieces): 6 envelopes in 3 shapes, 4 library card pockets, 2 tuck-in page pockets, 4 tall tags, 4 belly bands
 4. 62 journaling cards: 54 cards 2.5 x 3.5 in (27 illustrated, 27 lined) and 8 lined cards 3 x 4 in
 5. 4 full-page lined journaling pages
 6. 2 START HERE pages with printing tips
@@ -81,7 +81,7 @@ WHAT YOU GET: 14 printable pages in US Letter and A4
 5. 1 sheet of 4 belly bands
 6. 2 START HERE pages with folding tips
 
-That is 16 pieces to cut out. You receive 2 PDF files: one in US Letter (8.5 x 11 in) and one in A4, high resolution.
+That is 20 pieces to cut out. You receive 2 PDF files: one in US Letter (8.5 x 11 in) and one in A4, high resolution.
 
 WHY YOU'LL LOVE IT
 - Clear guides: solid line to cut, dashed line to fold
@@ -93,7 +93,7 @@ WHY YOU'LL LOVE IT
   title="Autumn Journaling Cards Printable, 62 Fall Junk Journal Cards, Lined Journal Cards, Vintage Botanical Pocket Cards, ATC Size",
   tags=["journaling cards", "journal cards", "junk journal cards", "lined journal cards", "pocket cards", "atc cards",
         "fall journal cards", "autumn journaling", "printable cards", "vintage cards", "botanical cards", "fall junk journal", "project life cards"],
-  description="""Looking for cozy journaling cards to tuck into pockets and write your autumn memories on? This set gives you 62 printable cards and 4 matching lined pages.
+  description="""Looking for cozy journaling cards to tuck into pockets and write your autumn memories on? This set gives you 62 journaling cards and 4 matching lined pages.
 
 WHO IT'S FOR
 Junk journalers, memory keepers and pocket scrapbookers who love vintage botanicals and fall colors.

@@ -36,7 +36,7 @@ PRODUCTS = {
    pages=[("cards", i) for i in range(8)] + [("lined", i) for i in range(4)]),
 }
 PRODUCTS["kit"] = dict(name="Junk Journal Kit", slug="EmberOak_Junk_Journal_Kit",
-   contents=["20 full-page papers", "12 envelope and pocket templates (16 pieces)", "62 journaling cards (2 sizes)", "4 lined journaling pages",
+   contents=["20 full-page papers", "12 envelope and pocket templates (20 pieces)", "62 journaling cards (2 sizes)", "4 lined journaling pages",
              "6 sheets of cut-apart ephemera (18 pieces, 14 designs)", "2 START HERE pages (this guide)"],
    files_note="Two PDFs per paper size (Part 1: papers, Part 2: ephemera, envelopes, pockets, cards and pages), for US Letter (8.5 x 11 in) and A4.",
    howto="Use the papers as pages and covers, build pockets and envelopes from the templates, then fill them with cards, tags and ephemera.",

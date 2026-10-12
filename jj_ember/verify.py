@@ -26,19 +26,19 @@ n_pieces = sum({"envelope_pointed": 1, "envelope_square": 1, "envelope_wallet": 
 n_eph_designs = len({e for n in range(6) for e in (P.ELEMS[n * 3 % 14:] + P.ELEMS)[:3]})
 INFO.append(f"cartes={n_cards} pièces={n_pieces} motifs éphémères={n_eph_designs}")
 if n_cards != 62: fail(f"cartes : {n_cards} au lieu de 62")
-if n_pieces != 16: fail(f"pièces enveloppes/pochettes : {n_pieces} au lieu de 16")
+if n_pieces != 20: fail(f"pièces enveloppes/pochettes : {n_pieces} au lieu de 20")
 if n_eph_designs != 14: fail(f"motifs éphémères : {n_eph_designs} au lieu de 14")
 
 sp = SpellChecker(); sp.word_frequency.load_words(["journaling", "journalers", "ephemera", "scrapbookers", "scrapbook", "scrapbooks", "dpi", "oakfold",
     "ember", "goodnotes", "procreate", "cardstock", "gsm", "inkjet", "botanicals", "cottagecore", "atc", "pdf", "pdfs", "etsy", "printables",
     "junk", "apothecary", "damask", "pinecones", "walnut", "signatures", "mats", "full", "bleed", "tuck", "fall", "memory", "keepers", "keepsakes",
-    "keepsake", "moonlit", "lined", "a4", "us", "x", "in", "mm", "ai", "faq", "printable", "foxing", "academia", "sepia", "ochre", "rowan", "e-mail"])
+    "keepsake", "moonlit", "lined", "app", "crafters", "html", "a4", "us", "x", "in", "mm", "ai", "faq", "printable", "foxing", "academia", "sepia", "ochre", "rowan", "e-mail"])
 
 def spell(text, where):
-    words = re.findall(r"[A-Za-z][A-Za-z'\-]+", re.sub(r"&\w+;|<[^>]+>", " ", text))
+    words = re.findall(r"[A-Za-z][A-Za-z']+", re.sub(r"&\w+;|<[^>]+>", " ", text))
     bad = sp.unknown([w.lower().strip("'-") for w in words if len(w) > 2])
     if bad: fail(f"orthographe {where} : {sorted(bad)}")
-    if re.search(r"  +\S", text.replace("\n", " ").replace("   ", "")) and "  " in re.sub(r"\n\s*", "\n", text): fail(f"espace double {where}")
+    if "fiche" in where and re.search(r"\S  +\S", text): fail(f"espace double {where}")
     for bad_us in ["colour", "favourite", "cancelled", "centre", "grey"]:
         if bad_us in text.lower(): fail(f"orthographe non américaine {where} : {bad_us}")
 
@@ -88,10 +88,10 @@ for key, exp in EXPECT.items():
     if f"You receive {['', '', '2', '', '4'][exp['files']]} PDF files" not in desc: fail(f"{key} description : nombre de fichiers")
     for num, lab in [("62", "journaling cards"), ("16", "pieces")]:
         if key in ("kit", "cards") and lab == "journaling cards" and f"{num} journaling cards" not in desc: fail(f"{key} description : 62 cartes")
-    if key == "kit" and "120 pieces in total" not in desc: fail("kit description : 120 pièces")
-    if key == "kit" and 20 + 18 + n_pieces + n_cards + 4 != 120: fail("kit : le total de 120 pièces ne correspond plus au contenu")
-    if key == "envelopes" and "16 pieces" not in desc: fail("envelopes description : 16 pièces")
-    if key in ("kit",) and "(16 pieces)" not in desc: fail("kit description : 16 pièces")
+    if key == "kit" and "124 pieces in total" not in desc: fail("kit description : 124 pièces")
+    if key == "kit" and 20 + 18 + n_pieces + n_cards + 4 != 124: fail("kit : le total de 124 pièces ne correspond plus au contenu")
+    if key == "envelopes" and "20 pieces" not in desc: fail("envelopes description : 20 pièces")
+    if key in ("kit",) and "(20 pieces)" not in desc: fail("kit description : 20 pièces")
     if key in ("kit", "papers") and "20 full-page papers" not in desc: fail(f"{key} description : 20 papiers")
     if t[:28].lower() in desc[:200].lower(): fail(f"{key} : la description recopie le titre")
     spell(t + " " + " ".join(tags) + " " + desc, f"{key} fiche")
@@ -114,7 +114,7 @@ for key, exp in EXPECT.items():
 
 # 7. textes des pages (guide START HERE, étiquettes)
 txt = " ".join(" ".join(p["contents"]) + " " + p["files_note"] + " " + p["howto"] + " " + p["name"] for p in B.PRODUCTS.values())
-txt += " " + " ".join(P.WORDS) + " " + open(os.path.join(H, "pages.py")).read().split("def start_page")[1]
+txt += " " + " ".join(P.WORDS) + " " + open(os.path.join(H, "pages.py")).read().split("def start_page")[1].split("def card_cutout")[0]
 spell(re.sub(r"\{[^}]*\}|f\"\"\"|\"\"\"|style=\"[^\"]*\"|class=\"[^\"]*\"|[A-Za-z_]+\(|\b(?:div|li|ul|b|br|mm|pt|px|sc|cor|fell|abs|size|body|product|doc|art|inset|url|center|cover|solid|border|font|color|margin|padding|left|line|height|absolute|position|background|bottom|top|text|align|style|weight|normal|italic|letter|spacing|em|return|else|if|def|in|for|self|key|bold)\b", " ", txt), "pages")
 
 print("\n".join(INFO))

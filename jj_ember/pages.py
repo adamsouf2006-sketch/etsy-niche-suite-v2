@@ -15,7 +15,7 @@ def art(k):
         MISSING.add(k); p = os.path.join(ART, sorted(f for f in os.listdir(ART) if f.endswith(".png"))[0])
     if k.startswith("e") and os.path.exists(p):   # éléments : recadrage serré sur le dessin (fond crème retiré du cadre)
         t = os.path.join(ART, "trim", k + ".png")
-        if not os.path.exists(t) or os.path.getmtime(t) < os.path.getmtime(p): _trim(p, t)
+        if not os.path.exists(t) or os.path.getmtime(t) < max(os.path.getmtime(p), os.path.getmtime(__file__)): _trim(p, t)
         p = t
     return "file://" + p
 
@@ -26,7 +26,11 @@ def _trim(src, dst):
     diff = ImageChops.difference(im, bg).convert("L").filter(ImageFilter.GaussianBlur(4)).point(lambda v: 255 if v > 28 else 0)
     x0, y0, x1, y1 = diff.getbbox() or (0, 0, w, h); m = int(0.06 * max(x1 - x0, y1 - y0))
     os.makedirs(os.path.dirname(dst), exist_ok=True)
-    im.crop((max(0, x0 - m), max(0, y0 - m), min(w, x1 + m), min(h, y1 + m))).save(dst)
+    box = (max(0, x0 - m), max(0, y0 - m), min(w, x1 + m), min(h, y1 + m))
+    # fond crème -> transparent, bord adouci (le dessin se pose sur n'importe quel papier)
+    d = ImageChops.difference(im, bg).convert("L").point(lambda v: max(0, min(255, (v - 10) * 9)))
+    a = d.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.GaussianBlur(2.5))
+    out = im.convert("RGBA"); out.putalpha(a); out.crop(box).save(dst)
 
 FONT_CSS = "".join(
     f"@font-face{{font-family:'{fam}';src:url('file://{FONTS}/{fn}');font-style:{st};font-weight:{w}}}"
@@ -219,7 +223,8 @@ def lined_page(n, size):
     lines = "".join(f'<div style="position:absolute;left:22mm;right:22mm;top:{58+j*9}mm;border-bottom:0.3mm solid {col};opacity:.8"></div>'
                     for j in range(int((Hh - 82) / 9)))
     return doc(f'<div style="position:absolute;inset:0;background:url({art(bg)}) center/cover"></div>'
-               f'<div style="position:absolute;inset:14mm;border:0.4mm solid {col};opacity:.7"></div>'
+               + ("" if dark or n == 0 else '<div style="position:absolute;inset:16mm 16mm;background:rgba(246,238,220,.86);border-radius:1mm"></div>')
+               + f'<div style="position:absolute;inset:14mm;border:0.4mm solid {col};opacity:.7"></div>'
                f'<div class="fell" style="position:absolute;left:0;right:0;top:28mm;text-align:center;font-size:30pt;color:{"#f2e6cf" if dark else INK}">'
                f'{["Autumn Notes","Gathered Thoughts","Field Journal","Moonlit Pages"][n]}</div>{lines}', size)
 

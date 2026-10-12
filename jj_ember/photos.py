@@ -59,7 +59,7 @@ def hero(key, info, t, dark=False):
         return "".join(piece(c[f"card{i:02d}"], 470, r, x, y, i) for i, (r, x, y) in enumerate(
             [(-12, 120, 900), (-5, 470, 820), (3, 830, 800), (9, 1190, 860), (-7, 300, 1440), (5, 760, 1420), (11, 1220, 1460)]))
     if key == "kit":
-        return (page_img(t[2], 760, -7, 120, 780, 1) + page_img(t[5], 760, 6, 1120, 800, 2)
+        return (page_img(t[2], 760, -7, 120, 780, 1) + page_img(t[6], 760, 6, 1120, 800, 2)
                 + piece(c["env02"], 640, -6, 620, 1160, 4) + piece(c["poc11"], 560, 8, 1250, 1450, 5)
                 + piece(c["card00"], 400, -10, 150, 1520, 6) + piece(c["card02"], 400, 4, 470, 1600, 7))
     hero_ = [t[i] for i in info["hero"]]
@@ -78,25 +78,26 @@ def ribbon(text, bottom, bg=RUST, fg=CREAM):
     return (f'<div class="abs sc" style="left:0;right:0;bottom:{bottom}px;height:150px;background:{bg};color:{fg};display:flex;align-items:center;'
             f'justify-content:center;font-size:60px;letter-spacing:.04em;box-shadow:0 -8px 30px rgba(0,0,0,.3);z-index:60">{text}</div>')
 
+SAFE_T, SAFE_B = 250, 2250   # Etsy recadre la miniature au carré : tout ce qui compte reste entre ces deux lignes
+
 def main_variants(key, info):
     t = thumbs(key); title, sub, n1, n2 = info["title"].replace("<br>", " "), info["sub"], info["num"], info["unit"]
-    # V1 : table sombre, pièces en grand, plaque crème, bandeau des formats
+    zone = lambda sc: (f'<div class="abs" style="left:0;right:0;top:{SAFE_T+120}px;height:2000px;transform:scale({sc});transform-origin:50% 38%">'
+                       f'<div class="abs" style="left:0;right:0;top:-560px;height:2500px">{hero(key, info, t)}</div></div>')
+    # V1 : table sombre, plaque crème, bandeau des formats
     v1 = frame(paper_bg("p20_dark_plain") + '<div class="abs" style="inset:0;background:radial-gradient(ellipse at 50% 55%,transparent 40%,rgba(0,0,0,.55))"></div>'
-        + f'<div class="abs" style="left:0;right:0;top:330px;bottom:150px;transform:scale(1.08);transform-origin:50% 60%">{hero(key, info, t)}</div>'
-        + plaque(title, sub, 80) + badge(n1, n2, 1580, 1830, 360) + ribbon(FORMATS, 0))
-    # V2 : papier fougères plein cadre, titre dans un bandeau rouille en haut
+        + zone(0.98) + plaque(title, sub, SAFE_T + 40) + badge(n1, n2, 1520, 1600, 420) + ribbon(FORMATS, 2500 - SAFE_B))
+    # V2 : papier fougères plein cadre, bandeau rouille
     v2 = frame(paper_bg("p03_fern_forest_dark", 0.25)
-        + f'<div class="abs sc" style="left:0;right:0;top:0;height:470px;background:{RUST};color:{CREAM};text-align:center;padding-top:70px;'
+        + f'<div class="abs sc" style="left:0;right:0;top:{SAFE_T}px;height:420px;background:{RUST};color:{CREAM};text-align:center;padding-top:60px;'
           f'box-shadow:0 10px 40px rgba(0,0,0,.45);z-index:60"><div style="font-size:150px;line-height:1">{title}</div>'
           f'<div class="cor" style="font-size:66px;font-style:italic;color:#F6D9B4;margin-top:16px">{sub}</div></div>'
-        + f'<div class="abs" style="left:0;right:0;top:330px;bottom:0;transform:scale(1.05);transform-origin:50% 55%">{hero(key, info, t)}</div>'
-        + badge(n1, n2, 80, 1950, 340, CREAM, INK) + ribbon(FORMATS, 0, "#2B1D14"))
+        + zone(0.98) + badge(n1, n2, 80, 1640, 420, CREAM, INK) + ribbon(FORMATS, 2500 - SAFE_B, "#2B1D14"))
     # V3 : fond clair encadré de papiers de la collection, plaque centrale
     frame_papers = "".join(page_img(P.art(P.PAPER_KEYS[p]), 640, r, x, y, 0) for p, r, x, y in
-        [("p04", -12, -180, -160), ("p05", 9, 1560, -200), ("p10", 8, -220, 2050), ("p09", -10, 1560, 2050), ("p06", 5, -330, 1000), ("p17", -6, 1700, 950)])
+        [("p04", -12, -200, 60), ("p05", 9, 1560, 40), ("p10", 8, -240, 1700), ("p09", -10, 1580, 1700), ("p06", 5, -360, 900), ("p17", -6, 1740, 880)])
     v3 = frame(paper_bg("p19_tea_stained_plain") + frame_papers
-        + f'<div class="abs" style="left:0;right:0;top:300px;bottom:180px;transform:scale(.98);transform-origin:50% 60%">{hero(key, info, t)}</div>'
-        + plaque(title, sub, 110, 1420) + badge(n1, n2, 1560, 1950, 340) + ribbon(FORMATS, 0))
+        + zone(0.92) + plaque(title, sub, SAFE_T + 50, 1420) + badge(n1, n2, 1500, 1640, 420) + ribbon(FORMATS, 2500 - SAFE_B))
     return [v1, v2, v3]
 
 # ---------- 9 autres photos ----------
@@ -107,7 +108,7 @@ def what_you_get(key, info):
     return frame(paper_bg("p19_tea_stained_plain") +
         f'<div class="abs sc" style="left:0;right:0;top:110px;text-align:center;font-size:120px">What You Get</div>'
         f'<div class="abs" style="left:150px;right:150px;top:340px">{items}</div>'
-        + "".join(page_img(t[j], 430, [-5, 3, -2, 5][i], 170 + i * 420, 1880 - (i % 2) * 40, i) for i, j in enumerate(info["strip"]))
+        + "".join(page_img(t[j], 520, [-5, 3, -2, 5][i], 40 + i * 470, 1560 - (i % 2) * 50, i) for i, j in enumerate(info["strip"]))
     )
 
 def all_pages(key, info, start=2, n=None, title="Every Page Included"):
@@ -155,7 +156,18 @@ def spread(key, info):
     return frame(paper_bg("p20_dark_plain", 0.15) +
         "".join(page_img(t[j], 760, [-8, 6, -3, 9, -5, 4][i], [100, 1120, 620, 160, 1050, 600][i], [220, 260, 700, 1300, 1280, 1500][i], i)
                 for i, j in enumerate(info["spread"]))
-        + f'<div class="abs sc" style="left:0;right:0;bottom:80px;text-align:center;font-size:96px;color:{CREAM};text-shadow:0 4px 18px #000">{info["spread_title"]}</div>')
+        + f'<div class="abs sc" style="left:0;right:0;bottom:0;height:260px;display:flex;align-items:center;justify-content:center;font-size:96px;color:{CREAM};background:rgba(43,29,20,.88);z-index:99">{info["spread_title"]}</div>')
+
+def cut_spread(key, info, title):
+    c = CUT[key]
+    if key == "envelopes":
+        ps = [("env01", 720, -6, 90, 380), ("env04", 640, 5, 1180, 300), ("poc08", 760, 3, 560, 820), ("poc12", 680, -4, 1180, 1230),
+              ("env05", 760, -3, 80, 1300), ("poc10", 720, 6, 640, 1650)]
+    else:
+        ps = [(f"card{i:02d}", 460, r, x, y) for i, (r, x, y) in enumerate(
+            [(-8, 120, 330), (4, 590, 300), (-3, 1060, 340), (7, 1460, 380), (5, 200, 1050), (-6, 680, 1000), (3, 1150, 1060), (-9, 1500, 1120)])]
+    return frame(paper_bg("p20_dark_plain", 0.1) + "".join(piece(c[k], w, r, x, y, i) for i, (k, w, r, x, y) in enumerate(ps))
+        + f'<div class="abs sc" style="left:0;right:0;bottom:0;height:260px;display:flex;align-items:center;justify-content:center;font-size:96px;color:{CREAM};background:rgba(43,29,20,.88);z-index:99">{title}</div>')
 
 def collection(key, info):
     names = [("kit", "Junk Journal Kit"), ("papers", "Paper Pack"), ("envelopes", "Envelopes &amp; Pockets"), ("cards", "Journaling Cards")]
@@ -180,8 +192,8 @@ def good_to_know(key, info):
                  f'<div class="abs" style="left:170px;right:170px;top:420px">{items}</div>')
 
 PHOTO = {
- "kit": dict(title="Autumn Junk<br>Journal Kit", tl=2, sub="vintage botanical &#183; dark academia", num="120", unit="pieces", hero=[2, 22, 30],
-   get=["20 full-page vintage papers", "6 sheets of cut-apart ephemera", "12 envelope &amp; pocket templates", "62 journaling cards in 2 sizes",
+ "kit": dict(title="Autumn Junk<br>Journal Kit", tl=2, sub="vintage botanical &#183; dark academia", num="124", unit="pieces", hero=[2, 22, 30],
+   get=["20 full-page vintage papers", "6 sheets of cut-apart ephemera", "12 envelope &amp; pocket templates (20 pieces)", "62 journaling cards in 2 sizes",
         "4 lined journaling pages", "Start-here guide &amp; printing tips"], strip=[3, 24, 33, 42],
    files="4 PDF files: Part 1 + Part 2, in US Letter and A4", zoom=22, zpos="50% 30%",
    steps=[("Print", "on matte paper or light cardstock"), ("Cut", "papers, ephemera and cards"), ("Fold", "envelopes and pockets"), ("Create", "your autumn journal")],
@@ -191,7 +203,7 @@ PHOTO = {
    strip=[3, 6, 11, 14], files="2 PDF files: US Letter and A4", zoom=4, zpos="45% 40%",
    steps=[("Print", "full page, at 100%"), ("Cut", "pages, mats or tags"), ("Layer", "papers and ephemera"), ("Create", "your journal")],
    spread=[2, 5, 9, 12, 15, 18], spread_title="Layer Them Together"),
- "envelopes": dict(title="Envelopes<br>&amp; Pockets", tl=2, sub="printable junk journal templates", num="16", unit="pieces", hero=[2, 8, 12],
+ "envelopes": dict(title="Envelopes<br>&amp; Pockets", tl=2, sub="printable junk journal templates", num="20", unit="pieces", hero=[2, 8, 12],
    get=["6 envelopes in 3 shapes", "4 library card pockets", "2 tuck-in page pockets", "4 tall pocket tags", "4 belly bands", "Start-here guide &amp; folding tips"],
    strip=[3, 6, 9, 13], files="2 PDF files: US Letter and A4", zoom=3, zpos="50% 50%",
    steps=[("Print", "at 100% / actual size"), ("Cut", "on the solid line"), ("Fold", "on the dashed lines"), ("Glue", "the tabs and fill it")],
@@ -206,7 +218,7 @@ PHOTO = {
 def photo_set(key, skip_collection=False):
     info = PHOTO[key]
     extra = all_pages(key, info, 22, None, "Part 2 Pages") if key == "kit" else (
-        all_pages(key, info, 2, None, "All 20 Papers") if key == "papers" else spread(key, dict(info, spread=info["spread"][::-1], spread_title="Mix and Match")))
+        all_pages(key, info, 2, None, "All 20 Papers") if key == "papers" else cut_spread(key, info, "Cut Out, Ready to Fill" if key == "envelopes" else "Write, Tuck and Layer"))
     return [what_you_get(key, info), all_pages(key, info, 2, 20 if key == "kit" else None, "Part 1 Pages" if key == "kit" else "Every Page Included"),
             closeup(key, info), sizes(key, info), how_to(key, info), spread(key, info), (frame("") if skip_collection else collection(key, info)), extra, good_to_know(key, info)]
 

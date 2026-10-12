@@ -36,7 +36,7 @@ ART={
  "e04_mushrooms":(EL+"a cluster of brown woodland mushrooms with moss","2048x3072"),
  "e05_moth":(EL+"a single large brown and rust moth with open wings","2048x3072"),
  "e06_owl":(EL+"a small barn owl standing","2048x3072"),
- "e07_key_watch":(EL+"an antique brass skeleton key and a pocket watch","2048x3072"),
+ "e07_key_watch":(EL+"an antique brass skeleton key and a closed engraved brass pocket watch with the lid shut, no dial, no numbers visible","2048x3072"),
  "e08_crow":(EL+"a black crow standing in profile","2048x3072"),
  "e09_pumpkin":(EL+"a small heirloom pumpkin with leaves","2048x3072"),
  "e10_bottle":(EL+"an antique amber apothecary bottle with a cork and dried lavender","2048x3072"),

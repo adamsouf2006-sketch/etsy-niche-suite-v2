@@ -18,7 +18,7 @@ TEMPLATE = """<!doctype html><html><head><meta charset="utf-8"><style>__FONTS__
 <div id="s1" class="abs" style="inset:0">
   <div id="t1" class="abs sc" style="left:0;right:0;top:70px;text-align:center;font-size:84px;line-height:1.02">__TITLE__</div>
   <div id="t2" class="abs cor" style="left:0;right:0;top:__SUBTOP__px;text-align:center;font-size:40px;font-style:italic;color:#9A4A24">__SUB__</div>
-  <div id="hero" class="abs" style="left:0;right:0;top:0;bottom:0"><div style="position:absolute;inset:0;transform:translateY(-150px) scale(.93);transform-origin:50% 40%">__HERO__</div></div>
+  <div id="hero" class="abs" style="left:0;right:0;top:0;bottom:0"><div style="position:absolute;inset:0;transform:translateY(-40px) scale(.8);transform-origin:50% 30%">__HERO__</div></div>
   <div id="badge" class="abs" style="left:820px;top:330px;width:200px;height:200px;border-radius:50%;background:#9A4A24;color:#F4EAD6;display:flex;flex-direction:column;align-items:center;justify-content:center;border:5px double #F4EAD6;box-shadow:0 8px 20px rgba(0,0,0,.3)"><div class="fell" style="font-size:76px;line-height:1">__NUM__</div><div class="sc" style="font-size:24px">__UNIT__</div></div>
 </div>
 <div id="s2" class="abs" style="inset:0;opacity:0"><div class="abs" style="inset:0;background:rgba(244,234,214,.5)"></div>__GRID__<div class="abs sc" style="left:0;right:0;bottom:40px;text-align:center;font-size:52px;text-shadow:0 0 18px #F4EAD6">__COUNT__</div></div>
@@ -61,9 +61,9 @@ window.seek = (t) => {
 };
 </script></body></html>"""
 
-ARGS = {"kit": ["120 matching pieces", "Envelopes, pockets &amp; cards", "Papers &amp; cut-apart ephemera"],
+ARGS = {"kit": ["124 matching pieces", "Envelopes, pockets &amp; cards", "Papers &amp; cut-apart ephemera"],
         "papers": ["20 coordinated papers", "Botanicals, patterns &amp; solids", "Full bleed, high resolution"],
-        "envelopes": ["16 pieces to cut &amp; fold", "Solid line cut, dashed line fold", "Fits 2.5 x 3.5 in cards"],
+        "envelopes": ["20 pieces to cut &amp; fold", "Solid line cut, dashed line fold", "Fits 2.5 x 3.5 in cards"],
         "cards": ["62 journaling cards", "Illustrated &amp; lined", "True size on both papers"]}
 
 def html(key):
@@ -76,7 +76,7 @@ def html(key):
     grid = "".join(f'<img class="pg cell" src="{u}" style="left:{90 + (i % cols) * 235}px;top:{60 + (i // cols) * 290}px;width:{w}px">' for i, u in enumerate(pages_[:n]))
     zf = sorted(os.listdir(os.path.join(OUT, key, "pages_letter")))[info["zoom"]]
     args = "".join(f'<div class="arg abs sc" style="left:0;right:0;top:{170 + i * 170}px;text-align:center;font-size:62px">{a}</div>' for i, a in enumerate(ARGS[key]))
-    count = {"kit": "120 pieces", "papers": "20 papers", "envelopes": "12 templates", "cards": "62 cards"}[key]
+    count = {"kit": "124 pieces", "papers": "20 papers", "envelopes": "12 templates", "cards": "62 cards"}[key]
     return (TEMPLATE.replace("__FONTS__", P.FONT_CSS).replace("__BG__", P.art("p19_tea_stained_plain"))
             .replace("__TITLE__", info["title"]).replace("__SUB__", info["sub"]).replace("__SUBTOP__", str(70 + info["tl"] * 88 + 10))
             .replace("__HERO__", hero).replace("__NUM__", info["num"]).replace("__UNIT__", info["unit"])
