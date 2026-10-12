@@ -43,3 +43,11 @@ Critère : plusieurs annonces de ≤ 180 j avec ≥ 3 vues/j **et** des avis (ve
 - **Partiel : Paycheck Budget Spreadsheet**. 2 annonces récentes vendent (175 j/13 avis/22 €, 30 j/2 avis/8 $). Oakfold a déjà un budget annuel.
 - Signaux isolés (1 seule annonce, non validés) : annual finance planner, rental property spreadsheet, landlord forms, inventory spreadsheet, savings challenge.
 - Aucune vente récente : DJ, esthéticienne, massage, photographie, event planner, daycare, cleaning bundle, P&L, net worth, sinking funds.
+
+## Airbnb : analyse approfondie (2026-10-12, `suivi24h/airbnb.py`, ~70 requêtes en cache)
+**Verdict : NON validé, niche saturée.**
+- 859 annonces numériques sur 7 recherches Airbnb ; **423 créées dans les 180 derniers jours**. Seulement 13 font ≥ 5 vues/j.
+- Avis des 30 meilleures annonces récentes sur les 30 derniers jours : **~11 au total** (≈ 110 ventes/mois pour tout le marché récent). Un seul vrai gagnant (21 avis) ; tous les autres ont 0 à 4 avis.
+- Les ventes vont à de grosses boutiques déjà établies : Templates4branding (43 720 ventes), DesignByMinsiPrincy (36 066), LuvionStudio (11 511), ByPantherStudio (8 528).
+- Guerre des prix : 3,99 $, 1,80 $, 0,87 $.
+- Langues : demande quasi nulle en français (37 annonces, ≤ 1 vue/j), en espagnol et en allemand.
