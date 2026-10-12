@@ -61,7 +61,7 @@ window.seek = (t) => {
 };
 </script></body></html>"""
 
-ARGS = {"kit": ["52 matching pages", "Envelopes, pockets &amp; cards", "Papers &amp; cut-apart ephemera"],
+ARGS = {"kit": ["120 matching pieces", "Envelopes, pockets &amp; cards", "Papers &amp; cut-apart ephemera"],
         "papers": ["20 coordinated papers", "Botanicals, patterns &amp; solids", "Full bleed, high resolution"],
         "envelopes": ["16 pieces to cut &amp; fold", "Solid line cut, dashed line fold", "Fits 2.5 x 3.5 in cards"],
         "cards": ["62 journaling cards", "Illustrated &amp; lined", "True size on both papers"]}
@@ -76,7 +76,7 @@ def html(key):
     grid = "".join(f'<img class="pg cell" src="{u}" style="left:{90 + (i % cols) * 235}px;top:{60 + (i // cols) * 290}px;width:{w}px">' for i, u in enumerate(pages_[:n]))
     zf = sorted(os.listdir(os.path.join(OUT, key, "pages_letter")))[info["zoom"]]
     args = "".join(f'<div class="arg abs sc" style="left:0;right:0;top:{170 + i * 170}px;text-align:center;font-size:62px">{a}</div>' for i, a in enumerate(ARGS[key]))
-    count = {"kit": "52 pages", "papers": "20 papers", "envelopes": "12 templates", "cards": "62 cards"}[key]
+    count = {"kit": "120 pieces", "papers": "20 papers", "envelopes": "12 templates", "cards": "62 cards"}[key]
     return (TEMPLATE.replace("__FONTS__", P.FONT_CSS).replace("__BG__", P.art("p19_tea_stained_plain"))
             .replace("__TITLE__", info["title"]).replace("__SUB__", info["sub"]).replace("__SUBTOP__", str(70 + info["tl"] * 88 + 10))
             .replace("__HERO__", hero).replace("__NUM__", info["num"]).replace("__UNIT__", info["unit"])

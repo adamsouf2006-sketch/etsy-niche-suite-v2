@@ -67,28 +67,36 @@ def hero(key, info, t, dark=False):
 
 CUT = {}
 # ---------- photo principale : 3 variantes ----------
+def plaque(title, sub, top, w=1500, dark=False):
+    bg, fg, ac = ("#2B1D14", CREAM, "#E2B887") if dark else ("#F6EEDC", INK, RUST)
+    return (f'<div class="abs" style="left:{(2000-w)//2}px;top:{top}px;width:{w}px;padding:46px 40px 40px;background:{bg};border:5px solid {ac};'
+            f'outline:3px solid {bg};outline-offset:10px;box-shadow:0 20px 50px rgba(0,0,0,.45);text-align:center;z-index:60">'
+            f'<div class="sc" style="font-size:150px;line-height:1;color:{fg}">{title}</div>'
+            f'<div class="cor" style="font-size:66px;font-style:italic;color:{ac};margin-top:18px">{sub}</div></div>')
+
+def ribbon(text, bottom, bg=RUST, fg=CREAM):
+    return (f'<div class="abs sc" style="left:0;right:0;bottom:{bottom}px;height:150px;background:{bg};color:{fg};display:flex;align-items:center;'
+            f'justify-content:center;font-size:60px;letter-spacing:.04em;box-shadow:0 -8px 30px rgba(0,0,0,.3);z-index:60">{text}</div>')
+
 def main_variants(key, info):
-    t = thumbs(key); hero = [t[i] for i in info["hero"]]
-    title, sub, n1, n2 = info["title"], info["sub"], info["num"], info["unit"]
-    v1 = frame(paper_bg("p19_tea_stained_plain") +
-        f'<div class="abs sc" style="left:0;right:0;top:90px;text-align:center;font-size:150px;line-height:1.02;color:{INK}">{title}</div>'
-        f'<div class="abs cor" style="left:0;right:0;top:{90+info["tl"]*155+20}px;text-align:center;font-size:72px;font-style:italic;color:{RUST}">{sub}</div>'
-        + hero(key, info, t)
-        + badge(n1, n2, 1560, 640)
-        + f'<div class="abs sc" style="left:0;right:0;bottom:70px;text-align:center;font-size:62px;color:{INK}">{FORMATS}</div>')
-    v2 = frame(paper_bg("p20_dark_plain") +
-        f'<div class="abs sc" style="left:0;right:0;top:80px;text-align:center;font-size:150px;line-height:1.02;color:{CREAM}">{title}</div>'
-        f'<div class="abs cor" style="left:0;right:0;top:{80+info["tl"]*155+20}px;text-align:center;font-size:72px;font-style:italic;color:#E2B887">{sub}</div>'
-        + hero(key, info, t, True)
-        + badge(n1, n2, 110, 1880, 340, "#E2B887", INK)
-        + f'<div class="abs sc" style="left:0;right:0;bottom:70px;text-align:center;font-size:62px;color:{CREAM}">{FORMATS}</div>')
-    v3 = frame(f'<div class="abs" style="inset:0;background:{CREAM}"></div>'
-        f'<div class="abs" style="left:0;right:0;top:0;height:{info["tl"]*155+330}px;background:{RUST}"></div>'
-        f'<div class="abs sc" style="left:0;right:0;top:90px;text-align:center;font-size:150px;line-height:1.02;color:{CREAM}">{title}</div>'
-        f'<div class="abs cor" style="left:0;right:0;top:{90+info["tl"]*155+20}px;text-align:center;font-size:72px;font-style:italic;color:#F6D9B4">{sub}</div>'
-        + hero(key, info, t)
-        + badge(n1, n2, 1580, 2010, 320)
-        + f'<div class="abs sc" style="left:0;right:0;bottom:70px;text-align:center;font-size:62px;color:{INK}">{FORMATS}</div>')
+    t = thumbs(key); title, sub, n1, n2 = info["title"].replace("<br>", " "), info["sub"], info["num"], info["unit"]
+    # V1 : table sombre, pièces en grand, plaque crème, bandeau des formats
+    v1 = frame(paper_bg("p20_dark_plain") + '<div class="abs" style="inset:0;background:radial-gradient(ellipse at 50% 55%,transparent 40%,rgba(0,0,0,.55))"></div>'
+        + f'<div class="abs" style="left:0;right:0;top:330px;bottom:150px;transform:scale(1.08);transform-origin:50% 60%">{hero(key, info, t)}</div>'
+        + plaque(title, sub, 80) + badge(n1, n2, 1580, 1830, 360) + ribbon(FORMATS, 0))
+    # V2 : papier fougères plein cadre, titre dans un bandeau rouille en haut
+    v2 = frame(paper_bg("p03_fern_forest_dark", 0.25)
+        + f'<div class="abs sc" style="left:0;right:0;top:0;height:470px;background:{RUST};color:{CREAM};text-align:center;padding-top:70px;'
+          f'box-shadow:0 10px 40px rgba(0,0,0,.45);z-index:60"><div style="font-size:150px;line-height:1">{title}</div>'
+          f'<div class="cor" style="font-size:66px;font-style:italic;color:#F6D9B4;margin-top:16px">{sub}</div></div>'
+        + f'<div class="abs" style="left:0;right:0;top:330px;bottom:0;transform:scale(1.05);transform-origin:50% 55%">{hero(key, info, t)}</div>'
+        + badge(n1, n2, 80, 1950, 340, CREAM, INK) + ribbon(FORMATS, 0, "#2B1D14"))
+    # V3 : fond clair encadré de papiers de la collection, plaque centrale
+    frame_papers = "".join(page_img(P.art(P.PAPER_KEYS[p]), 640, r, x, y, 0) for p, r, x, y in
+        [("p04", -12, -180, -160), ("p05", 9, 1560, -200), ("p10", 8, -220, 2050), ("p09", -10, 1560, 2050), ("p06", 5, -330, 1000), ("p17", -6, 1700, 950)])
+    v3 = frame(paper_bg("p19_tea_stained_plain") + frame_papers
+        + f'<div class="abs" style="left:0;right:0;top:300px;bottom:180px;transform:scale(.98);transform-origin:50% 60%">{hero(key, info, t)}</div>'
+        + plaque(title, sub, 110, 1420) + badge(n1, n2, 1560, 1950, 340) + ribbon(FORMATS, 0))
     return [v1, v2, v3]
 
 # ---------- 9 autres photos ----------
@@ -172,7 +180,7 @@ def good_to_know(key, info):
                  f'<div class="abs" style="left:170px;right:170px;top:420px">{items}</div>')
 
 PHOTO = {
- "kit": dict(title="Autumn Junk<br>Journal Kit", tl=2, sub="vintage botanical &#183; dark academia", num="52", unit="pages", hero=[2, 22, 30],
+ "kit": dict(title="Autumn Junk<br>Journal Kit", tl=2, sub="vintage botanical &#183; dark academia", num="120", unit="pieces", hero=[2, 22, 30],
    get=["20 full-page vintage papers", "6 sheets of cut-apart ephemera", "12 envelope &amp; pocket templates", "62 journaling cards in 2 sizes",
         "4 lined journaling pages", "Start-here guide &amp; printing tips"], strip=[3, 24, 33, 42],
    files="4 PDF files: Part 1 + Part 2, in US Letter and A4", zoom=22, zpos="50% 30%",
@@ -244,3 +252,19 @@ def run(key, skip_collection=False):
 
 if __name__ == "__main__":
     for k in (sys.argv[1:] or list(PHOTO)): run(k)
+
+
+def board(key):
+    """Planche : nos 3 variantes (cadre rouge) au milieu des 10 miniatures concurrentes, en tuiles de 300 px."""
+    cj = json.load(open(os.path.join(H, "concurrents", "concurrents.json")))[key][:10]
+    ours = [os.path.join(OUT, key, "photos", f"main_v{i}.jpg") for i in (1, 2, 3)]
+    tiles = [(os.path.join(H, "concurrents", c["f"]), False) for c in cj]
+    for i, o in enumerate(ours): tiles.insert([2, 6, 10][i], (o, True))
+    W, Hh, cols = 300, 300, 5
+    c = Image.new("RGB", (cols * (W + 16) + 16, ((len(tiles) + cols - 1) // cols) * (Hh + 16) + 16), "white")
+    from PIL import ImageOps, ImageDraw
+    for i, (f, mine) in enumerate(tiles):
+        im = ImageOps.fit(Image.open(f).convert("RGB"), (W, Hh)); x, y = 16 + (i % cols) * (W + 16), 16 + (i // cols) * (Hh + 16)
+        c.paste(im, (x, y))
+        if mine: ImageDraw.Draw(c).rectangle([x - 6, y - 6, x + W + 5, y + Hh + 5], outline=(210, 30, 30), width=6)
+    out = os.path.join(OUT, key, "photos", "board.jpg"); c.save(out, quality=90); return out

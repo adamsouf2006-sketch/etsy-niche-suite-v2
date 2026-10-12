@@ -88,6 +88,8 @@ for key, exp in EXPECT.items():
     if f"You receive {['', '', '2', '', '4'][exp['files']]} PDF files" not in desc: fail(f"{key} description : nombre de fichiers")
     for num, lab in [("62", "journaling cards"), ("16", "pieces")]:
         if key in ("kit", "cards") and lab == "journaling cards" and f"{num} journaling cards" not in desc: fail(f"{key} description : 62 cartes")
+    if key == "kit" and "120 pieces in total" not in desc: fail("kit description : 120 pièces")
+    if key == "kit" and 20 + 18 + n_pieces + n_cards + 4 != 120: fail("kit : le total de 120 pièces ne correspond plus au contenu")
     if key == "envelopes" and "16 pieces" not in desc: fail("envelopes description : 16 pièces")
     if key in ("kit",) and "(16 pieces)" not in desc: fail("kit description : 16 pièces")
     if key in ("kit", "papers") and "20 full-page papers" not in desc: fail(f"{key} description : 20 papiers")

@@ -26,7 +26,7 @@ LISTINGS = {
 WHO IT'S FOR
 Junk journalers, scrapbookers and paper crafters who love vintage botanicals, dark academia and warm fall colors.
 
-WHAT YOU GET: 52 printable pages in US Letter and A4
+WHAT YOU GET: 52 printable pages in US Letter and A4, 120 pieces in total
 1. 20 full-page papers: botanicals, ledger and sheet music, owl moon, fern hollow, damask, plaid and 2 solids
 2. 6 sheets of cut-apart ephemera: 18 pieces in 14 illustrated designs (oak, maple, fern, mushrooms, moth, owl, crow, key, apothecary bottle, wreath and more)
 3. 12 envelope and pocket templates (16 pieces): 6 envelopes in 3 shapes, 4 library card pockets, 2 tuck-in page pockets, 4 tall tags, 4 belly bands
