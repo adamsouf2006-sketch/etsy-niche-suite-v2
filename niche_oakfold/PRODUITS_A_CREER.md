@@ -35,3 +35,11 @@ Sur 96 annonces, seulement 2 ont ≤ 120 jours, et 0 avis. Le meilleur de chaque
 
 Gagnants récents liés à Oakfold (BOUTIQUES_NUMERIQUES_2MOIS.md) : BudgetwithRozCanada (25 j, 2 fiches, ~137 ventes/mois, *Annual Finance Planner Spreadsheet*),
 Smarbudget (3 j, 4 fiches, ~75/mois), XclusivetemplatesArt (29 j, ~121/mois, budget paycheck Google Sheets).
+
+## Validation multi-annonces (2026-10-12, `suivi24h/multi.py`, 30 mots-clés)
+Critère : plusieurs annonces de ≤ 180 j avec ≥ 3 vues/j **et** des avis (ventes).
+
+- **Validé : Airbnb Welcome Book (Canva)**. 5 annonces récentes vendent : 153 j/60 vues/j/21 avis, 88 j/2 avis, 109 j/4 avis (version espagnole), 114 j/2 avis, 1 j/4 avis. Prix 2–7 $.
+- **Partiel : Paycheck Budget Spreadsheet**. 2 annonces récentes vendent (175 j/13 avis/22 €, 30 j/2 avis/8 $). Oakfold a déjà un budget annuel.
+- Signaux isolés (1 seule annonce, non validés) : annual finance planner, rental property spreadsheet, landlord forms, inventory spreadsheet, savings challenge.
+- Aucune vente récente : DJ, esthéticienne, massage, photographie, event planner, daycare, cleaning bundle, P&L, net worth, sinking funds.
