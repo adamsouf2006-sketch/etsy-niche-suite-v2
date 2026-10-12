@@ -36,3 +36,34 @@ Source 2 : validation API (`suivi24h/couture.py`, `couture.json`) : ≥ 3 boutiq
 | Teddy bear sewing pattern | 30 619 | 3 | 8 |
 | Felt food sewing pattern | 2 150 | 2 | 9 (non validé) |
 Jeunes boutiques memory bear : SewinggiftCrafts 52 j / 347 ventes/mois, MahaPatterns 11 j / 235 ventes/mois.
+
+## Nouvelles boutiques ≤ 60 j, ≥ 50 ventes/mois (2026-10-12, `suivi24h/young.py`, 544 requêtes, hors religion/fêtes/licences, absentes de BOUTIQUES_NUMERIQUES_2MOIS.md)
+
+| Ventes/mois | Ventes | Âge | Fiches | Boutique | Produit phare |
+|---|---|---|---|---|---|
+| 956 | 1667 | 52 j | 273 | [OneQuietEvening](https://www.etsy.com/shop/OneQuietEvening) | Bag Sewing Pattern PDF, 3 Sizes, Flap Shoulder Bag Pattern, Crossbody Purse, Beg |
+| 498 | 700 | 42 j | 429 | [CERISAPATTERN](https://www.etsy.com/shop/CERISAPATTERN) | Baby Kimono Romper Sewing Pattern PDF | Long Sleeve Wrap Jumpsuit | Quilted Gauz |
+| 288 | 386 | 40 j | 31 | [CrafelloDesigns](https://www.etsy.com/shop/CrafelloDesigns) | 1400+ Functional STL Files, Home & Decor STL Bundle ,Organizer ,Gadgets, Stands  |
+| 205 | 41 | 6 j | 16 | [AurelleDesignsCo](https://www.etsy.com/shop/AurelleDesignsCo) | Bowl Cozy Sewing Pattern PDF, 3 Sizes, Quilted Fabric Bowl Holder, A4 Letter A0 |
+| 200 | 337 | 51 j | 14 | [FayeNorthStudio](https://www.etsy.com/shop/FayeNorthStudio) | Sage Green Ivory Floral Wedding Website Canva Template: RSVP, Countdown Timer, M |
+| 191 | 277 | 44 j | 48 | [WaheedstudioDesign](https://www.etsy.com/shop/WaheedstudioDesign) | Quilted Star Quilt Pattern PDF, Sawtooth Star Bedspread Pattern, Red Green Farmh |
+| 158 | 220 | 42 j | 59 | [LittleBirdsWants](https://www.etsy.com/shop/LittleBirdsWants) | Jungle Baby Quilt Pattern PDF, Safari Animal Applique Quilt, Nursery Crib Quilt  |
+| 153 | 227 | 45 j | 28 | [CozySewPattern](https://www.etsy.com/shop/CozySewPattern) | Goose Lovey Sewing Pattern PDF, Baby Comforter Pattern, Digital Download, Full V |
+| 149 | 260 | 52 j | 68 | [MssAbbasiDesign](https://www.etsy.com/shop/MssAbbasiDesign) | Tablecloth Crochet Pattern Pdf Bundle 100+ | Vintage Filet Crochet Patterns, Lac |
+| 146 | 109 | 22 j | 128 | [YarnBloomPatternsCo](https://www.etsy.com/shop/YarnBloomPatternsCo) | Flower Pan Protector Crochet Pattern PDF, 4 Graduated Sizes, Cotton Cookware Sep |
+| 108 | 171 | 48 j | 41 | [DigitalcraftarStudio](https://www.etsy.com/shop/DigitalcraftarStudio) | 100+ Editable Flyer PSD Bundle | Business, Event, Social Media Templates (Digita |
+| 89 | 173 | 58 j | 49 | [FIXFLYSTUDIO](https://www.etsy.com/shop/FIXFLYSTUDIO) | 41 Glitter Sparkle Procreate Brushes, Shimmer Glow Texture Set (Digital Download |
+| 88 | 95 | 32 j | 61 | [YarnMallowDesign](https://www.etsy.com/shop/YarnMallowDesign) | Ponytail Beanie Crochet Pattern PDF, Ribbed Messy Bun Hat, 3 Adult Sizes, Winter |
+| 85 | 112 | 40 j | 33 | [BrightSewPattern](https://www.etsy.com/shop/BrightSewPattern) | Standing Pencil Pouch Sewing Pattern PDF, Pencil Case Pattern, Step by Step Phot |
+| 85 | 100 | 35 j | 40 | [LoopArtSociety](https://www.etsy.com/shop/LoopArtSociety) | Yoshi Amigurumi Crochet Pattern PDF, Green Dinosaur Plush Toy (Digital Download) |
+| 83 | 149 | 54 j | 39 | [DigitalValleyHub](https://www.etsy.com/shop/DigitalValleyHub) | 21,000+ Kids Worksheets Bundle | Homeschool & Classroom Printable Mega Library | |
+| 80 | 146 | 54 j | 49 | [EraSewingCo](https://www.etsy.com/shop/EraSewingCo) | Culotte Pants Sewing Pattern PDF | Wide Leg Pants Pattern | Women Trousers DIY | |
+| 75 | 48 | 19 j | 1137 | [CreatorForgeTr](https://www.etsy.com/shop/CreatorForgeTr) | Cozy Book Lover Printable Stickers, 24 Watercolor PNG Designs and PDF Sheets |
+| 72 | 106 | 44 j | 9 | [SewingGiftsCo](https://www.etsy.com/shop/SewingGiftsCo) | Fabric Baby and Child Crown Sewing Pattern PDF, Kids Birthday Crown Pattern, Tod |
+| 68 | 16 | 7 j | 33 | [YarnThreadCo](https://www.etsy.com/shop/YarnThreadCo) | Girls Dress Sewing Pattern PDF, Puff Sleeve Dress Pattern, Sizes 2Y-12Y, Beginne |
+| 66 | 102 | 46 j | 60 | [BrushesCorner](https://www.etsy.com/shop/BrushesCorner) | 1167+ Procreate Brushes Mega Bundle | Ultimate Brush Pack for Digital Art, Natur |
+| 60 | 13 | 7 j | 4 | [LucySewingStudio](https://www.etsy.com/shop/LucySewingStudio) | Chicken Pot Holder Sewing Pattern PDF | Crochet-Free Chicken Kitchen Holder | Fa |
+| 58 | 33 | 17 j | 16 | [RolyPattern](https://www.etsy.com/shop/RolyPattern) | Star Bag Sewing Pattern PDF, Reversible Star Tote with Hearts, 3 Sizes, Beginner |
+| 53 | 31 | 18 j | 33 | [BhaowMixStudio](https://www.etsy.com/shop/BhaowMixStudio) | Woodland Satchel Bag Knitting Pattern PDF, Lace Shoulder Tote, Cotton Market Sho |
+| 51 | 55 | 32 j | 4 | [DesignByAbdal](https://www.etsy.com/shop/DesignByAbdal) | Bowl Cozy Sewing Pattern PDF, Microwave Bowl Cozy, Soup Bowl Cozy, Quilted Bowl  |
+| 51 | 9 | 5 j | 100 | [ProCrochetPatternPdf](https://www.etsy.com/shop/ProCrochetPatternPdf) | Cocker Spaniel Crochet Pattern PDF, Amigurumi Dog Pattern, Curly Ear Puppy Tutor |
