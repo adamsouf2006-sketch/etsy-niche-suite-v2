@@ -20,3 +20,18 @@ Ratio = vues/mois ÷ résultats (plus haut = plus de demande par concurrent). Av
 | 12 | Notary Forms (journal + invoice) | 1 133 | 2 135 | 1,9 | 4/15/1 |
 
 Écartés (demande faible ou trop de concurrence) : pressure washing estimate, mobile detailing, personal trainer forms, hair salon consultation, therapist intake, reiki forms, airbnb cleaning checklist.
+
+## Vérification ancienneté (2026-10-12, 96 annonces suivies, `suivi24h/age.py`)
+Ventes/mois estimées = avis × 10 ÷ âge. **Correction : les niches 1–10 sont de vieilles niches lentes.**
+Sur 96 annonces, seulement 2 ont ≤ 120 jours, et 0 avis. Le meilleur de chaque niche fait 1 à 7 ventes/mois, avec des annonces de 2 à 4 ans.
+
+| Mot-clé | Âge mini | Meilleure annonce |
+|---|---|---|
+| airbnb welcome book | 153 j | **~41 ventes/mois à 153 j (60 vues/j)** → seule niche avec un gagnant récent |
+| notary forms | 467 j | ~7/mois |
+| massage intake form | 87 j | ~6,6/mois (annonce de 1 002 j) |
+| event planner / dog walking contract | 340 / 483 j | ~4/mois |
+| dj, body sculpting, microblading, tutoring, brow, lash, landscaping | — | ≤ 3/mois |
+
+Gagnants récents liés à Oakfold (BOUTIQUES_NUMERIQUES_2MOIS.md) : BudgetwithRozCanada (25 j, 2 fiches, ~137 ventes/mois, *Annual Finance Planner Spreadsheet*),
+Smarbudget (3 j, 4 fiches, ~75/mois), XclusivetemplatesArt (29 j, ~121/mois, budget paycheck Google Sheets).
