@@ -1,0 +1,6 @@
+art/*.png
+art/*.json
+art/trim/
+art/rejets/
+out/
+__pycache__/
