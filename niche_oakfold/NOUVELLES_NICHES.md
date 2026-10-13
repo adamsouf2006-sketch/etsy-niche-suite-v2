@@ -83,3 +83,10 @@ Jeunes boutiques memory bear : SewinggiftCrafts 52 j / 347 ventes/mois, MahaPatt
 | **Patrons couture : ours / peluches** (+ memory bear : 26 boutiques, 92 avis 30 j) | 6 | 5 | 9 | 6,88 € |
 | Tableurs / planners (niche Oakfold) | 1 | 1 | 4 | 5,27 € |
 Scan niche Oakfold (formulaires, contrats, tableurs) : 1 668 boutiques candidates → 1 seule jeune boutique ≥ 50 ventes/mois (TrueVanta, reçus).
+
+## Produits 100 % numériques ≥ 5 € (2026-10-13, `suivi24h/digital5.py`)
+Règle : ≥ 3 boutiques distinctes, annonces ≤ 120 j à ≥ 5 €, vendues dans les 30 j, hors religion/fêtes/PLR.
+- **VALIDÉ : site de mariage modifiable sous Canva (avec RSVP)** — 6 boutiques, 20 avis 30 j, **prix ~23 à 31 €** (Ivory Monogram 84 j : 12 avis 30 j à 30 €). Jeune boutique FayeNorthStudio : 200 ventes/mois.
+- VALIDÉ : planner numérique 2027 GoodNotes — 4 boutiques, 8 avis 30 j, 5 à 10 € (saison oct.–janv.).
+- VALIDÉ (faible) : templates Instagram Canva — 3 boutiques, 3 avis 30 j.
+- Non validés (1 à 2 boutiques) : bundle bullet journal 2027 (1 boutique, 19 avis 30 j, 8,45 €), reading journal (2 boutiques, 13 avis), Notion, GoodNotes, journal bundles. Budget spreadsheet ≥ 5 € : 0.
