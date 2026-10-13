@@ -67,3 +67,19 @@ Jeunes boutiques memory bear : SewinggiftCrafts 52 j / 347 ventes/mois, MahaPatt
 | 53 | 31 | 18 j | 33 | [BhaowMixStudio](https://www.etsy.com/shop/BhaowMixStudio) | Woodland Satchel Bag Knitting Pattern PDF, Lace Shoulder Tote, Cotton Market Sho |
 | 51 | 55 | 32 j | 4 | [DesignByAbdal](https://www.etsy.com/shop/DesignByAbdal) | Bowl Cozy Sewing Pattern PDF, Microwave Bowl Cozy, Soup Bowl Cozy, Quilted Bowl  |
 | 51 | 9 | 5 j | 100 | [ProCrochetPatternPdf](https://www.etsy.com/shop/ProCrochetPatternPdf) | Cocker Spaniel Crochet Pattern PDF, Amigurumi Dog Pattern, Curly Ear Puppy Tutor |
+
+## Analyse des produits des jeunes boutiques (2026-10-13, `suivi24h/young_products.py`, ~690 requêtes)
+194 boutiques ≤ 2 mois à fort volume (hors religion, fêtes, licences) → 7 707 annonces → 300 annonces ≥ 5 € les plus vues → avis 30 j.
+
+| Type (annonces ≥ 5 €) | Annonces | Boutiques | Avis 30 j | Prix médian |
+|---|---|---|---|---|
+| Fichiers STL (impression 3D) | 47 | 9 | 43 | 7,74 € |
+| **Patrons couture : sacs, trousses, rangement** | 31 | **13** | 33 | **9,99 €** |
+| Patrons crochet : amigurumi | 34 | 14 | 29 | 7,14 € |
+| **Patrons couture : bébé** (gigoteuse, barboteuse, doudou, tapis à langer) | 19 | 7 | 22 | **8,59 €** |
+| Laser / SVG / broderie | 11 | 5 | 19 | 11,76 € |
+| Patrons crochet : plaids | 12 | 6 | 18 | 6,87 € |
+| Patrons couture : vêtements | 31 | 9 | 14 | 12,03 € |
+| **Patrons couture : ours / peluches** (+ memory bear : 26 boutiques, 92 avis 30 j) | 6 | 5 | 9 | 6,88 € |
+| Tableurs / planners (niche Oakfold) | 1 | 1 | 4 | 5,27 € |
+Scan niche Oakfold (formulaires, contrats, tableurs) : 1 668 boutiques candidates → 1 seule jeune boutique ≥ 50 ventes/mois (TrueVanta, reçus).
