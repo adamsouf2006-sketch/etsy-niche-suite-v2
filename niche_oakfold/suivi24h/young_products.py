@@ -1,6 +1,6 @@
 # Produits des jeunes boutiques à fort volume : ventes estimées par annonce, prix >= 5 €, hors religion/fêtes/licences
 import json,time,urllib.parse,re,collections,os
-exec(open('airbnb.py').read().split('KW=')[0])
+from api2 import G,N,save
 now=time.time()
 EUR={'EUR':1,'USD':0.86,'GBP':1.15,'CAD':0.62,'AUD':0.57,'NZD':0.52,'INR':0.0103,'TRY':0.021,'PKR':0.0031,'MAD':0.093,'PHP':0.015,'IDR':0.000053,'MYR':0.2,'BRL':0.16,'MXN':0.047,'SGD':0.66,'CHF':1.07,'SEK':0.088,'NOK':0.085,'DKK':0.134,'PLN':0.23,'ILS':0.24,'ZAR':0.05,'HKD':0.11,'JPY':0.0058,'VND':0.000034}
 REL=r"christmas|xmas|noel|santa|nativity|easter|halloween|spooky|witch|pagan|occult|tarot|zodiac|bible|christian|church|faith|jesus|god|prayer|ramadan|eid|hanukkah|diwali|lds|angel|saint|holy|advent|gnome|thanksgiving|skull|ghost|haunted|reindeer|snowman|ornament|valentine|krampus|grinch|jack o lantern|trick or treat"
@@ -32,3 +32,4 @@ json.dump(top,open("young_products.json","w"),indent=1)
 print("annonces >=5 EUR analysees",len(top),"req",N[0])
 for p in sorted(top,key=lambda p:-p["av30"])[:80]:
     print("%3d av30 %4d av %6.2f€ %3dj %6.1fv/j %-22s | %s"%(p["av30"],p["av"],p["eur"],p["age"],p["vj"],p["shop"],p["t"]))
+save()
