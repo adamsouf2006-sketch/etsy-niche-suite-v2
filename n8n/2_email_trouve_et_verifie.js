@@ -77,6 +77,11 @@ if (!modeTest && statut !== 'erreur' && statut !== 'credits_epuises') {
 // En réel : seules les adresses trouvées, vérifiées et cohérentes sont retenues. En test : tout est retenu pour contrôle.
 const retenu = creditsEpuises ? false : (modeTest ? true : ok);
 const total = dejaRetenus + (retenu ? 1 : 0);
+// Crédits Scalelist consommés aujourd'hui : 1 par e-mail trouvé (quel que soit son statut)
+const creditsAvant = moi.isExecuted ? (Number(moi.last().json.credits_utilises) || 0) : 0;
+const creditsUtilises = creditsAvant + (email ? 1 : 0);
+const soldeDepart = Number(c.credits_scalelist);
+const limiteCredits = Math.min(Number(c.objectif) || 10, Number.isFinite(soldeDepart) && c.credits_scalelist !== null ? soldeDepart : Infinity);
 const fiche = {
   ...c,
   email_pdg: email,
@@ -88,7 +93,8 @@ const fiche = {
   retenu,
   total_retenus: total,
   credits_epuises: creditsEpuises,
-  stop: creditsEpuises, // on ne s'arrête plus aux e-mails valides : les N entreprises sont toutes recherchées
+  credits_utilises: creditsUtilises,
+  stop: creditsEpuises || (!modeTest && creditsUtilises >= limiteCredits), // arrêt dès que N crédits ont été consommés
 };
 if (!modeTest && retenu) {
   // File d'attente : l'adresse est payée, elle sera envoyée même si une étape suivante tombe en panne aujourd'hui

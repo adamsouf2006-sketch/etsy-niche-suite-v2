@@ -110,8 +110,9 @@ function traiterPage(res) {
     });
   }
 }
-// Chaque exécution prend EXACTEMENT N nouvelles entreprises (N = CANDIDATURES_PAR_JOUR, 1 crédit Scalelist chacune).
-// Si les pages déjà reçues ne suffisent pas, on lit les pages suivantes de data.gouv jusqu'à en avoir N.
+// Scalelist ne facture QUE les e-mails trouvés (une recherche « Not found » est gratuite).
+// On prépare donc jusqu'à MAX_RECHERCHES_PAR_JOUR entreprises ; la boucle s'arrête dès que CANDIDATURES_PAR_JOUR crédits
+// ont été consommés (= e-mails trouvés). Si les pages reçues ne suffisent pas, on lit les pages suivantes de data.gouv.
 const helpers = this.helpers;
 const sleep = ms => new Promise(ok => setTimeout(ok, ms));
 async function lirePage(p) {
@@ -123,8 +124,7 @@ async function lirePage(p) {
   return null;
 }
 const objectif = modeTest ? (Number(cfg.MAX_TEST) || 2) : (Number(cfg.CANDIDATURES_PAR_JOUR) || 10);
-let plafond = objectif;
-if (credits !== null) plafond = Math.max(0, Math.min(plafond, Math.floor(credits)));
+const plafond = modeTest ? objectif : Math.max(objectif, Number(cfg.MAX_RECHERCHES_PAR_JOUR) || 40);
 const recues = $input.all().map(it => (it.json && it.json.results) || []);
 let prochaine = prep.page_debut;
 let lues = 0;
@@ -132,13 +132,15 @@ for (let p = prep.page_debut; candidats.length < plafond && p <= 400 && lues < 8
   let res = recues[p - prep.page_debut];
   if (!res) { const rep = await lirePage(p); if (!rep) break; res = rep.results || []; await sleep(300); }
   if (!res.length) { prochaine = 1; break; }            // fin de la liste : on repartira du début (les déjà-vues sont ignorées)
+  const avant = candidats.length;
   traiterPage(res);
+  for (let i = avant; i < candidats.length; i++) candidats[i].page_src = p;
   prochaine = candidats.length > plafond ? p : p + 1;   // page pas entièrement utilisée : on y revient demain
 }
-if (!modeTest) { sd.page = prochaine; sd.maj = Date.now(); }
 const lot = candidats.slice(0, plafond);
-const commun = { mode_test: modeTest, objectif, en_attente: nbAttente, credits_scalelist: credits, dernier_lot: false, page_debut: prep.page_debut, nb_pages: prep.nb_pages };
+const commun = { mode_test: modeTest, objectif, en_attente: nbAttente, credits_scalelist: credits, page_suivante: prochaine, page_debut: prep.page_debut, nb_pages: prep.nb_pages };
 if (lot.length === 0) {
+  if (!modeTest) { sd.page = prochaine; sd.maj = Date.now(); }
   return nbAttente > 0 ? [{ json: { factice: true, ...commun } }] : [];
 }
 return lot.map(c => ({ json: { ...c, ...commun } }));
