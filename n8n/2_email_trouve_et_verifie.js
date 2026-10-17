@@ -8,16 +8,15 @@ const brut = ($input.first() && $input.first().json) || {};
 // Réponse Prospeo (enrich-person) ramenée au format attendu plus bas : { email, status } ou { error }
 // Prospeo ne facture que les e-mails VÉRIFIÉS trouvés (only_verified_email) : « NO_MATCH » est gratuit.
 function depuisProspeo(b) {
-  if (b && b.error === true) {
-    const code = String(b.error_code || b.message || 'ERREUR');
-    if (/NO_MATCH|NOT_FOUND|NO_RESULT/i.test(code)) return {};
-    if (/CREDIT|QUOTA/i.test(code)) return { error: '402 credits epuises (' + code + ')' };
-    if (/API_KEY|UNAUTH|INVALID_KEY/i.test(code)) return { error: '401 api key (' + code + ')' };
-    return { error: code };
+  // Nœud Prospeo « Find Verified Work Email » : renvoie { email } (adresse VÉRIFIÉE) ou, en cas d'échec, { error }
+  if (b && b.error && b.error !== false) {
+    const msg = typeof b.error === 'string' ? b.error : JSON.stringify(b.error);
+    if (/credit|quota|payment|402|429/i.test(msg)) return { error: '402 credits epuises (' + msg + ')' };
+    if (/401|403|unauthor|forbidden|api key|invalid key/i.test(msg)) return { error: '401 api key (' + msg + ')' };
+    return {}; // « Bad request » / NO_MATCH : aucun e-mail vérifié trouvé (gratuit)
   }
-  const e = (b && b.person && b.person.email) || {};
-  if (!e.email || e.revealed === false) return {};
-  return { email: e.email, status: /^VERIFIED$/i.test(String(e.status)) ? 'Valid' : String(e.status || ''), company_domain: (b.company && b.company.domain) || '' };
+  const email = typeof b.email === 'string' ? b.email : (b.person && b.person.email && b.person.email.email) || '';
+  return email ? { email, status: 'Valid' } : {};
 }
 const r = depuisProspeo(brut);
 const accepterRisky = cfg.ACCEPTER_EMAILS_RISKY === true || String(cfg.ACCEPTER_EMAILS_RISKY).toLowerCase() === 'true';
