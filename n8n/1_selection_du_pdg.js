@@ -59,6 +59,17 @@ function adresseSiege(s) {
   return casse(voie, true);
 }
 
+// Noms courts pour Prospeo : il reconnaît le nom d'usage (« Elior »), pas la raison sociale (« ELIOR RESTAURATION FRANCE »)
+const MOTS_VIDES = new Set(['SA', 'SAS', 'SASU', 'SARL', 'SNC', 'SCA', 'SE', 'EURL', 'GIE', 'DE', 'DU', 'DES', 'LA', 'LE', 'LES', 'L', 'D', 'ET', 'EN', 'FRANCE', 'FRANCAISE', 'FRANCAIS', 'SOCIETE', 'STE', 'SOC', 'NATIONALE', 'NATIONAL', 'COMPAGNIE', 'CIE', 'GROUPE', 'GROUP', 'HOLDING', 'ETABLISSEMENTS', 'ETS', 'SERVICES', 'SERVICE', 'SOLUTIONS', 'OPERATIONS', 'INTERNATIONAL', 'INTERNATIONALE', 'INDUSTRIE', 'INDUSTRIES', 'DISTRIBUTION', 'PARTICIPATIONS', 'GESTION', 'EXPLOITATION', 'ANONYME', 'SIMPLIFIEE', 'ACTIONS', 'PAR']);
+function nomsCourts(r) {
+  const mots = sansAccent(r.nom_raison_sociale || r.nom_complet || '').replace(/[^A-Z0-9&]+/g, ' ').split(' ').filter(m => m && !MOTS_VIDES.has(m));
+  const sigle = String(r.sigle || '').trim();
+  const un = sigle.length >= 2 ? sigle : (mots[0] && mots[0].length >= 4 ? mots[0] : mots.slice(0, 2).join(' '));
+  const brut = String(r.nom_raison_sociale || r.nom_complet || '').replace(/\s+/g, ' ').trim();
+  let deux = mots.slice(0, 2).join(' ');
+  if (sigle.length >= 2 || !deux || deux === un) deux = brut;           // 2e essai : raison sociale complète
+  return { prospeo_nom1: casse(un, false) || '', prospeo_nom2: casse(deux, false) || '' };
+}
 const vus = new Set();
 const candidats = [];
 let totalResultats = 0;
@@ -96,6 +107,7 @@ function traiterPage(res) {
     candidats.push({
       siren: r.siren,
       entreprise,
+      ...nomsCourts(r),
       sigle: r.sigle || '',
       section: r.section_activite_principale || '',
       naf: r.activite_principale || '',
