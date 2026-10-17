@@ -4,7 +4,22 @@ const cfg = $('Config').first().json;
 const sd = $getWorkflowStaticData('global');
 sd.vus = sd.vus || {};
 const c = $('Une entreprise à la fois').first().json;   // entreprise du passage en cours
-const r = ($input.first() && $input.first().json) || {};
+const brut = ($input.first() && $input.first().json) || {};
+// Réponse Prospeo (enrich-person) ramenée au format attendu plus bas : { email, status } ou { error }
+// Prospeo ne facture que les e-mails VÉRIFIÉS trouvés (only_verified_email) : « NO_MATCH » est gratuit.
+function depuisProspeo(b) {
+  if (b && b.error === true) {
+    const code = String(b.error_code || b.message || 'ERREUR');
+    if (/NO_MATCH|NOT_FOUND|NO_RESULT/i.test(code)) return {};
+    if (/CREDIT|QUOTA/i.test(code)) return { error: '402 credits epuises (' + code + ')' };
+    if (/API_KEY|UNAUTH|INVALID_KEY/i.test(code)) return { error: '401 api key (' + code + ')' };
+    return { error: code };
+  }
+  const e = (b && b.person && b.person.email) || {};
+  if (!e.email || e.revealed === false) return {};
+  return { email: e.email, status: /^VERIFIED$/i.test(String(e.status)) ? 'Valid' : String(e.status || ''), company_domain: (b.company && b.company.domain) || '' };
+}
+const r = depuisProspeo(brut);
 const accepterRisky = cfg.ACCEPTER_EMAILS_RISKY === true || String(cfg.ACCEPTER_EMAILS_RISKY).toLowerCase() === 'true';
 const RE_MAIL = /^[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
@@ -87,7 +102,7 @@ const fiche = {
   email_pdg: email,
   email_statut: statut,
   email_statut_brut: statutBrut,
-  scalelist_reponse: JSON.stringify(r).slice(0, 600),
+  prospeo_reponse: JSON.stringify(brut).slice(0, 600),
   destinataire: modeTest ? cfg.EMAIL_TEST : email,
   recherche_faite: !creditsEpuises,
   retenu,

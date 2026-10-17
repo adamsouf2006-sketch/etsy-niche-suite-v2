@@ -21,7 +21,7 @@ function lireCredits(o) {
   return null; // format non reconnu : pas de limite appliquée
 }
 let credits = null;
-try { const cr = $('Scalelist – Solde de crédits').first().json; if (cr && !cr.error) credits = lireCredits(cr); } catch (e) { credits = null; }
+try { const cr = $('Prospeo – Solde de crédits').first().json; if (cr && !cr.error) credits = lireCredits(cr); } catch (e) { credits = null; }
 const IDF = ['75', '77', '78', '91', '92', '93', '94', '95'];
 // Secteurs visés (sections NAF). Vide = tous les secteurs.
 const SECTEURS = String(cfg.SECTEURS_NAF || '').toUpperCase().split(/[^A-Z]+/).filter(Boolean);
