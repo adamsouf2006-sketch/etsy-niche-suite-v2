@@ -94,6 +94,17 @@ groupesContactes.delete('');
 const groupesDuJour = new Set();
 const dirigeantsDuJour = new Set();
 let ecartesDoublons = 0;
+// Chances de trouver l'e-mail du dirigeant avec Prospeo (constaté sur nos exécutions) :
+// ~46 % pour les entreprises de 500 salariés et plus, ~16 % en dessous ; les filiales régionales réussissent rarement.
+const REGIONAL = /\b(NORD|SUD|EST|OUEST|CENTRE|REGION|REGIONS|AGENCE|RHONE|ALPES|AQUITAINE|BRETAGNE|NORMANDIE|PROVENCE|OCCITANIE|LORRAINE|ALSACE|BOURGOGNE|AUVERGNE|PICARDIE|CHAMPAGNE|LOIRE|MEDITERRANEE|ATLANTIQUE|LANGUEDOC|ANTILLES|GUYANE|REUNION|IDF|LANGRES|MELUN)\b|ILE DE FRANCE|PARIS (EST|OUEST|NORD|SUD|RIVE)|\b\d+\b$/;
+function scoreChances(r, entreprise, rangDirigeant) {
+  const t = parseInt(String(r.tranche_effectif_salarie || ''), 10);
+  let sc = Number.isFinite(t) ? t : 15;                  // 53 = 10 000+ salariés, 41 = 500-999, 21 = 50-99...
+  if (sc >= 41) sc += 20;                                 // bonus grandes entreprises
+  if (REGIONAL.test(sansAccent(entreprise))) sc -= 40;    // filiale régionale / agence / « XXX 15 »
+  if (rangDirigeant <= 3) sc += 3;                        // PDG / président plutôt que gérant
+  return sc;
+}
 const vus = new Set();
 const candidats = [];
 let totalResultats = 0;
@@ -134,6 +145,7 @@ function traiterPage(res) {
     if (!modeTest && (groupesContactes.has(g) || groupesDuJour.has(g) || dirigeantsVus.has(pers) || dirigeantsDuJour.has(pers))) { ecartesDoublons++; continue; }
     groupesDuJour.add(g); dirigeantsDuJour.add(pers);
     candidats.push({
+      score: scoreChances(r, entreprise, best.k),
       siren: r.siren,
       entreprise,
       ...nc,
@@ -169,15 +181,17 @@ const plafond = modeTest ? objectif : Math.max(objectif, Number(cfg.MAX_RECHERCH
 const recues = $input.all().map(it => (it.json && it.json.results) || []);
 let prochaine = prep.page_debut;
 let lues = 0;
-for (let p = prep.page_debut; candidats.length < plafond && p <= 400 && lues < 80; p++, lues++) {
+const reserve = modeTest ? plafond : plafond * 3;        // on collecte 3x plus pour garder les meilleures chances
+for (let p = prep.page_debut; candidats.length < reserve && p <= 400 && lues < 80; p++, lues++) {
   let res = recues[p - prep.page_debut];
   if (!res) { const rep = await lirePage(p); if (!rep) break; res = rep.results || []; await sleep(300); }
   if (!res.length) { prochaine = 1; break; }            // fin de la liste : on repartira du début (les déjà-vues sont ignorées)
   const avant = candidats.length;
   traiterPage(res);
   for (let i = avant; i < candidats.length; i++) candidats[i].page_src = p;
-  prochaine = candidats.length > plafond ? p : p + 1;   // page pas entièrement utilisée : on y revient demain
+  prochaine = p + 1;   // page pas entièrement utilisée : on y revient demain
 }
+if (!modeTest) candidats.sort((a, b) => b.score - a.score);
 const lot = candidats.slice(0, plafond);
 const commun = { ecartes_doublons: ecartesDoublons, mode_test: modeTest, objectif, en_attente: nbAttente, credits_scalelist: credits, page_suivante: prochaine, page_debut: prep.page_debut, nb_pages: prep.nb_pages };
 if (lot.length === 0) {
