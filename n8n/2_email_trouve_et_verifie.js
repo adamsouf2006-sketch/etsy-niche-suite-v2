@@ -13,7 +13,7 @@ function depuisProspeo(b) {
     const msg = typeof b.error === 'string' ? b.error : JSON.stringify(b.error);
     if (/credit|quota|payment|402/i.test(msg)) return { error: '402 credits epuises (' + msg + ')' };
     if (/401|403|unauthor|forbidden|api key|invalid key/i.test(msg)) return { error: '401 api key (' + msg + ')' };
-    if (/rate|limit|429|timeout|ECONN/i.test(msg)) return { error: 'temporaire : ' + msg }; // réessayée un autre jour
+    if (/rate|limit|429|too many|requests|timeout|ECONN/i.test(msg)) return { error: 'temporaire : ' + msg }; // réessayée un autre jour
     return {}; // « Bad request » / NO_MATCH : aucun e-mail vérifié trouvé (gratuit)
   }
   const email = typeof b.email === 'string' ? b.email : (b.person && b.person.email && b.person.email.email) || '';
