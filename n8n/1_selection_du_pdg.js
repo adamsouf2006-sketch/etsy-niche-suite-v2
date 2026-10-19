@@ -5,10 +5,10 @@ const sd = $getWorkflowStaticData('global');
 sd.vus = sd.vus || {};
 // Correctif ponctuel : le 19/10, Prospeo a refusé la plupart des recherches (« too many requests ») et ces entreprises
 // ont été marquées « non_trouve » à tort. On les remet dans la liste une seule fois.
-if (!sd.correctif_20261019) {
+if (!sd.correctif_20261019b) {
   for (const [k, v] of Object.entries(sd.vus)) if (v && v.date === '2026-10-19' && v.statut === 'non_trouve') delete sd.vus[k];
   sd.page = 1; // relire depuis le début : les entreprises déjà traitées sont ignorées
-  sd.correctif_20261019 = true;
+  sd.correctif_20261019b = true;
 }
 const modeTest = prep.mode_test;
 const attente = sd.attente || {};                      // adresses valides déjà trouvées mais pas encore envoyées
