@@ -109,7 +109,8 @@ const fiche = {
   total_retenus: total,
   credits_epuises: creditsEpuises,
   credits_utilises: creditsUtilises,
-  stop: creditsEpuises || (!modeTest && creditsUtilises >= limiteCredits), // arrêt dès que N crédits ont été consommés
+  quota_journalier_atteint: /too many|rate limit/i.test(erreur),
+  stop: creditsEpuises || /too many|rate limit/i.test(erreur) || (!modeTest && creditsUtilises >= limiteCredits), // arrêt dès que N crédits ont été consommés
 };
 if (!modeTest && retenu) {
   // File d'attente : l'adresse est payée, elle sera envoyée même si une étape suivante tombe en panne aujourd'hui

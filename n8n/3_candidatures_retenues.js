@@ -13,6 +13,7 @@ if (!modeTest && reels.length > 0) {
   sd.maj = Date.now();
 }
 const credits = tous.some(j => j.credits_epuises === true);
+const quota = tous.some(j => j.quota_journalier_atteint === true);
 const creditsUtilises = Math.max(0, ...reels.map(j => Number(j.credits_utilises) || 0));
 const aEnvoyer = modeTest ? faits.filter(j => j.retenu === true) : Object.values(sd.attente || {}).sort((a, b) => (a.file_seq || 0) - (b.file_seq || 0));
-return aEnvoyer.map(j => ({ json: { ...j, mode_test: modeTest, objectif, nb_recherches: faits.length, credits_utilises: creditsUtilises, nb_retenus: aEnvoyer.length, alerte_credits: credits, credits_scalelist: premier.credits_scalelist } }));
+return aEnvoyer.map(j => ({ json: { ...j, mode_test: modeTest, objectif, nb_recherches: faits.length, credits_utilises: creditsUtilises, nb_retenus: aEnvoyer.length, alerte_credits: credits, alerte_quota: quota, credits_scalelist: premier.credits_scalelist } }));
