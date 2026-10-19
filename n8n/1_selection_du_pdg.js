@@ -77,6 +77,23 @@ function nomsCourts(r) {
   if (sigle.length >= 2 || !deux || deux === un) deux = brut;           // 2e essai : raison sociale complète
   return { prospeo_nom1: casse(un, false) || '', prospeo_nom2: casse(deux, false) || '' };
 }
+// Anti-gaspillage : on ne recherche pas un groupe déjà contacté (ex. une autre filiale Suez, Atos...),
+// ni un dirigeant déjà traité, ni deux filiales du même groupe le même jour.
+const cleGroupe = nom => sansAccent(nom).replace(/[^A-Z0-9]+/g, ' ').trim();
+const cleDirigeant = (p, n) => sansAccent(p + ' ' + n).replace(/[^A-Z]+/g, ' ').trim();
+const groupesContactes = new Set();
+const dirigeantsVus = new Set();
+for (const v of [...Object.values(sd.vus || {}), ...Object.values(attente)]) {
+  if (!v) continue;
+  if (v.dirigeant) dirigeantsVus.add(cleDirigeant(v.dirigeant, ''));
+  if (v.dirigeant_prenom) dirigeantsVus.add(cleDirigeant(v.dirigeant_prenom, v.dirigeant_nom));
+  const st = v.statut || (v.email_pdg ? 'email_trouve' : '');
+  if (['envoye', 'email_trouve', 'deja_contacte'].includes(st) || v.email_pdg) groupesContactes.add(cleGroupe(nomsCourts({ nom_raison_sociale: v.entreprise || '' }).prospeo_nom1));
+}
+groupesContactes.delete('');
+const groupesDuJour = new Set();
+const dirigeantsDuJour = new Set();
+let ecartesDoublons = 0;
 const vus = new Set();
 const candidats = [];
 let totalResultats = 0;
@@ -111,10 +128,15 @@ function traiterPage(res) {
     const prenom = casse(String(best.d.prenoms).split(/[\s,]+/)[0], false);
     const entreprise = String(r.nom_raison_sociale || r.nom_complet || '').replace(/\s+/g, ' ').trim();
     if (!entreprise || !nom || !prenom) continue;
+    const nc = nomsCourts(r);
+    const g = cleGroupe(nc.prospeo_nom1);
+    const pers = cleDirigeant(prenom, nom);
+    if (!modeTest && (groupesContactes.has(g) || groupesDuJour.has(g) || dirigeantsVus.has(pers) || dirigeantsDuJour.has(pers))) { ecartesDoublons++; continue; }
+    groupesDuJour.add(g); dirigeantsDuJour.add(pers);
     candidats.push({
       siren: r.siren,
       entreprise,
-      ...nomsCourts(r),
+      ...nc,
       sigle: r.sigle || '',
       section: r.section_activite_principale || '',
       naf: r.activite_principale || '',
@@ -157,7 +179,7 @@ for (let p = prep.page_debut; candidats.length < plafond && p <= 400 && lues < 8
   prochaine = candidats.length > plafond ? p : p + 1;   // page pas entièrement utilisée : on y revient demain
 }
 const lot = candidats.slice(0, plafond);
-const commun = { mode_test: modeTest, objectif, en_attente: nbAttente, credits_scalelist: credits, page_suivante: prochaine, page_debut: prep.page_debut, nb_pages: prep.nb_pages };
+const commun = { ecartes_doublons: ecartesDoublons, mode_test: modeTest, objectif, en_attente: nbAttente, credits_scalelist: credits, page_suivante: prochaine, page_debut: prep.page_debut, nb_pages: prep.nb_pages };
 if (lot.length === 0) {
   if (!modeTest) { sd.page = prochaine; sd.maj = Date.now(); }
   return nbAttente > 0 ? [{ json: { factice: true, ...commun } }] : [];

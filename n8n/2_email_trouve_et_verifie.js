@@ -87,7 +87,7 @@ const emailsDeja = new Set([...Object.values(sd.vus || {}).map(v => v && v.email
 if (!modeTest && email && emailsDeja.has(email.toLowerCase())) statut = 'deja_contacte';
 const ok = statut === 'valid' || (statut === 'risky' && accepterRisky);
 if (!modeTest && statut !== 'erreur' && statut !== 'credits_epuises') {
-  sd.vus[c.siren] = { statut: ok ? 'email_trouve' : statut, date: new Date().toISOString().slice(0, 10), entreprise: c.entreprise, email };
+  sd.vus[c.siren] = { statut: ok ? 'email_trouve' : statut, date: new Date().toISOString().slice(0, 10), entreprise: c.entreprise, email, dirigeant: c.dirigeant_prenom + ' ' + c.dirigeant_nom };
 }
 // En réel : seules les adresses trouvées, vérifiées et cohérentes sont retenues. En test : tout est retenu pour contrôle.
 const retenu = creditsEpuises ? false : (modeTest ? true : ok);
