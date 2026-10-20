@@ -1,0 +1,927 @@
+{
+ "name": "x",
+ "nodes": [
+  {
+   "parameters": {},
+   "id": "2bdc7da8-0181-42af-940d-7e6aa35e46c8",
+   "name": "Lancer le test (manuel)",
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    0,
+    224
+   ]
+  },
+  {
+   "parameters": {
+    "rule": {
+     "interval": [
+      {
+       "field": "cronExpression",
+       "expression": "0 0 14 * * 1-5"
+      }
+     ]
+    }
+   },
+   "id": "0a720e0f-9859-4c1e-b578-1e889364478c",
+   "name": "Chaque jour ouvré à 14h00",
+   "type": "n8n-nodes-base.scheduleTrigger",
+   "typeVersion": 1.2,
+   "position": [
+    0,
+    432
+   ]
+  },
+  {
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "0ae6f134-d713-386d-7750-c5e6719fbdfd",
+       "name": "MODE_TEST",
+       "value": false,
+       "type": "boolean"
+      },
+      {
+       "id": "6d8bf21d-2892-620a-ac2b-037922ca5d0b",
+       "name": "EMAIL_TEST",
+       "value": "adamsouf2006@gmail.com",
+       "type": "string"
+      },
+      {
+       "id": "b76233fa-ef2c-f89d-d0a1-94d84825d81e",
+       "name": "MAX_TEST",
+       "value": 2,
+       "type": "number"
+      },
+      {
+       "id": "5ee084d7-6a04-dd3c-9308-889907671929",
+       "name": "CANDIDATURES_PAR_JOUR",
+       "value": 20,
+       "type": "number"
+      },
+      {
+       "id": "e6a50ea9-8ed6-8339-b9ba-e2efea173873",
+       "name": "MAX_RECHERCHES_PAR_JOUR",
+       "value": 45,
+       "type": "number"
+      },
+      {
+       "id": "dacc78c4-dc21-621f-9edb-18efce5bb446",
+       "name": "PAGES_PAR_RUN",
+       "value": 6,
+       "type": "number"
+      },
+      {
+       "id": "a4f7f7c7-5b4a-e245-222b-474d8058ced9",
+       "name": "CATEGORIE",
+       "value": "GE",
+       "type": "string"
+      },
+      {
+       "id": "cfg-secteurs-naf",
+       "name": "SECTEURS_NAF",
+       "value": "",
+       "type": "string"
+      },
+      {
+       "id": "cfg-exclure-naf",
+       "name": "EXCLURE_NAF",
+       "value": "64.1,64.3,64.9,65,66,96.03",
+       "type": "string"
+      },
+      {
+       "id": "cfg-exclure-noms",
+       "name": "EXCLURE_NOMS",
+       "value": "VEOLIA",
+       "type": "string"
+      },
+      {
+       "id": "f444ed8f-d6ee-8243-938c-40584df1c877",
+       "name": "ACCEPTER_EMAILS_RISKY",
+       "value": true,
+       "type": "boolean"
+      },
+      {
+       "id": "cfg-tranches",
+       "name": "TRANCHES_EFFECTIF",
+       "value": "41,42,51,52,53",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   },
+   "id": "4de26d41-4814-42df-bf10-819e5e0bd955",
+   "name": "Config",
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    240,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "url": "https://app.scalelist.com/api/ext/me",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "scalelistApi",
+    "options": {
+     "timeout": 30000
+    }
+   },
+   "id": "01aadbac-8d2d-44b1-82bf-4d8c9aa9a435",
+   "name": "Scalelist – Solde de crédits",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    256,
+    576
+   ],
+   "credentials": {},
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Prépare la liste des pages à interroger sur l'API Recherche d'entreprises (data.gouv)\nconst cfg = $('Config').first().json;\nconst sd = $getWorkflowStaticData('global');\nconst manuel = $execution.mode !== 'production';\nconst modeTest = cfg.MODE_TEST === true || String(cfg.MODE_TEST).toLowerCase() === 'true' || manuel;\nconst nb = Math.max(1, Math.min(20, Number(cfg.PAGES_PAR_RUN) || 6));\nif (!sd.liste_500plus) { sd.page = 1; sd.liste_500plus = true; } // nouvelle liste (500 salariés et +) : on la lit depuis le début\nconst debut = modeTest ? 1 : (Number(sd.page) || 1);\nconst out = [];\nfor (let p = debut; p < debut + nb && p <= 400; p++) {\n  out.push({ json: { page: p, page_debut: debut, nb_pages: nb, mode_test: modeTest, execution_manuelle: manuel } });\n}\nreturn out;\n"
+   },
+   "id": "a330f230-aba1-4728-ad65-c458b447941a",
+   "name": "Préparer la recherche",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    464,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "url": "https://recherche-entreprises.api.gouv.fr/search",
+    "sendQuery": true,
+    "queryParameters": {
+     "parameters": [
+      {
+       "name": "categorie_entreprise",
+       "value": "={{ $('Config').first().json.CATEGORIE }}"
+      },
+      {
+       "name": "region",
+       "value": "11"
+      },
+      {
+       "name": "etat_administratif",
+       "value": "A"
+      },
+      {
+       "name": "per_page",
+       "value": "25"
+      },
+      {
+       "name": "page",
+       "value": "={{ $json.page }}"
+      },
+      {
+       "name": "tranche_effectif_salarie",
+       "value": "={{ $('Config').first().json.TRANCHES_EFFECTIF || '' }}"
+      }
+     ]
+    },
+    "options": {
+     "batching": {
+      "batch": {
+       "batchSize": 1,
+       "batchInterval": 500
+      }
+     },
+     "timeout": 30000
+    }
+   },
+   "id": "32b02982-937a-421f-821b-8ae939446753",
+   "name": "data.gouv – Grandes entreprises IDF",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    704,
+    320
+   ],
+   "retryOnFail": true,
+   "maxTries": 3,
+   "waitBetweenTries": 2000
+  },
+  {
+   "parameters": {
+    "jsCode": "// Garde les grandes entreprises dont le siège est en Île-de-France et choisit leur dirigeant (PDG)\nconst cfg = $('Config').first().json;\nconst prep = $('Préparer la recherche').first().json;\nconst sd = $getWorkflowStaticData('global');\nsd.vus = sd.vus || {};\n// Historique importé du workflow Prospeo au 2026-10-20 : ces entreprises ne sont pas recontactées.\nconst HISTORIQUE_PROSPEO = {\"301160750\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"EMEIS CLINIQUES\", \"email\": \"laurent.guillot@emeis.com\"}, \"301938817\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-15\", \"entreprise\": \"LES VOLANTS\"}, \"302474648\": {\"statut\": \"risky\", \"date\": \"2026-10-10\", \"entreprise\": \"NATURALIA FRANCE\"}, \"302475041\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"STELLANTIS &YOU FRANCE SAS\", \"email\": \"arturo.fernandez@stellantis.com\"}, \"303656847\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"EUROPCAR FRANCE\", \"email\": \"aletta.vonlindeiner@europcar.com\"}, \"304497852\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"SECURITAS FRANCE SARL\", \"email\": \"frank.lambrigts@securitas.fr\"}, \"304602956\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"COOPERATIVE U\", \"dirigeant\": \"Dominique Schelcher\"}, \"306844622\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"JARDILAND\", \"email\": \"h.onfray@jardiland.com\"}, \"306916099\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"ARGEDIS\", \"email\": \"julie.steff@argedis.fr\"}, \"307258301\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"LACOSTE FRANCE\", \"email\": \"jmaus@lacoste.com\"}, \"309304616\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"REXEL FRANCE\", \"email\": \"thomas.moreau@rexel.fr\"}, \"309979631\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"LES COMPAGNONS\"}, \"310239702\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"SODEXO JUSTICE SERVICES\", \"email\": \"philippe.casgrain@sodexo.com\"}, \"310837190\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SOC REUNION PRODUITS PETROLIERS\"}, \"311160592\": {\"statut\": \"envoye\", \"date\": \"2026-10-13\", \"entreprise\": \"SODEXO SPORTS ET LOISIRS\", \"email\": \"mickael.lebohellec@sodexo.com\"}, \"312212301\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"RENAULT RETAIL GROUP\"}, \"314119504\": {\"statut\": \"envoye\", \"date\": \"2026-10-13\", \"entreprise\": \"AIR LIQUIDE FRANCE INDUSTRIE\", \"email\": \"alain.leborgne@airliquide.com\"}, \"314397696\": {\"statut\": \"envoye\", \"date\": \"2026-10-20\", \"entreprise\": \"HUTCHINSON SNC\", \"email\": \"gilles.guerin@hutchinson.com\", \"dirigeant\": \"Gilles Guérin\"}, \"314397712\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"AIGLE INTERNATIONAL\", \"email\": \"thierry.guibert@aigle.com\"}, \"315000943\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SOCIETE POUR L'INFORMATIQUE INDUSTRIELLE\", \"dirigeant\": \"Eric Matteucci\"}, \"315013359\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"GE MEDICAL SYSTEMS\", \"dirigeant\": \"Jean Bousquel\"}, \"315871640\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"IDEX ENERGIES\", \"email\": \"tle@idexcorp.com\"}, \"317032993\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SAEM EXPLOITATION STATIONNEM VILLE PARIS\"}, \"317288389\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"FIDUCIAL INFORMATIQUE\", \"email\": \"jeanclaude.carquillat@fiducial.fr\"}, \"318771995\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-10\", \"entreprise\": \"ENTERPRISE HOLDINGS FRANCE\"}, \"319159877\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"THALES LAS FRANCE SAS\", \"dirigeant\": \"Herve Dammann\"}, \"319632790\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ARKEMA FRANCE\", \"dirigeant\": \"Thierry Le Henaff\"}, \"322306440\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"DASSAULT SYSTEMES\", \"dirigeant\": \"Pascal Daloz\"}, \"324501006\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"PHARMA DOM\"}, \"326094471\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"SOCIETE NATIONALE DE RADIODIFFUSION RADIO FRANCE\", \"email\": \"sibyle.veil@radiofrance.com\"}, \"327096426\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"METROBUS\"}, \"329338883\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"COLAS FRANCE\", \"email\": \"thierry.meline@colas.com\"}, \"333583466\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"KUEHNE+NAGEL\", \"email\": \"guillaume.peard@kuehne-nagel.com\"}, \"334473352\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"RELAIS FNAC\"}, \"338196017\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"BIOGROUP PARIS SUD\", \"email\": \"sophie.beria@biogroup.fr\"}, \"338246317\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"FIDUCIAL SECURITE HUMAINE EN ABREGE FIDUCIAL SECURITE\", \"dirigeant\": \"Matthias Boizard\"}, \"338253081\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"SODEXO SANTE MEDICO SOCIAL\", \"email\": \"sophie.neron-berger@sodexo.com\"}, \"338253131\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"SOCIETE FRANCAISE DE RESTAURATION ET SERVICES\", \"email\": \"thomas@societe.com\"}, \"338253230\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"SODEXO ENTREPRISES\", \"email\": \"sophie.neronberger@sodexo.com\"}, \"338994916\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"PAPREC ENERGIES ATLANTIQUE\"}, \"339379984\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"SAUR\", \"email\": \"patrick.blethon@saur.com\"}, \"339802118\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-15\", \"entreprise\": \"EUROPE 2 REGIONS\"}, \"340793959\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"ENGIE INFORMATION ET TECHNOLOGIES\"}, \"341152395\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"CHALLANCIN PREVENTION ET SECURITE\", \"dirigeant\": \"Frederic Laisney\"}, \"341174118\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-12\", \"entreprise\": \"MEDICA FRANCE\", \"email\": \"aubret@makita.fr\"}, \"341192227\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"ITM ALIMENTAIRE INTERNATIONAL\"}, \"342090834\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"NEXITY STUDEA\", \"email\": \"ppedoux@nexity.fr\"}, \"343088464\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"W-INDUSTRIE\"}, \"343134763\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"VIVENDI SE\", \"email\": \"arnaud.depuyfontaine@vivendi.com\"}, \"343262622\": {\"statut\": \"ecarte_a_verifier\", \"date\": \"2026-10-06\", \"entreprise\": \"LIDL\"}, \"343688016\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"COCA-COLA EUROPACIFIC PARTNERS FRANCE\"}, \"345039416\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"ORANGE BUSINESS SERVICES\", \"email\": \"aliette.mousnierlompre@orange.com\"}, \"345306880\": {\"statut\": \"risky\", \"date\": \"2026-10-14\", \"entreprise\": \"SUEZ ORGANIQUE\", \"email\": \"gerard.teboul@suez.com\"}, \"348006446\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ERNST ET YOUNG ADVISORY\", \"dirigeant\": \"Herve De la Chapelle\"}, \"348415506\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"SERVICES ET SANTE\"}, \"348607417\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ALTEN\", \"dirigeant\": \"Simon Azoulay\"}, \"348936386\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"FENWICK-LINDE\", \"email\": \"jocelyn.gourlet@linde-mh.de\"}, \"348991555\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"ZARA FRANCE\", \"email\": \"jose.romaydelacolina@zara.com\"}, \"351745724\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"MEUBLES IKEA FRANCE\", \"email\": \"johan.laurell@ikea.com\"}, \"351867692\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-15\", \"entreprise\": \"TEMSYS\", \"email\": \"philippe.valigny@ayvens.com\"}, \"352256424\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ARVAL SERVICE LEASE\", \"dirigeant\": \"Franciane Rays\"}, \"352533921\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-15\", \"entreprise\": \"GCA SUPPLY PACKING\"}, \"352905707\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"RANDSTAD DIGITAL FRANCE\", \"dirigeant\": \"Christopher Connors\"}, \"353336399\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"SOCIETE PRIVEE DE RADIODIFFUSION GIBUS BOURGOGNE\"}, \"353402779\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-15\", \"entreprise\": \"SCA FRUITS LEGUMES FLEURS\"}, \"378114110\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SOC COMMERCIALE HOTELS ECONOMIQUES\"}, \"378168470\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"MBDA FRANCE\"}, \"378702674\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"NATURE ET DECOUVERTES SA\"}, \"379041395\": {\"statut\": \"envoye\", \"date\": \"2026-10-20\", \"entreprise\": \"FRAMATOME\", \"email\": \"gregoire.ponchon@framatome.com\", \"dirigeant\": \"Gregoire Ponchon\"}, \"379601974\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"CARREFOUR VOYAGES\"}, \"380129866\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"ORANGE\", \"email\": \"jacques.aschenbroich@orange.com\"}, \"380231316\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-14\", \"entreprise\": \"BERGERAT MONNOYEUR\", \"email\": \"philippe.monnoyeur@b-m.pl\"}, \"382597821\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"NESPRESSO FRANCE\", \"email\": \"guillaume.chesneau@nespresso.com\"}, \"383252608\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"ETF\", \"email\": \"fabrice.guegan@etf.fr\"}, \"383960135\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"CHRONOPOST\", \"email\": \"benoit.frette@chronopost.fr\"}, \"385365713\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"INETUM\", \"email\": \"francois.fleutiaux@inetum.com\"}, \"387921281\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-13\", \"entreprise\": \"EFFIA CONCESSIONS\"}, \"388237026\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"EULER HERMES RECOUVREMENT FRANCE\"}, \"388237331\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"SUEZ RV BIOENERGIES SA\", \"email\": \"jocelyne.marais@suez.com\"}, \"389191982\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ALSTOM TRANSPORT SA\", \"dirigeant\": \"Frederic Wiscart\"}, \"389454521\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"EUROFINS BIO LAB\"}, \"389652553\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-20\", \"entreprise\": \"FOUNDEVER FRANCE\", \"email\": \"claire.calmejane@sitel.com\", \"dirigeant\": \"Claire Calméjane\"}, \"389756487\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"LOUIS PION SAS\", \"email\": \"alemoine@louispion.fr\"}, \"392367041\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"SIXENSE ENGINEERING\"}, \"392417689\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"BUREAU VERITAS SOLUTIONS\", \"email\": \"gilles.michel@bureauveritas.com\"}, \"393135298\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"CS GROUP - FRANCE\", \"dirigeant\": \"Pierre Lopez\"}, \"393193867\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"GEODIS D&E RHONE-ALPES\", \"email\": \"michel.javaux@geodis.com\"}, \"393712286\": {\"statut\": \"risky\", \"date\": \"2026-10-08\", \"entreprise\": \"SEPHORA\"}, \"397480930\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"BOUYGUES TELECOM\", \"email\": \"eb@bouygues.com\"}, \"399315613\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"METRO FRANCE\"}, \"399506641\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"ATALIAN PROPRETE\", \"email\": \"laurent.jaillant@atalianworld.com\"}, \"400461950\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"SFR FIBRE SAS\", \"email\": \"mathieu.cocq@sfr.com\"}, \"400777827\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"CREDIT AGRICOLE IMMOBILIER SERVICES\"}, \"401251566\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-09\", \"entreprise\": \"EMEIS\"}, \"402069710\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SOCIETE D'INVESTISSEMENT MULTIMARQUES SIM\"}, \"402350136\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"DHL SUPPLY CHAIN FRANCE\", \"dirigeant\": \"Christof Debrun\"}, \"403093206\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"BIOGROUP PARIS OUEST\", \"email\": \"olivier@ouest.world\"}, \"403104250\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"LA PLATEFORME\"}, \"408024719\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"ATOS FRANCE\", \"email\": \"franck.chartier@atos.net\"}, \"408273282\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"AFTRAL FORMATIONS\", \"email\": \"loic.charbonnier@aftral.com\"}, \"410034607\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"SUEZ EAU FRANCE\", \"email\": \"arnaud.bazire@suez.com\"}, \"410358865\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"SFR DISTRIBUTION\", \"email\": \"eric.pradeau@sfr.com\"}, \"410529226\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"COLAS PROJECTS\"}, \"411787567\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"LHH\", \"email\": \"julien.fanon@lhh.com\"}, \"412280737\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"SNCF RESEAU\", \"email\": \"matthieu.chabanel@sncf.fr\"}, \"414230060\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"BIOGROUP PARIS EST\", \"email\": \"emmanuel.mselati@biogroup.fr\"}, \"414599035\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-09\", \"entreprise\": \"ALDI MARCHE DAMMARTIN\"}, \"414815043\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"LAFARGE BETONS\", \"email\": \"xavier.legrand@lafargeholcim.com\"}, \"418505343\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"MONDIAL PARE-BRISE\", \"email\": \"f.blais@mondialparebrise.fr\"}, \"419392931\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"FREE RESEAU\", \"dirigeant\": \"Maxime Lombardini\"}, \"419853460\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-13\", \"entreprise\": \"GNVERT\", \"email\": \"herve-matthieu.ricour@engie.com\"}, \"420495178\": {\"statut\": \"risky\", \"date\": \"2026-10-14\", \"entreprise\": \"SOCIETE AIR FRANCE\", \"email\": \"benjaminsmith@airfrance.fr\"}, \"421106709\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-14\", \"entreprise\": \"SCHNEIDER ELECTRIC FRANCE\", \"email\": \"aymeric.renaud@se.com\"}, \"423032598\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"RESEAU CLUBS BOUYGUES TELECOM\", \"email\": \"bduarte@bouyguestelecom.fr\"}, \"423682269\": {\"statut\": \"deja_contacte\", \"date\": \"2026-10-14\", \"entreprise\": \"SUEZ RV BIOENERGIES\", \"email\": \"jocelyne.marais@suez.com\"}, \"425039773\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"VITALAIRE\"}, \"425050556\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-07\", \"entreprise\": \"CARGLASS S.A.S.\"}, \"429955297\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"MANPOWER FRANCE\", \"email\": \"benoit.derigny@manpower.fr\"}, \"432766947\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"FRANCE TELEVISIONS\", \"email\": \"delphine.ernotte-cunci@france.tv\"}, \"433056223\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"CIEC\"}, \"434085395\": {\"statut\": \"deja_contacte\", \"date\": \"2026-10-14\", \"entreprise\": \"SPIE CITYNETWORKS\", \"email\": \"arnaud.tirmarche@spie.com\"}, \"435272596\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"EFFIA STATIONNEMENT\"}, \"437723844\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"ORANGE STORE\"}, \"438277030\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"ENDEL\"}, \"439769654\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ESSILOR INTERNATIONAL\", \"dirigeant\": \"Francesco Milleri\"}, \"440055861\": {\"statut\": \"envoye\", \"date\": \"2026-10-13\", \"entreprise\": \"SPIE BUILDING SOLUTIONS\", \"email\": \"arnaud.tirmarche@spie.com\"}, \"440117620\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"NATRAN\"}, \"440319101\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SAMSIC SECURITE\", \"dirigeant\": \"Olivier Payen\"}, \"443617725\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"BERSHKA FRANCE\"}, \"444330781\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"ALDI MARCHE\"}, \"444420830\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"DPD FRANCE\", \"email\": \"georges.kipiani@dpd.fr\"}, \"444608442\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"ENEDIS\", \"email\": \"marianne.laigneau@enedis.fr\"}, \"444619258\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"RTE RESEAU DE TRANSPORT D ELECTRICITE\", \"email\": \"emilie.piette@rte-france.com\"}, \"444768550\": {\"statut\": \"envoye\", \"date\": \"2026-10-13\", \"entreprise\": \"IZI BY EDF\", \"email\": \"paul-marie.dubee@izi-by-edf.fr\"}, \"444786511\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-07\", \"entreprise\": \"GRDF\"}, \"448457978\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-10\", \"entreprise\": \"EXTIME DUTY FREE PARIS\"}, \"448979849\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"SUEZ RV FM\", \"email\": \"laurent.carrot@suez.com\"}, \"449586544\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"AXIONE\", \"email\": \"e.jammaron@axione.fr\"}, \"451053383\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"VITALLIANCE\", \"email\": \"amir.reza-tofighi@vitalliance.fr\"}, \"451321335\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"CARREFOUR HYPERMARCHES\", \"email\": \"christophe_rabatel@carrefour.com\"}, \"451329908\": {\"statut\": \"risky\", \"date\": \"2026-10-08\", \"entreprise\": \"CRIT\"}, \"451647903\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"BRICO DEPOT\", \"email\": \"lvittoz@bricodepot.com\"}, \"452440381\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"SOCIETE D'EXPLOITATION DES RESIDENCES HOTELIERES RAIL\"}, \"470801168\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"CDC HABITAT\", \"email\": \"clement.lecuivre@cdc-habitat.fr\"}, \"478417710\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"CHANEL PARFUMS BEAUTE\", \"email\": \"simona.cattaneo@chanel.com\"}, \"479162695\": {\"statut\": \"envoye\", \"date\": \"2026-10-20\", \"entreprise\": \"VALEO ELECTRIFICATION\", \"email\": \"christophe.delhovren@valeo.com\", \"dirigeant\": \"Christophe Delhovren\"}, \"479474306\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"TINGARI\"}, \"479766800\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"CAPGEMINI CONSULTING\", \"email\": \"cyril.garcia@capgemini.com\"}, \"479766842\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"CAPGEMINI TECHNOLOGY SERVICES\", \"email\": \"jerome.simeon@capgemini.com\"}, \"480107911\": {\"statut\": \"envoye\", \"date\": \"2026-10-20\", \"entreprise\": \"SAFRAN ELECTRONICS & DEFENSE\", \"email\": \"franck.saudo@safrangroup.com\", \"dirigeant\": \"Franck Saudo\"}, \"480557149\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"PULL & BEAR FRANCE\"}, \"487549693\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"ALTRAN PROTOTYPES AUTOMOBILES\"}, \"489972166\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"STRADIVARIUS FRANCE\", \"email\": \"joser@stradivarius.es\"}, \"492787957\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"GRANDVISION FRANCE\", \"email\": \"guillaume.brouwet@grandvision.fr\"}, \"493123392\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"CARREFOUR PROPERTY GESTION\"}, \"493254908\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SMURFIT WESTROCK FRANCE\", \"dirigeant\": \"Andrew Coffey\"}, \"494956774\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"DHL INTERNATIONAL EXPRESS (FRANCE)\", \"email\": \"philippe.pretat@dhl.com\"}, \"503698664\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-07\", \"entreprise\": \"FONCIA TRANSACTION FRANCE\"}, \"507523801\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"SNCF GARES & CONNEXIONS\", \"email\": \"matthieu.chabanel@sncf.fr\"}, \"507769164\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"THE KOOPLES PRODUCTION\", \"email\": \"areytan@thekooples.com\"}, \"508534609\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"CEPE DE LANGRES SUD\"}, \"509760948\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-09\", \"entreprise\": \"F ASSISTANCE\"}, \"514080837\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"ITM LOGISTIQUE ALIMENTAIRE INTERNATIONAL\"}, \"518697685\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"SOCIETE NATIONALE D'ACTIFS DE TRANSITION\"}, \"518931340\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"FONCIA PARIS EST\", \"email\": \"michel.squillaci@foncia.com\"}, \"519032247\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ARIANEGROUP SAS\", \"dirigeant\": \"Franck Huiban\"}, \"519037584\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"SNCF VOYAGEURS\", \"email\": \"christophe.fanichet@sncf.fr\"}, \"519091789\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"HEIDELBERG MATERIALS FRANCE LOGISTIQUE\"}, \"521847434\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"EFFIA PARK\", \"email\": \"jean-michel.archambault@effia.fr\"}, \"527573141\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"APAVE\", \"email\": \"remi.sohier@apave.nc\"}, \"528815376\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"F DISTRIBUTION\"}, \"531680445\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"TOTALENERGIES MARKETING FRANCE\", \"email\": \"guillaume@totalenergies.fr\"}, \"537433187\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-09\", \"entreprise\": \"NEXSTONE\"}, \"537819989\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"WATT\"}, \"538592312\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"BPCE SOLUTIONS INFORMATIQUES\", \"dirigeant\": \"Gwilherm Le Donne\"}, \"542014428\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"NESTLE FRANCE\", \"dirigeant\": \"Sophie Dubois\"}, \"542021829\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-15\", \"entreprise\": \"SAFEGE\", \"email\": \"bruno.hervet@suez.com\"}, \"542052766\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"CHANEL\", \"email\": \"bruno.pavlovsky@chanel.com\"}, \"542065479\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"STELLANTIS AUTO SAS\", \"email\": \"xavier.chereau@stellantis.com\"}, \"542086616\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"ETABLISSEMENTS DARTY ET FILS\"}, \"542095336\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"LAGARDERE TRAVEL RETAIL FRANCE\", \"email\": \"v.romet@lagardere-tr.com\"}, \"542095591\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"RUBIS ANTILLES GUYANE\"}, \"542107651\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-07\", \"entreprise\": \"ENGIE\"}, \"542107800\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"OTIS\", \"email\": \"augustin.poisson@otis.com\"}, \"552016628\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"AEROPORTS DE PARIS\", \"dirigeant\": \"Philippe Pascal\"}, \"552044992\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"POMONA\"}, \"552046484\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"CDC HABITAT SOCIAL SOCIETE ANONYME D'HABITATIONS A LOYER MODERE\", \"email\": \"christophe.cappe@cdc-habitat.fr\"}, \"552046955\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"ENGIE ENERGIE SERVICES\", \"email\": \"frank.lacroix@engie.com\"}, \"552049447\": {\"statut\": \"envoye\", \"date\": \"2026-10-08\", \"entreprise\": \"SOCIETE NATIONALE SNCF\", \"email\": \"jean.castex@sncf.fr\"}, \"552065187\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"PARFUMS CHRISTIAN DIOR\", \"dirigeant\": \"Veronique Courtois\"}, \"552081317\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-06\", \"entreprise\": \"ELECTRICITE DE FRANCE\"}, \"552083297\": {\"statut\": \"risky\", \"date\": \"2026-10-08\", \"entreprise\": \"MONOPRIX EXPLOITATION, PAR ABREVIATION MPX\"}, \"552088536\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"CEVA AIR & OCEAN INTERNATIONAL\"}, \"552108722\": {\"statut\": \"envoye\", \"date\": \"2026-10-07\", \"entreprise\": \"SOC FIDUCIAIRE NATIO EXPERTISE COMPTABLE\", \"email\": \"christian.latouche@fiducial.net\"}, \"552115891\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"COFIROUTE\", \"dirigeant\": \"Nicolas Notebaert\"}, \"552118101\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"OTESSA\", \"email\": \"caroline.gougeon@otessa.fr\"}, \"552118465\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"COMPAGNIE IBM FRANCE\", \"dirigeant\": \"Beatrice Kosowski\"}, \"552120222\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-06\", \"entreprise\": \"SOCIETE GENERALE\"}, \"552141533\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"IMMOBILIERE 3F\", \"dirigeant\": \"Fabrice Lesaché\"}, \"562016774\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"SIEMENS S.A.S\", \"email\": \"doris.birkhofer@siemens.com\"}, \"562077503\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SADE - COMPAGNIE GENERALE DE TRAVAUX HYDRAULIQUES\"}, \"562091546\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"BOUYGUES IMMOBILIER\", \"email\": \"pminault@bouygues-immobilier.com\"}, \"562110882\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"LAFARGE GRANULATS\", \"email\": \"xavier.bullot@lafargeholcim.com\"}, \"562136036\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-15\", \"entreprise\": \"RAZEL-BEC\"}, \"572063972\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"ATHLON CAR LEASE\"}, \"572067684\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"ROBERT BOSCH FRANCE\", \"dirigeant\": \"Heiko Carrie\"}, \"572102176\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-06\", \"entreprise\": \"SOGERES\"}, \"572139996\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"AUTOROUTES DU SUD DE LA FRANCE\", \"email\": \"nicolas@vinci-autoroutes.com\"}, \"572165652\": {\"statut\": \"envoye\", \"date\": \"2026-10-10\", \"entreprise\": \"HEIDELBERG MATERIALS FRANCE GRANULATS\", \"email\": \"bruno.pillon@heidelbergmaterials.com\"}, \"572185684\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"CLUB MED\", \"email\": \"stephane.maquaire@clubmed.com\"}, \"582081782\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"AXIMUM\", \"dirigeant\": \"Stéphane Paguet\"}, \"582137436\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"PHOENIX OCP\", \"email\": \"claude.castells@phoenixgroup.eu\"}, \"602044638\": {\"statut\": \"envoye\", \"date\": \"2026-10-13\", \"entreprise\": \"DERICHEBOURG INTERIM\", \"email\": \"boris.derichebourg@derichebourg-multiservices.com\"}, \"612035832\": {\"statut\": \"risky\", \"date\": \"2026-10-14\", \"entreprise\": \"CHRISTIAN DIOR COUTURE\", \"email\": \"darnault@dior.com\"}, \"612039073\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"INTERFORUM\"}, \"632012100\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"L'OREAL\", \"email\": \"jean-paul.agon@loreal.com\"}, \"632041042\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-06\", \"entreprise\": \"COMPASS GROUP FRANCE\"}, \"642016166\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"HEIDELBERG MATERIALS FRANCE BETONS\", \"email\": \"bruno.pillon@heidelbergmaterials.com\"}, \"662014489\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"SUEZ RV ILE-DE-FRANCE\", \"email\": \"denis.blanc@suez.com\"}, \"662025196\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"ELIOR RESTAURATION FRANCE\", \"email\": \"boris.derichebourg@eliorgroup.com\"}, \"662032234\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SOCIETE ENTRETIEN NETTOYAGE INDUSTRIEL\", \"dirigeant\": \"Christophe Duveau\"}, \"662042449\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"BNP PARIBAS\", \"email\": \"jean.lemierre@bnpparibas.com\"}, \"672039971\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"DANONE PRODUITS FRAIS FRANCE\", \"dirigeant\": \"Pablo Perversi\"}, \"695680108\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"POINT P S.A.S.\"}, \"696520410\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"HERMES SELLIER\", \"email\": \"axel.dumas@hermes.com\"}, \"702012956\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-15\", \"entreprise\": \"ALTRAN TECHNOLOGIES\", \"email\": \"angelique.bougault@capgemini.com\"}, \"702034448\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"SECURITAS TECHNOLOGY SERVICES SAS\", \"email\": \"matthieu.letaillandier@securitas.com\"}, \"702042755\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"CGI FRANCE\", \"email\": \"didier.therond@cgi.com\"}, \"722003936\": {\"statut\": \"risky\", \"date\": \"2026-10-06\", \"entreprise\": \"MCDONALD'S FRANCE\"}, \"722063997\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SOC DES ATELIERS LOUIS VUITTON\", \"dirigeant\": \"Pierre-Fabrice Storino\"}, \"728206533\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"APROLIS\"}, \"732035993\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"FONCIA AGENCE CENTRALE\"}, \"732075312\": {\"statut\": \"envoye\", \"date\": \"2026-10-20\", \"entreprise\": \"ACCENTURE\", \"email\": \"olivier.girard@accenture.com\", \"dirigeant\": \"Olivier Girard\"}, \"753308238\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"ACTION FRANCE\", \"email\": \"w.backer@action.eu\"}, \"753742626\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-15\", \"entreprise\": \"VAL DE FRANCE TRANSACTIONS\"}, \"775658859\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SOCIETE CARTIER\"}, \"775662257\": {\"statut\": \"envoye\", \"date\": \"2026-10-20\", \"entreprise\": \"SANOFI WINTHROP INDUSTRIE\", \"email\": \"philippe.charreau@sanofi.com\", \"dirigeant\": \"Philippe Charreau\"}, \"775664873\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"BOUYGUES ENERGIES & SERVICES\", \"email\": \"etienne@bouygues-es.fr\"}, \"775667363\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"COMPAGNIE DES EAUX ET DE L'OZONE PROCEDES M P OTTO\"}, \"775721392\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"SEVIA\"}, \"775726417\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"KPMG\", \"email\": \"mguillemot@kpmg.com\"}, \"775733835\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"MAJ\"}, \"777346099\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"ASTURIENNE\"}, \"780129987\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"RENAULT SAS\", \"dirigeant\": \"François Provost\"}, \"780130175\": {\"statut\": \"risky\", \"date\": \"2026-10-08\", \"entreprise\": \"SHELL FRANCE\"}, \"784257859\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"CLINIQUE DU SPORT\"}, \"784512550\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"EGIS BATIMENTS\"}, \"784939688\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"PICARD SURGELES\", \"email\": \"cecile_guillou@picard.fr\"}, \"785751058\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"SOCIETE DES EAUX DE MELUN\"}, \"786920306\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"CORA\", \"email\": \"crabatel@cora.ro\"}, \"788058030\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-07\", \"entreprise\": \"ADOMA\"}, \"788213825\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SERIS SECURITY\", \"dirigeant\": \"Antoine Massiet du Biest\"}, \"789791464\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"CEVA LOGISTICS GROUND & RAIL FRANCE\", \"email\": \"frederic.itri@cevalogistics.com\"}, \"790182786\": {\"statut\": \"risky\", \"date\": \"2026-10-13\", \"entreprise\": \"BUREAU VERITAS CONSTRUCTION\", \"email\": \"audrey.bacqueroet@bureauveritas.com\"}, \"790184675\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"BUREAU VERITAS EXPLOITATION\", \"email\": \"vincent.bourdil@bureauveritas.com\"}, \"793759614\": {\"statut\": \"deja_contacte\", \"date\": \"2026-10-19\", \"entreprise\": \"NEXITY EDENEA\", \"email\": \"ppedoux@nexity.fr\"}, \"796580389\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"GALERIES LAFAYETTE HORLOGERIE BIJOUTERIE\"}, \"801363227\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"BURGER KING RESTAURATION\"}, \"807902036\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"PINAULT COLLECTION\"}, \"808636849\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"CERTAS ENERGY FRANCE\"}, \"809938129\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"GSF CONCORDE\", \"email\": \"tdeflandre@gsf.fr\"}, \"810570515\": {\"statut\": \"deja_contacte\", \"date\": \"2026-10-19\", \"entreprise\": \"ATOS DIGITAL SECURITY\", \"email\": \"franck.chartier@atos.net\"}, \"810794800\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"SIEMENS HEALTHCARE SAS\"}, \"811934363\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"NXO FRANCE\", \"email\": \"nathalie.magand@nxo.eu\"}, \"812674836\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"SUNGLASS HUT FRANCE\"}, \"817502651\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-14\", \"entreprise\": \"FRANCILIANE\", \"email\": \"jean-francois.nogrette@veolia.com\"}, \"817723687\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"EY & ASSOCIES\", \"dirigeant\": \"Celine Boutte\"}, \"820824472\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"WP FRANCE 15\"}, \"823244371\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"AMAZON FRANCE TRANSPORT SAS\", \"dirigeant\": \"Jerome Ovion\"}, \"824363436\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"AFPA ACCES A L' EMPLOI\", \"email\": \"michael.ohier@afpa.fr\"}, \"824484653\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-07\", \"entreprise\": \"SONEPAR FRANCE DISTRIBUTION\"}, \"824515738\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"SH NEW IBB\"}, \"828160069\": {\"statut\": \"envoye\", \"date\": \"2026-10-06\", \"entreprise\": \"OGF SERVICES FUNERAIRES\", \"email\": \"alain.cottet@ogf.fr\"}, \"833460918\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"TOTEM FRANCE\", \"email\": \"emmanuel.rochas@totemtowers.com\"}, \"833548431\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"INVIVO RETAIL SERVICES\"}, \"834096695\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"SOCOTEC EQUIPEMENTS\", \"email\": \"delphine.villard@socotec.com\"}, \"834157513\": {\"statut\": \"risky\", \"date\": \"2026-10-12\", \"entreprise\": \"SOCOTEC CONSTRUCTION\", \"email\": \"franck.pettexsorgue@socotec.com\"}, \"840952758\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"LPCR 2\", \"email\": \"jean-emmanuel.rodocanachi@lpcr.fr\"}, \"842426561\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"ASTEN SANTE A DOMICILE\", \"email\": \"glivchitz@astensante.com\"}, \"843409137\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-12\", \"entreprise\": \"C'MIDY\"}, \"844192443\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-08\", \"entreprise\": \"TOTALENERGIES CHARGING SERVICES\"}, \"844687749\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"THALES DIS FRANCE SAS\"}, \"854800745\": {\"statut\": \"domaine_douteux\", \"date\": \"2026-10-13\", \"entreprise\": \"AXIMA CONCEPT\", \"email\": \"pierre.hardouin@equans.com\"}, \"877676932\": {\"statut\": \"envoye\", \"date\": \"2026-10-09\", \"entreprise\": \"ELIOR RESTAURATION HOTELLERIE DE SANTE (ERHS)\", \"email\": \"boris.derichebourg@eliorgroup.com\"}, \"879189736\": {\"statut\": \"envoye\", \"date\": \"2026-10-13\", \"entreprise\": \"ALDI BRIE-COMTE-ROBERT\", \"email\": \"laurent.pugin@aldi.fr\"}, \"879321487\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"TEVGO\"}, \"881248165\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"ELTO FRANCE\"}, \"892380031\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"EDF BUSINESS SERVICES ET TRAVAUX\", \"email\": \"olivier.soulage@edf-bs.com\"}, \"901644989\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"SUEZ\", \"email\": \"xavier.girre@suez.com\"}, \"905247300\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"UBICITE\"}, \"914326855\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"FONCIA DEVELOPPEMENT ET LOCATION\"}, \"919434894\": {\"statut\": \"envoye\", \"date\": \"2026-10-14\", \"entreprise\": \"L'OREAL FRANCE\", \"email\": \"celine.brucker@loreal.com\"}, \"921854568\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"EUROFINS BIOMED ILE DE FRANCE EST\"}, \"929771665\": {\"statut\": \"envoye\", \"date\": \"2026-10-19\", \"entreprise\": \"ORANO AVAL DU FUTUR\", \"email\": \"nicolas.ferrand@orano.group\"}, \"950026914\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-09\", \"entreprise\": \"FRANCE BKR\"}, \"954503439\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"SCHNEIDER ELECTRIC INDUSTRIES SAS\", \"dirigeant\": \"Olivier Blum\"}, \"957503931\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-20\", \"entreprise\": \"MAGASINS GALERIES LAFAYETTE\", \"dirigeant\": \"Nicolas Houzé\"}, \"968502377\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"SIGNATURE\", \"email\": \"eric.marret@signature.eu\"}, \"971201546\": {\"statut\": \"envoye\", \"date\": \"2026-10-15\", \"entreprise\": \"SATELEC\", \"email\": \"jerome@satelec.ae\"}, \"979864006\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-13\", \"entreprise\": \"ETEP OPERATIONS SNC\"}, \"982759672\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-10\", \"entreprise\": \"HEXAFRET\"}, \"998269211\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-19\", \"entreprise\": \"SAINT GOBAIN GLASS FRANCE\"}, \"068803055\": {\"statut\": \"envoye\", \"date\": \"2026-10-12\", \"entreprise\": \"DAHER LOGISTICS\", \"email\": \"a.daher@daher.com\"}, \"057812968\": {\"statut\": \"non_trouve\", \"date\": \"2026-10-14\", \"entreprise\": \"DISTRIBUTION AMENAGEMENT ET ISOLATION\"}};\nif (!sd.historique_importe) { for (const [k, v] of Object.entries(HISTORIQUE_PROSPEO)) if (!sd.vus[k]) sd.vus[k] = v; sd.historique_importe = true; }\n// Correctif ponctuel : le 19/10, Scalelist a refusé la plupart des recherches (« too many requests ») et ces entreprises\n// ont été marquées « non_trouve » à tort. On les remet dans la liste une seule fois.\nif (!sd.correctif_20261019b) {\n  for (const [k, v] of Object.entries(sd.vus)) if (v && v.date === '2026-10-19' && v.statut === 'non_trouve') delete sd.vus[k];\n  sd.page = 1; // relire depuis le début : les entreprises déjà traitées sont ignorées\n  sd.correctif_20261019b = true;\n}\nconst modeTest = prep.mode_test;\nconst attente = sd.attente || {};                      // adresses valides déjà trouvées mais pas encore envoyées\nconst nbAttente = modeTest ? 0 : Object.keys(attente).length;\n\n// Solde de crédits Scalelist (appel gratuit) : on ne lance jamais plus de recherches qu'il ne reste de crédits\nfunction lireCredits(o) {\n  const vals = [];\n  (function voir(x, chemin) {\n    if (x === null || x === undefined) return;\n    if (typeof x === 'object') { for (const k of Object.keys(x)) voir(x[k], chemin ? chemin + '.' + k : k); return; }\n    if (typeof x === 'number' && /credit/i.test(chemin)) vals.push({ chemin, v: x });\n  })(o, '');\n  if (vals.length === 1) return vals[0].v;\n  const pref = vals.filter(e => /remain|balance|available|left|restant/i.test(e.chemin));\n  if (pref.length === 1) return pref[0].v;\n  return null; // format non reconnu : pas de limite appliquée\n}\nlet credits = null;\ntry { const cr = $('Scalelist – Solde de crédits').first().json; if (cr && !cr.error) credits = lireCredits(cr); } catch (e) { credits = null; }\nconst IDF = ['75', '77', '78', '91', '92', '93', '94', '95'];\n// Secteurs visés (sections NAF). Vide = tous les secteurs.\nconst SECTEURS = String(cfg.SECTEURS_NAF || '').toUpperCase().split(/[^A-Z]+/).filter(Boolean);\n// Activités exclues : débuts de code NAF (ex. 65 = assurance, 64.1 = banques, 96.03 = services funéraires)\nconst NAF_EXCLUS = String(cfg.EXCLURE_NAF || '').split(/[,;\\s]+/).map(x => x.trim()).filter(Boolean);\n// Entreprises exclues : mots contenus dans le nom (ex. VEOLIA)\nconst sansAccent = x => String(x || '').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toUpperCase();\nconst NOMS_EXCLUS = String(cfg.EXCLURE_NOMS || '').split(/[,;]+/).map(x => sansAccent(x).trim()).filter(Boolean);\n\nconst norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[’`]/g, \"'\").toLowerCase().replace(/\\s+/g, ' ').trim();\nfunction rang(qualite) {\n  const q = norm(qualite);\n  if (!q) return null;\n  if (/administrateur|commissaire|membre|vice|delegue|suppleant|autre|controleur|liquidateur|adjoint|representant|censeur|secretaire/.test(q)) {\n    if (!/president.*directeur general/.test(q)) return null;\n  }\n  if (/president.*directeur general|president-directeur general|^pdg$/.test(q)) return 1;\n  if (/^president du conseil d'administration/.test(q)) return 2;\n  if (/^president/.test(q) && !/surveillance/.test(q) && !/directoire/.test(q)) return 3;\n  if (/^president du directoire/.test(q)) return 4;\n  if (/^directeur general/.test(q)) return 5;\n  if (/^gerant/.test(q)) return 6;\n  return null;\n}\nconst PARTICULES = ['de', 'du', 'des', 'la', 'le', 'les', 'dit', 'd', 'l', 'von', 'van', 'der', 'den', 'da', 'di', 'del', 'el', 'al', 'ben'];\nfunction casse(s, particules) {\n  return String(s || '').toLowerCase().split(/(\\s+|-|')/).map((m, i) => {\n    if (!m || /^(\\s+|-|')$/.test(m)) return m;\n    if (particules && i > 0 && PARTICULES.includes(m)) return m;\n    return m.charAt(0).toUpperCase() + m.slice(1);\n  }).join('').replace(/\\s+/g, ' ').trim();\n}\nfunction adresseSiege(s) {\n  const voie = [s.numero_voie, s.indice_repetition, s.type_voie, s.libelle_voie].filter(Boolean).join(' ');\n  return casse(voie, true);\n}\n\n// Noms courts pour Scalelist : il reconnaît le nom d'usage (« Elior »), pas la raison sociale (« ELIOR RESTAURATION FRANCE »)\nconst MOTS_VIDES = new Set(['SA', 'SAS', 'SASU', 'SARL', 'SNC', 'SCA', 'SE', 'EURL', 'GIE', 'DE', 'DU', 'DES', 'LA', 'LE', 'LES', 'L', 'D', 'ET', 'EN', 'FRANCE', 'FRANCAISE', 'FRANCAIS', 'SOCIETE', 'STE', 'SOC', 'NATIONALE', 'NATIONAL', 'COMPAGNIE', 'CIE', 'GROUPE', 'GROUP', 'HOLDING', 'ETABLISSEMENTS', 'ETS', 'SERVICES', 'SERVICE', 'SOLUTIONS', 'OPERATIONS', 'INTERNATIONAL', 'INTERNATIONALE', 'INDUSTRIE', 'INDUSTRIES', 'DISTRIBUTION', 'PARTICIPATIONS', 'GESTION', 'EXPLOITATION', 'ANONYME', 'SIMPLIFIEE', 'ACTIONS', 'PAR']);\nfunction nomsCourts(r) {\n  const mots = sansAccent(r.nom_raison_sociale || r.nom_complet || '').replace(/[^A-Z0-9&]+/g, ' ').split(' ').filter(m => m && !MOTS_VIDES.has(m));\n  const sigle = String(r.sigle || '').trim();\n  const un = sigle.length >= 2 ? sigle : (mots[0] && mots[0].length >= 4 ? mots[0] : mots.slice(0, 2).join(' '));\n  const brut = String(r.nom_raison_sociale || r.nom_complet || '').replace(/\\s+/g, ' ').trim();\n  let deux = mots.slice(0, 2).join(' ');\n  if (sigle.length >= 2 || !deux || deux === un) deux = brut;           // 2e essai : raison sociale complète\n  return { prospeo_nom1: casse(un, false) || '', prospeo_nom2: casse(deux, false) || '' };\n}\n// Anti-gaspillage : on ne recherche pas un groupe déjà contacté (ex. une autre filiale Suez, Atos...),\n// ni un dirigeant déjà traité, ni deux filiales du même groupe le même jour.\nconst cleGroupe = nom => sansAccent(nom).replace(/[^A-Z0-9]+/g, ' ').trim();\nconst cleDirigeant = (p, n) => sansAccent(p + ' ' + n).replace(/[^A-Z]+/g, ' ').trim();\nconst groupesContactes = new Set();\nconst dirigeantsVus = new Set();\nfor (const v of [...Object.values(sd.vus || {}), ...Object.values(attente)]) {\n  if (!v) continue;\n  if (v.dirigeant) dirigeantsVus.add(cleDirigeant(v.dirigeant, ''));\n  if (v.dirigeant_prenom) dirigeantsVus.add(cleDirigeant(v.dirigeant_prenom, v.dirigeant_nom));\n  const st = v.statut || (v.email_pdg ? 'email_trouve' : '');\n  if (['envoye', 'email_trouve', 'deja_contacte'].includes(st) || v.email_pdg) groupesContactes.add(cleGroupe(nomsCourts({ nom_raison_sociale: v.entreprise || '' }).prospeo_nom1));\n}\ngroupesContactes.delete('');\nconst groupesDuJour = new Set();\nconst dirigeantsDuJour = new Set();\nlet ecartesDoublons = 0;\n// Chances de trouver l'e-mail du dirigeant avec Scalelist (constaté sur nos exécutions) :\n// ~46 % pour les entreprises de 500 salariés et plus, ~16 % en dessous ; les filiales régionales réussissent rarement.\nconst REGIONAL = /\\b(NORD|SUD|EST|OUEST|CENTRE|REGION|REGIONS|AGENCE|RHONE|ALPES|AQUITAINE|BRETAGNE|NORMANDIE|PROVENCE|OCCITANIE|LORRAINE|ALSACE|BOURGOGNE|AUVERGNE|PICARDIE|CHAMPAGNE|LOIRE|MEDITERRANEE|ATLANTIQUE|LANGUEDOC|ANTILLES|GUYANE|REUNION|IDF|LANGRES|MELUN)\\b|ILE DE FRANCE|PARIS (EST|OUEST|NORD|SUD|RIVE)|\\b\\d+\\b$/;\nfunction scoreChances(r, entreprise, rangDirigeant) {\n  const t = parseInt(String(r.tranche_effectif_salarie || ''), 10);\n  let sc = Number.isFinite(t) ? t : 15;                  // 53 = 10 000+ salariés, 41 = 500-999, 21 = 50-99...\n  if (sc >= 41) sc += 20;                                 // bonus grandes entreprises\n  if (REGIONAL.test(sansAccent(entreprise))) sc -= 40;    // filiale régionale / agence / « XXX 15 »\n  if (rangDirigeant <= 3) sc += 3;                        // PDG / président plutôt que gérant\n  return sc;\n}\nconst vus = new Set();\nconst candidats = [];\nlet totalResultats = 0;\nfunction traiterPage(res) {\n  totalResultats += res.length;\n  for (const r of res) {\n    if (!r || !r.siren || vus.has(r.siren)) continue;\n    vus.add(r.siren);\n    const siege = r.siege || {};\n    if (r.etat_administratif && r.etat_administratif !== 'A') continue;\n    if (!IDF.includes(String(siege.departement || ''))) continue;          // siège social en Île-de-France\n    if (String(r.categorie_entreprise || '') !== String(cfg.CATEGORIE || 'GE')) continue; // grande entreprise\n    if (!String(r.nature_juridique || '').startsWith('5')) continue;       // sociétés commerciales uniquement\n    if (SECTEURS.length && !SECTEURS.includes(String(r.section_activite_principale || '').toUpperCase())) continue; // secteur non visé\n    const codeNaf = String(r.activite_principale || '');\n    if (NAF_EXCLUS.some(p => codeNaf.startsWith(p))) continue;             // activité exclue (banque, assurance...)\n    const nomTest = sansAccent((r.nom_raison_sociale || '') + ' ' + (r.nom_complet || ''));\n    if (NOMS_EXCLUS.some(m => nomTest.includes(m))) continue;              // entreprise exclue par son nom\n    if (!modeTest && (sd.vus[r.siren] || attente[r.siren])) continue;     // déjà traitée lors d'une exécution précédente\n    let best = null;\n    for (const d of (r.dirigeants || [])) {\n      if (d.type_dirigeant !== 'personne physique' || !d.nom || !d.prenoms) continue;\n      const k = rang(d.qualite);\n      if (k === null) continue;\n      if (!best || k < best.k) best = { k, d };\n    }\n    if (!best) continue;\n    const brut = String(best.d.nom);\n    const m = brut.match(/^(.*?)\\s*\\((.*?)\\)\\s*$/);\n    const nom = casse(m ? m[1] : brut, true);\n    const nomAlt = m ? casse(m[2], true) : '';\n    const prenom = casse(String(best.d.prenoms).split(/[\\s,]+/)[0], false);\n    const entreprise = String(r.nom_raison_sociale || r.nom_complet || '').replace(/\\s+/g, ' ').trim();\n    if (!entreprise || !nom || !prenom) continue;\n    const nc = nomsCourts(r);\n    const g = cleGroupe(nc.prospeo_nom1);\n    const pers = cleDirigeant(prenom, nom);\n    if (!modeTest && (groupesContactes.has(g) || groupesDuJour.has(g) || dirigeantsVus.has(pers) || dirigeantsDuJour.has(pers))) { ecartesDoublons++; continue; }\n    groupesDuJour.add(g); dirigeantsDuJour.add(pers);\n    candidats.push({\n      score: scoreChances(r, entreprise, best.k),\n      siren: r.siren,\n      entreprise,\n      ...nc,\n      sigle: r.sigle || '',\n      section: r.section_activite_principale || '',\n      naf: r.activite_principale || '',\n      adresse_ligne: adresseSiege(siege),\n      code_postal: siege.code_postal || '',\n      ville: siege.libelle_commune || '',\n      departement: siege.departement || '',\n      dirigeant_prenom: prenom,\n      dirigeant_nom: nom,\n      dirigeant_nom_alt: nomAlt,\n      dirigeant_qualite: String(best.d.qualite || '').replace(/’/g, \"'\"),\n    });\n  }\n}\n// Scalelist ne facture QUE les e-mails trouvés (une recherche « Not found » est gratuite).\n// On prépare donc jusqu'à MAX_RECHERCHES_PAR_JOUR entreprises ; la boucle s'arrête dès que CANDIDATURES_PAR_JOUR crédits\n// ont été consommés (= e-mails trouvés). Si les pages reçues ne suffisent pas, on lit les pages suivantes de data.gouv.\nconst helpers = this.helpers;\nconst sleep = ms => new Promise(ok => setTimeout(ok, ms));\nasync function lirePage(p) {\n  for (let essai = 0; essai < 3; essai++) {\n    try {\n      return await helpers.httpRequest({ method: 'GET', url: 'https://recherche-entreprises.api.gouv.fr/search', qs: Object.assign({ categorie_entreprise: cfg.CATEGORIE || 'GE', region: '11', etat_administratif: 'A', per_page: 25, page: p }, cfg.TRANCHES_EFFECTIF ? { tranche_effectif_salarie: cfg.TRANCHES_EFFECTIF } : {}), json: true, timeout: 30000 });\n    } catch (e) { await sleep(2000 * (essai + 1)); }\n  }\n  return null;\n}\nconst objectif = modeTest ? (Number(cfg.MAX_TEST) || 2) : (Number(cfg.CANDIDATURES_PAR_JOUR) || 10);\nconst plafond = modeTest ? objectif : Math.max(objectif, Number(cfg.MAX_RECHERCHES_PAR_JOUR) || 40);\nconst recues = $input.all().map(it => (it.json && it.json.results) || []);\nlet prochaine = prep.page_debut;\nlet lues = 0;\nconst reserve = modeTest ? plafond : plafond * 3;        // on collecte 3x plus pour garder les meilleures chances\nfor (let p = prep.page_debut; candidats.length < reserve && p <= 400 && lues < 80; p++, lues++) {\n  let res = recues[p - prep.page_debut];\n  if (!res) { const rep = await lirePage(p); if (!rep) break; res = rep.results || []; await sleep(300); }\n  if (!res.length) { prochaine = 1; break; }            // fin de la liste : on repartira du début (les déjà-vues sont ignorées)\n  const avant = candidats.length;\n  traiterPage(res);\n  for (let i = avant; i < candidats.length; i++) candidats[i].page_src = p;\n  prochaine = p + 1;   // page pas entièrement utilisée : on y revient demain\n}\nif (!modeTest) candidats.sort((a, b) => b.score - a.score);\nconst lot = candidats.slice(0, plafond);\nconst commun = { ecartes_doublons: ecartesDoublons, mode_test: modeTest, objectif, en_attente: nbAttente, credits_scalelist: credits, page_suivante: prochaine, page_debut: prep.page_debut, nb_pages: prep.nb_pages };\nif (lot.length === 0) {\n  if (!modeTest) { sd.page = prochaine; sd.maj = Date.now(); }\n  return nbAttente > 0 ? [{ json: { factice: true, ...commun } }] : [];\n}\nreturn lot.map(c => ({ json: { ...c, ...commun } }));\n"
+   },
+   "id": "32b7e56a-0ace-4273-b498-b63989937235",
+   "name": "Sélection du PDG",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    928,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "operation": "findEmail",
+    "first_name": "={{ $json.dirigeant_prenom }}",
+    "last_name": "={{ $json.dirigeant_nom }}",
+    "company_name": "={{ $json.prospeo_nom1 || $json.entreprise }}"
+   },
+   "id": "bffa8741-9e16-4330-8188-062a2d92d19d",
+   "name": "Scalelist – Trouver l'e-mail du PDG",
+   "type": "n8n-nodes-scalelist.scalelist",
+   "typeVersion": 1,
+   "position": [
+    1984,
+    512
+   ],
+   "retryOnFail": true,
+   "maxTries": 2,
+   "waitBetweenTries": 3000,
+   "credentials": {},
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "options": {}
+   },
+   "id": "1f3ba307-d834-4a0e-8796-5d5dcf878506",
+   "name": "Une entreprise à la fois",
+   "type": "n8n-nodes-base.splitInBatches",
+   "typeVersion": 3,
+   "position": [
+    1152,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "fc76b27c-0fad-85bc-fac7-ea72b56461c9",
+       "leftValue": "={{ $json.factice === true || ($('E-mail trouvé et vérifié ?').isExecuted && $('E-mail trouvé et vérifié ?').last().json.stop === true) }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   },
+   "id": "75460780-7b72-4f02-b230-9171dd647170",
+   "name": "Objectif du jour atteint ?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2.2,
+   "position": [
+    1392,
+    560
+   ]
+  },
+  {
+   "parameters": {
+    "jsCode": "// Boucle : lit la réponse de Scalelist pour UNE entreprise. E-mail trouvé ? vérifié (Valid) ? domaine cohérent ?\n// Compte les e-mails valides et signale l'arrêt dès que l'objectif du jour est atteint.\nconst cfg = $('Config').first().json;\nconst sd = $getWorkflowStaticData('global');\nsd.vus = sd.vus || {};\nconst c = $('Une entreprise à la fois').first().json;   // entreprise du passage en cours\nconst brut = ($input.first() && $input.first().json) || {};\n// Réponse Scalelist (enrich-person) ramenée au format attendu plus bas : { email, status } ou { error }\n// Scalelist ne facture que les e-mails VÉRIFIÉS trouvés (only_verified_email) : « NO_MATCH » est gratuit.\nfunction depuisScalelist(b) {\n  // Nœud Scalelist « Find Email » : renvoie la réponse brute de l'API, ou { error } en cas d'échec\n  if (b && typeof b.error === 'string' && b.error) {\n    const msg = b.error;\n    if (/402|credit|quota|payment/i.test(msg)) return { error: '402 credits epuises (' + msg + ')' };\n    if (/401|403|unauthor|forbidden|api key|invalid key/i.test(msg)) return { error: '401 api key (' + msg + ')' };\n    if (/429|rate|limit|too many|timeout|ECONN|5\\d\\d/i.test(msg)) return { error: 'temporaire : ' + msg };\n    return {}; // 404 / non trouvé\n  }\n  return b || {};\n}\nconst r = depuisScalelist(brut);\nconst accepterRisky = cfg.ACCEPTER_EMAILS_RISKY === true || String(cfg.ACCEPTER_EMAILS_RISKY).toLowerCase() === 'true';\nconst RE_MAIL = /^[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$/;\n\nfunction explorer(obj, visite, chemin) {\n  if (obj === null || obj === undefined) return;\n  if (typeof obj !== 'object') { visite(chemin, obj); return; }\n  for (const k of Object.keys(obj)) {\n    if (k === 'custom') continue; // nos propres données renvoyées en écho\n    explorer(obj[k], visite, chemin ? chemin + '.' + k : k);\n  }\n}\nfunction lire(r) {\n  let email = '', statutBrut = '';\n  explorer(r, (chemin, v) => {\n    if (typeof v !== 'string') return;\n    const cle = chemin.split('.').pop().toLowerCase();\n    if (!email && RE_MAIL.test(v.trim()) && /mail/.test(cle)) email = v.trim();\n    if (!statutBrut && /status|statut|result|verif|quality|state/.test(cle) && /valid|risky|catch|not[ _-]?found|unknown/i.test(v)) statutBrut = v.trim();\n  });\n  if (!email) explorer(r, (chemin, v) => { if (!email && typeof v === 'string' && RE_MAIL.test(v.trim())) email = v.trim(); });\n  return { email, statutBrut };\n}\n\n// Garde-fou : le domaine de l'adresse trouvée doit correspondre au nom de l'entreprise\n// (Scalelist déduit le domaine du nom ; il peut se tromper de société).\nconst GENERIQUES = new Set(['france', 'francaise', 'francais', 'groupe', 'group', 'holding', 'societe', 'compagnie', 'international', 'internationale', 'europe', 'paris', 'services', 'service', 'national', 'nationale', 'generale', 'general', 'gestion', 'participations', 'financiere', 'industries', 'industrie', 'distribution', 'solutions']);\nconst plat = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();\nfunction domaineCoherent(email, c) {\n  const dom = plat(String(email).split('@')[1] || '');\n  const labels = dom.split('.').filter(Boolean);\n  if (labels.length < 2) return false;\n  const coeur = labels.slice(0, -1).join('').replace(/[^a-z0-9]/g, '');\n  const mots = plat(c.entreprise).split(/[^a-z0-9]+/).filter(Boolean);\n  const colle = mots.join('');\n  const sigle = plat(c.sigle).replace(/[^a-z0-9]/g, '');\n  const acronyme = mots.map(m => m[0]).join('');\n  if (mots.some((m, i) => !GENERIQUES.has(m) && (m.length >= 4 || (i === 0 && m.length >= 3)) && coeur.includes(m))) return true;\n  if (sigle.length >= 3 && coeur.includes(sigle)) return true;\n  if (acronyme.length >= 3 && coeur.includes(acronyme)) return true;\n  if (coeur.length >= 4 && colle.includes(coeur)) return true;\n  return false;\n}\n\nif (r.custom && r.custom.siren && String(r.custom.siren) !== String(c.siren)) {\n  throw new Error(`Incohérence : la réponse Scalelist (SIREN ${r.custom.siren}) ne correspond pas à l'entreprise en cours (${c.entreprise}, ${c.siren}). Arrêt par sécurité.`);\n}\nconst moi = $('E-mail trouvé et vérifié ?');\nconst dejaRetenus = moi.isExecuted ? (Number(moi.last().json.total_retenus) || 0) : (Number(c.en_attente) || 0);\nconst modeTest = c.mode_test;\nconst erreur = r.error ? (typeof r.error === 'string' ? r.error : JSON.stringify(r.error)) : '';\nconst creditsEpuises = !!erreur && /402|credit/i.test(erreur);\nif (erreur && !creditsEpuises && /401|unauthor|api key/i.test(erreur)) {\n  throw new Error('Scalelist a refusé la requête (clé API invalide) : ' + erreur.slice(0, 300));\n}\nconst { email, statutBrut } = erreur ? { email: '', statutBrut: '' } : lire(r);\nlet statut = 'non_trouve';\nif (creditsEpuises) statut = 'credits_epuises';\nelse if (erreur) statut = 'erreur';\nelse if (email && /risky|catch/i.test(statutBrut)) statut = 'risky';\nelse if (email && /valid/i.test(statutBrut) && !/invalid/i.test(statutBrut)) statut = 'valid';\nelse if (email) statut = 'inconnu';\nif (email && !domaineCoherent(email, c)) statut = 'domaine_douteux';\n// Anti-doublon par ADRESSE : un même dirigeant peut diriger plusieurs filiales (SIREN différents, même e-mail)\nconst emailsDeja = new Set([...Object.values(sd.vus || {}).map(v => v && v.email), ...Object.values(sd.attente || {}).map(a => a && a.email_pdg)].filter(Boolean).map(x => String(x).toLowerCase()));\nif (!modeTest && email && emailsDeja.has(email.toLowerCase())) statut = 'deja_contacte';\nconst ok = statut === 'valid' || (statut === 'risky' && accepterRisky);\nif (!modeTest && statut !== 'erreur' && statut !== 'credits_epuises') {\n  sd.vus[c.siren] = { statut: ok ? 'email_trouve' : statut, date: new Date().toISOString().slice(0, 10), entreprise: c.entreprise, email, dirigeant: c.dirigeant_prenom + ' ' + c.dirigeant_nom };\n}\n// En réel : seules les adresses trouvées, vérifiées et cohérentes sont retenues. En test : tout est retenu pour contrôle.\nconst retenu = creditsEpuises ? false : (modeTest ? true : ok);\nconst total = dejaRetenus + (retenu ? 1 : 0);\n// Crédits Scalelist consommés aujourd'hui : 1 par e-mail trouvé (quel que soit son statut)\nconst creditsAvant = moi.isExecuted ? (Number(moi.last().json.credits_utilises) || 0) : 0;\nconst creditsUtilises = creditsAvant + (email ? 1 : 0);\nconst soldeDepart = Number(c.credits_scalelist);\nconst limiteCredits = Math.min(Number(c.objectif) || 10, Number.isFinite(soldeDepart) && c.credits_scalelist !== null ? soldeDepart : Infinity);\nconst fiche = {\n  ...c,\n  email_pdg: email,\n  email_statut: statut,\n  email_statut_brut: statutBrut,\n  prospeo_reponse: JSON.stringify(brut).slice(0, 600),\n  destinataire: modeTest ? cfg.EMAIL_TEST : email,\n  recherche_faite: !creditsEpuises,\n  retenu,\n  total_retenus: total,\n  credits_epuises: creditsEpuises,\n  credits_utilises: creditsUtilises,\n  quota_journalier_atteint: /too many|rate limit/i.test(erreur),\n  stop: creditsEpuises || /too many|rate limit/i.test(erreur) || (!modeTest && creditsUtilises >= limiteCredits), // arrêt dès que N crédits ont été consommés\n};\nif (!modeTest && retenu) {\n  // File d'attente : l'adresse est payée, elle sera envoyée même si une étape suivante tombe en panne aujourd'hui\n  sd.seq = (Number(sd.seq) || 0) + 1;\n  fiche.file_seq = sd.seq;                              // ordre d'arrivée dans la file\n  sd.attente = { ...(sd.attente || {}), [c.siren]: fiche };\n}\nsd.maj = Date.now();\nreturn [{ json: fiche }];\n"
+   },
+   "id": "ff130115-f72e-43d6-90a8-e1cb0aeda22a",
+   "name": "E-mail trouvé et vérifié ?",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    2224,
+    880
+   ]
+  },
+  {
+   "parameters": {
+    "jsCode": "// Fin de boucle : candidatures à envoyer aujourd'hui = adresses valides en attente (anciennes d'abord) + nouvelles\nconst sd = $getWorkflowStaticData('global');\nconst tous = $input.all().map(i => i.json);\nconst reels = tous.filter(j => j.factice !== true);\nconst faits = reels.filter(j => j.recherche_faite === true);\nconst premier = tous[0] || {};\nconst modeTest = premier.mode_test !== false;\nconst objectif = Number(premier.objectif) || 10;\nif (!modeTest && reels.length > 0) {\n  // Reprise demain : à la première page qui contient une entreprise pas encore recherchée\n  const nonFaites = reels.filter(j => j.recherche_faite !== true && j.page_src);\n  sd.page = nonFaites.length ? Math.min(...nonFaites.map(j => j.page_src)) : (premier.page_suivante || premier.page_debut + premier.nb_pages);\n  sd.maj = Date.now();\n}\nconst credits = tous.some(j => j.credits_epuises === true);\nconst quota = tous.some(j => j.quota_journalier_atteint === true);\nconst creditsUtilises = Math.max(0, ...reels.map(j => Number(j.credits_utilises) || 0));\nconst aEnvoyer = modeTest ? faits.filter(j => j.retenu === true) : Object.values(sd.attente || {}).sort((a, b) => (a.file_seq || 0) - (b.file_seq || 0));\nreturn aEnvoyer.map(j => ({ json: { ...j, mode_test: modeTest, objectif, nb_recherches: faits.length, credits_utilises: creditsUtilises, nb_retenus: aEnvoyer.length, alerte_credits: credits, alerte_quota: quota, credits_scalelist: premier.credits_scalelist } }));\n"
+   },
+   "id": "8951109e-5ec6-4d33-852e-febe2e52c4b6",
+   "name": "Candidatures retenues",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1392,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "jsCode": "// Rédige le CV, la lettre de motivation et le mail personnalisés pour chaque entreprise\n// ===== Bibliothèque de rédaction (CV, lettre, e-mail) — partagée par le node « Rédaction CV + lettre » =====\nconst MOI = {\n  prenom: 'Adam', nom: 'SOUFANE', tel: '+33 7 45 45 05 95', email: 'adamsouf2006@gmail.com',\n  ville: 'Creil', portfolio: 'https://portfolioadamsoufane.netlify.app/',\n  linkedin: 'https://www.linkedin.com/in/adam-soufane-72aaa2366/',\n};\n\n// Secteur d'activité (section NAF) -> libellé + phrase d'accroche reliée à une expérience réelle\nconst SECTEURS = {\n  A: [\"de l'agriculture\", \"Le suivi des productions et des rendements repose sur des données nombreuses et hétérogènes : c'est précisément le type de données que j'ai appris à nettoyer, structurer et restituer.\"],\n  B: [\"des industries extractives\", \"Chez Veolia, j'ai travaillé sur des données reliant activités industrielles et substances émises : je suis à l'aise avec des référentiels techniques exigeants.\"],\n  C: [\"de l'industrie\", \"Chez Veolia, 76,8 % des données que j'ai traitées concernaient l'industrie manufacturière : je suis à l'aise avec les nomenclatures d'activités et les référentiels techniques propres au monde industriel.\"],\n  D: [\"de l'énergie\", \"L'énergie est un domaine que j'ai déjà abordé par les données : j'ai modélisé et prévu des séries de consommation en MWh (décomposition, ARIMA, Holt-Winters) et comparé les modèles par leurs erreurs de prévision (RMSE, MAE).\"],\n  E: [\"de l'eau, des déchets et de l'environnement\", \"Mon stage chez Veolia m'a plongé dans les données de l'eau et de l'environnement : qualité des effluents, substances polluantes, exigences réglementaires. C'est un secteur dans lequel je souhaite continuer à progresser.\"],\n  F: [\"de la construction\", \"Le pilotage de chantiers et d'activités multi-sites demande des indicateurs fiables : j'ai conçu des tableaux de bord (Power BI, Looker Studio) reposant sur des modèles de données en étoile, pensés pour la décision.\"],\n  G: [\"du commerce et de la distribution\", \"J'ai mené un projet complet d'analyse décisionnelle des ventes sous Power BI : chiffre d'affaires, taux de transformation des devis, marge brute et analyse géographique, à partir d'un entrepôt de données modélisé en étoile.\"],\n  H: [\"du transport et de la logistique\", \"Les flux, les délais et les volumes du transport génèrent des séries de données que j'ai appris à analyser et à prévoir (séries temporelles, ARIMA), puis à restituer dans des tableaux de bord lisibles par les équipes opérationnelles.\"],\n  I: [\"de l'hôtellerie et de la restauration\", \"Une activité répartie sur de très nombreux sites se pilote par des indicateurs comparables d'un site à l'autre : j'ai conçu des tableaux de bord (Power BI, Looker Studio) reposant sur des modèles de données en étoile, pensés pour ce type de suivi.\"],\n  J: [\"du numérique et des médias\", \"Python, SQL et automatisation sont mon quotidien : chez Veolia, j'ai conçu une chaîne de huit scripts Python interrogeant une API externe, avec gestion des quotas et reprise sur interruption.\"],\n  K: [\"de la banque et de l'assurance\", \"La banque et l'assurance reposent sur la statistique et la qualité des données : ma formation (tests statistiques, échantillonnage, séries temporelles, classification) et mon expérience du dédoublonnage de données à grande échelle y trouvent une application directe.\"],\n  L: [\"de l'immobilier\", \"La gestion d'un patrimoine immobilier s'appuie sur des indicateurs fiables et actualisés : j'ai conçu des tableaux de bord (Power BI, Looker Studio) reposant sur des modèles de données en étoile, pensés pour la décision.\"],\n  M: [\"du conseil et des services aux entreprises\", \"Chez Veolia, j'ai appris à traduire un besoin métier en traitements de données documentés et réutilisables, puis à restituer les résultats à des experts non techniciens : une posture proche de celle du conseil.\"],\n  N: [\"des services aux entreprises\", \"Le pilotage d'activités de services demande des indicateurs fiables et partagés : j'ai conçu des tableaux de bord (Power BI, Looker Studio) reposant sur des modèles de données en étoile, pensés pour la décision.\"],\n  O: [\"des services publics\", \"Chez Veolia, j'ai travaillé sur des données au service des collectivités (eau municipale) et sur les nomenclatures officielles de l'INSEE : je connais les exigences de fiabilité et de traçabilité de ce type de données.\"],\n  P: [\"de l'enseignement et de la formation\", \"J'ai conduit une enquête statistique de bout en bout auprès d'étudiants (questionnaire, tests, restitution) : je sais transformer des réponses brutes en résultats clairs et exploitables.\"],\n  Q: [\"de la santé\", \"La santé est un domaine que j'ai abordé par la statistique : j'ai étudié et simulé en R des méthodes de randomisation pour les essais cliniques, afin de mesurer les déséquilibres entre groupes de patients.\"],\n  R: [\"de la culture et des loisirs\", \"J'ai mené une étude statistique sur les pratiques culturelles numériques des étudiants, du questionnaire à la restitution : un sujet qui rejoint directement votre activité.\"],\n  T: [\"des services à la personne\", \"Le pilotage d'activités de services demande des indicateurs fiables et partagés : j'ai conçu des tableaux de bord (Power BI, Looker Studio) reposant sur des modèles de données en étoile, pensés pour la décision.\"],\n  U: [\"des organisations internationales\", \"Chez Veolia, j'ai travaillé sur des nomenclatures officielles et des données réglementaires : je connais les exigences de fiabilité et de traçabilité de ce type de données.\"],\n  S: [\"des services\", \"Le pilotage d'activités de services demande des indicateurs fiables et partagés : j'ai conçu des tableaux de bord (Power BI, Looker Studio) reposant sur des modèles de données en étoile, pensés pour la décision.\"],\n};\nconst SECTEUR_DEFAUT = [\"\", \"Nettoyage, structuration, analyse statistique et restitution dans des tableaux de bord : ce sont les compétences que j'ai mises en pratique chez Veolia et que je souhaite mettre au service de vos équipes.\"];\n\nfunction esc(s) {\n  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');\n}\nfunction secteur(section) { return SECTEURS[String(section || '').toUpperCase()] || SECTEUR_DEFAUT; }\nfunction dateFr(d) {\n  return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' }).format(d || new Date());\n}\nfunction slug(s) {\n  return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'Entreprise';\n}\n\nconst CSS_BASE = `\n@page { size: A4; margin: 0; }\n* { box-sizing: border-box; }\nhtml, body { margin: 0; padding: 0; }\nbody { font-family: Arial, Helvetica, sans-serif; color: #222; -webkit-print-color-adjust: exact; print-color-adjust: exact; }\na { color: #1f3a5f; text-decoration: none; }\n`;\n\nfunction cvHtml(e) {\n  const [lib] = secteur(e.section);\n  const cible = lib ? `une grande entreprise ${lib} comme ${esc(e.entreprise)}` : `une grande entreprise comme ${esc(e.entreprise)}`;\n  return `<!DOCTYPE html><html lang=\"fr\"><head><meta charset=\"utf-8\"><title>CV Adam Soufane</title><style>${CSS_BASE}\n.page { width: 210mm; padding: 9mm 13mm 8mm 13mm; font-size: 8.7pt; line-height: 1.32; }\nh1 { font-size: 13pt; color: #1f3a5f; text-align: center; margin: 0 0 2px 0; letter-spacing: .3px; }\n.contact { text-align: center; font-size: 8.4pt; color: #444; margin-bottom: 5px; }\n.cible { text-align: center; font-size: 8.6pt; color: #1f3a5f; font-weight: bold; margin-bottom: 6px; }\nh2 { font-size: 9.6pt; color: #1f3a5f; margin: 7px 0 4px 0; padding-bottom: 2px; border-bottom: 1.2px solid #1f3a5f; letter-spacing: .4px; }\np { margin: 0; text-align: justify; }\nul { margin: 1px 0 0 0; padding-left: 13px; }\nli { margin: 0; }\n.row { display: table; width: 100%; }\n.row > div { display: table-cell; vertical-align: top; }\n.row > .d { text-align: right; white-space: nowrap; color: #333; width: 34mm; }\n.t { font-weight: bold; color: #1f3a5f; }\n.s { color: #333; }\n.bloc { margin-bottom: 4px; }\n.cols > div { width: 50%; padding-right: 6mm; }\n.cols b { display: block; margin-bottom: 1px; }\n</style></head><body><div class=\"page\">\n<h1>Alternance Data Analyst de 12 mois, jusqu'en septembre 2027</h1>\n<div class=\"contact\">${MOI.prenom} ${MOI.nom} | ${MOI.tel} | ${MOI.email} | ${MOI.ville} | <a href=\"${MOI.portfolio}\">Portfolio</a> | <a href=\"${MOI.linkedin}\">LinkedIn</a></div>\n<div class=\"cible\">Candidature adressée à ${esc(e.entreprise)}</div>\n\n<h2>PROFIL</h2>\n<p>Étudiant en troisième année de BUT Science des Données (parcours Exploration et Modélisation Statistique), je recherche une alternance de 12 mois, jusqu'en septembre 2027, en analyse de données. Mon stage chez Veolia m'a permis de mener un projet de bout en bout sur des données réelles : migration et dédoublonnage de près de 50 000 lignes en Python, modélisation en étoile et tableau de bord utilisé par les experts métier. Je souhaite mettre ces compétences (SQL, Python, Power BI, statistiques) au service d'${cible}.</p>\n\n<h2>EXPÉRIENCE PROFESSIONNELLE</h2>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">Stagiaire Data Analyst, Veolia Eau, Aubervilliers (93)</div><div class=\"d\">29 juin au 28 août 2026</div></div>\n<div class=\"s\">Direction Supports aux Métiers et à la Performance, eau municipale (stage de 8 semaines)</div>\n<ul>\n<li>Migration en Python (pandas, gspread, Google Colab) de la matrice ACTIPOL (48 554 associations entre activités économiques et substances polluantes) de la nomenclature NAF 2008 vers la NAF 2025 (1 223 règles de correspondance INSEE)</li>\n<li>Diagnostic et dédoublonnage : 21 507 lignes en doublon détectées (32,9 %), traitées par des règles de priorité validées avec le métier ; matrice finale de 51 596 associations uniques (1 933 substances, 533 activités)</li>\n<li>Modélisation en schéma en étoile (1 table de faits, 4 dimensions) et tableau de bord Looker Studio (indicateurs clés, diagrammes de Sankey, filtres) permettant aux experts d'explorer les données sans programmer</li>\n<li>Chaîne de 8 scripts Python interrogeant l'API PubChem pour classer 3 533 substances chimiques par famille : 90,7 % classées automatiquement, avec gestion des quotas d'API et reprise sur interruption</li>\n<li>Fiabilisation des données sources (identifiants CAS corrompus, libellés non conformes au référentiel INSEE) et documentation technique des traitements</li>\n</ul>\n</div>\n\n<h2>COMPÉTENCES</h2>\n<div class=\"row cols\">\n<div><b>Outils &amp; langages</b>\n<ul>\n<li>Python (pandas, automatisation, appels d'API)</li>\n<li>SQL (requêtage, jointures, agrégations)</li>\n<li>Power BI (Power Query, DAX), Looker Studio</li>\n<li>R, SAS, VBA, Excel avancé, Tableau</li>\n<li>Google Colab, Jupyter, Docker</li>\n</ul></div>\n<div><b>Compétences analytiques</b>\n<ul>\n<li>Nettoyage, dédoublonnage et structuration de données</li>\n<li>Modélisation décisionnelle (schéma en étoile, ETL)</li>\n<li>Statistiques : tests, séries temporelles (ARIMA), ACP, K-Means</li>\n<li>Reporting, visualisation et indicateurs clés</li>\n<li>Documentation et restitution à des non-techniciens</li>\n</ul></div>\n</div>\n\n<h2>FORMATION</h2>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">BUT Science des Données (Bac+3), 3ème année en cours</div><div class=\"d\">2024 - 2027</div></div>\n<div class=\"s\">IUT Paris-Rives-de-Seine (Université Paris Cité), parcours Exploration et Modélisation Statistique</div>\n</div>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">Baccalauréat Général, mention Assez Bien</div><div class=\"d\">2024</div></div>\n<div class=\"s\">Lycée Marie-Curie, Nogent-sur-Oise. Spécialités : Mathématiques, Physique-Chimie</div>\n</div>\n\n<h2>PROJETS UNIVERSITAIRES</h2>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">Entrepôt de données et analyse décisionnelle des ventes avec Power BI</div><div class=\"d\">Mars 2026</div></div>\n<ul>\n<li>Préparation des données dans Power Query, schéma en étoile et mesures DAX (CA HT, taux de transformation, marge brute, délai moyen)</li>\n<li>Tableau de bord en 5 pages : performance globale, transformation des devis, rentabilité, analyse géographique, influenceurs clés</li>\n</ul>\n</div>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">Automatisation de traitements statistiques en Python</div><div class=\"d\">Mars 2026</div></div>\n<ul><li>Classification K-Means, ACP et décomposition SVD ; production automatisée de résultats intégrables dans un rapport</li></ul>\n</div>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">Analyse et prévision de séries temporelles (R, Python)</div><div class=\"d\">Décembre 2025</div></div>\n<ul><li>Décomposition, tests de stationnarité, modèles ARIMA et Holt-Winters sur des consommations d'énergie (MWh) ; comparaison par RMSE et MAE</li></ul>\n</div>\n<div class=\"bloc\">\n<div class=\"row\"><div class=\"t\">Analyse et reporting de données de location (SQL, Excel)</div><div class=\"d\">Janvier 2025</div></div>\n<ul><li>Requêtes SQL, tableaux de bord de suivi des performances, indicateurs clés et recommandations</li></ul>\n</div>\n\n<h2>LANGUES &amp; CENTRES D'INTÉRÊT</h2>\n<p>Français : langue maternelle | Anglais : B1 | Nouvelles technologies et IA, football, cinéma, voyages</p>\n</div></body></html>`;\n}\n\nfunction lettreHtml(e, quand) {\n  const [lib, accroche] = secteur(e.section);\n  const dest = [e.dirigeant_prenom, e.dirigeant_nom].filter(Boolean).join(' ');\n  const adr = [e.adresse_ligne, [e.code_postal, e.ville].filter(Boolean).join(' ')].filter(Boolean);\n  const parmi = lib ? `des grandes entreprises ${lib} en Île-de-France` : `des grandes entreprises d'Île-de-France`;\n  return `<!DOCTYPE html><html lang=\"fr\"><head><meta charset=\"utf-8\"><title>Lettre de motivation Adam Soufane</title><style>${CSS_BASE}\n.page { width: 210mm; padding: 15mm 20mm 10mm 20mm; font-size: 10pt; line-height: 1.42; }\n.exp b { font-size: 12.5pt; color: #1f3a5f; }\n.exp { font-size: 10pt; line-height: 1.4; }\n.dest { margin: 4mm 0 0 92mm; font-size: 10pt; line-height: 1.38; }\n.date { margin: 6mm 0 0 92mm; }\n.objet { margin: 7mm 0 5mm 0; font-weight: bold; color: #1f3a5f; }\np { margin: 0 0 3mm 0; text-align: justify; }\n.sign { margin-top: 6mm; font-weight: bold; }\n</style></head><body><div class=\"page\">\n<div class=\"exp\"><b>${MOI.prenom} ${MOI.nom}</b><br>${MOI.ville} (Oise)<br>${MOI.tel}<br>${MOI.email}<br><a href=\"${MOI.portfolio}\">portfolioadamsoufane.netlify.app</a></div>\n<div class=\"dest\"><b>${esc(e.entreprise)}</b><br>${dest ? `À l'attention de ${esc(dest)}<br>` : ''}${e.dirigeant_qualite ? `${esc(e.dirigeant_qualite)}<br>` : ''}${adr.map(esc).join('<br>')}</div>\n<div class=\"date\">${MOI.ville}, le ${esc(dateFr(quand))}</div>\n<div class=\"objet\">Objet : candidature à une alternance de 12 mois en analyse de données (jusqu'en septembre 2027)</div>\n<p>Madame, Monsieur,</p>\n<p>Étudiant en troisième année de BUT Science des Données, parcours Exploration et Modélisation Statistique, à l'IUT Paris-Rives-de-Seine, je recherche une alternance de douze mois, jusqu'en septembre 2027. Je me permets de vous écrire directement, car ${esc(e.entreprise)} fait partie ${parmi} au sein desquelles je souhaite me former et me rendre utile.</p>\n<p>Cet été, j'ai effectué un stage de huit semaines chez Veolia, à Aubervilliers, au sein de la direction chargée de l'eau municipale. J'y ai migré en Python une matrice de 48 554 associations entre activités économiques et substances polluantes vers la nouvelle nomenclature NAF 2025, détecté et traité plus de 21 000 lignes en doublon, modélisé les données en schéma en étoile, puis construit un tableau de bord Looker Studio aujourd'hui utilisé par les experts métier. J'ai également automatisé le classement de 3 533 substances chimiques, dont 90,7 % sans intervention manuelle.</p>\n<p>${esc(accroche)}</p>\n<p>Au-delà des outils que je pratique (SQL, Python, R, Power BI), ce stage m'a appris à comprendre un besoin métier, à documenter mon travail et à livrer des résultats fiables dans les délais. En alternance, je pourrais contribuer à vos projets de fiabilisation de données, de reporting et d'analyse statistique, tout en poursuivant ma formation.</p>\n<p>Je vous serais très reconnaissant de bien vouloir transmettre ma candidature à l'équipe concernée (données, pilotage de la performance ou ressources humaines). Mon CV est joint à ce courrier et je me tiens à votre disposition pour un entretien.</p>\n<p>Je vous prie d'agréer, Madame, Monsieur, l'expression de mes salutations distinguées.</p>\n<div class=\"sign\">${MOI.prenom} ${MOI.nom}</div>\n</div></body></html>`;\n}\n\nfunction mail(e) {\n  const [lib] = secteur(e.section);\n  const objet = `Candidature alternance Data Analyst (12 mois) - ${e.entreprise}`;\n  const paras = [\n    `Madame, Monsieur,`,\n    `Étudiant en 3e année de BUT Science des Données à l'IUT Paris-Rives-de-Seine, je recherche une alternance de 12 mois en analyse de données, jusqu'en septembre 2027.`,\n    `Cet été, j'ai effectué un stage de deux mois chez Veolia. J'y ai fiabilisé et mis à jour une base de données de près de 50 000 lignes, puis créé un tableau de bord qui permet aux équipes de la consulter facilement.`,\n    `Je serais heureux de rejoindre ${e.entreprise}${lib ? `, dans le secteur ${lib},` : ''} et d'y mettre mes compétences en analyse de données au service de vos équipes. Pourriez-vous transmettre ma candidature à l'équipe concernée ? Vous trouverez mon CV et ma lettre de motivation en pièces jointes.`,\n    `Je vous remercie par avance pour votre attention et reste disponible pour un échange.`,\n    `Bien cordialement,`,\n  ];\n  const sigTexte = `${MOI.prenom} ${MOI.nom}\\n${MOI.tel}\\n${MOI.email}\\nPortfolio : ${MOI.portfolio}\\nLinkedIn : ${MOI.linkedin}`;\n  const texte = paras.join('\\n\\n') + '\\n' + sigTexte;\n  const html = `<div style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#222\">` +\n    paras.map(p => `<p style=\"margin:0 0 12px 0\">${esc(p)}</p>`).join('') +\n    `<p style=\"margin:0\"><b>${MOI.prenom} ${MOI.nom}</b><br>${MOI.tel}<br><a href=\"mailto:${MOI.email}\">${MOI.email}</a><br>` +\n    `<a href=\"${MOI.portfolio}\">Portfolio</a> · <a href=\"${MOI.linkedin}\">LinkedIn</a></p></div>`;\n  return { objet, texte, html };\n}\n\n\nreturn $input.all().map(item => {\n  const e = item.json;\n  const m = mail(e);\n  let objet = m.objet, html = m.html, texte = m.texte;\n  if (e.mode_test) {\n    const info = `TEST — en réel, ce mail partirait à ${e.dirigeant_prenom} ${e.dirigeant_nom} (${e.dirigeant_qualite}, ${e.entreprise}). ` +\n      `Résultat Scalelist : ${e.email_pdg ? e.email_pdg + ' — statut ' + e.email_statut : 'aucun e-mail trouvé (statut ' + e.email_statut + ')'}.`;\n    objet = '[TEST] ' + objet;\n    html = `<div style=\"font-family:Arial,sans-serif;font-size:13px;background:#fff3cd;border:1px solid #e0b100;padding:10px;margin-bottom:16px\">${esc(info)}<br><span style=\"color:#666\">Réponse brute : ${esc(e.scalelist_reponse)}</span></div>` + html;\n    texte = info + '\\n\\n' + texte;\n  }\n  const cv = cvHtml(e);\n  const lettre = lettreHtml(e, new Date());\n  // Gotenberg attend le HTML sous forme de fichier nommé index.html\n  const fichierHtml = html => ({ data: Buffer.from(html, 'utf8').toString('base64'), mimeType: 'text/html', fileName: 'index.html', fileExtension: 'html' });\n  return { binary: { cv_html: fichierHtml(cv), lettre_html: fichierHtml(lettre) }, json: {\n    ...e,\n    cv_html: cv,\n    lettre_html: lettre,\n    cv_fichier: 'CV_Adam_Soufane.pdf',\n    lettre_fichier: `Lettre_motivation_Adam_Soufane_${slug(e.entreprise)}.pdf`,\n    mail_objet: objet, mail_html: html, mail_texte: texte,\n  } };\n});\n"
+   },
+   "id": "10547ebe-45b0-4339-a2f6-1bead3cd9999",
+   "name": "Rédaction CV + lettre + mail",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1616,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "http://76.13.38.149:3000/forms/chromium/convert/html",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpBasicAuth",
+    "sendBody": true,
+    "contentType": "multipart-form-data",
+    "bodyParameters": {
+     "parameters": [
+      {
+       "parameterType": "formBinaryData",
+       "name": "files",
+       "inputDataFieldName": "cv_html"
+      },
+      {
+       "name": "paperWidth",
+       "value": "8.27"
+      },
+      {
+       "name": "paperHeight",
+       "value": "11.7"
+      },
+      {
+       "name": "marginTop",
+       "value": "0"
+      },
+      {
+       "name": "marginBottom",
+       "value": "0"
+      },
+      {
+       "name": "marginLeft",
+       "value": "0"
+      },
+      {
+       "name": "marginRight",
+       "value": "0"
+      },
+      {
+       "name": "printBackground",
+       "value": "true"
+      },
+      {
+       "name": "preferCssPageSize",
+       "value": "true"
+      }
+     ]
+    },
+    "options": {
+     "response": {
+      "response": {
+       "responseFormat": "file",
+       "outputPropertyName": "cv"
+      }
+     },
+     "timeout": 60000
+    }
+   },
+   "id": "5c02d69f-966e-4797-8ccc-71e3806f57a4",
+   "name": "Convert PDF – CV",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    1840,
+    320
+   ],
+   "credentials": {
+    "httpBasicAuth": {
+     "id": "IWVLJhLijNXzyrKJ",
+     "name": "Gotenberg"
+    }
+   },
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "method": "POST",
+    "url": "http://76.13.38.149:3000/forms/chromium/convert/html",
+    "authentication": "genericCredentialType",
+    "genericAuthType": "httpBasicAuth",
+    "sendBody": true,
+    "contentType": "multipart-form-data",
+    "bodyParameters": {
+     "parameters": [
+      {
+       "parameterType": "formBinaryData",
+       "name": "files",
+       "inputDataFieldName": "lettre_html"
+      },
+      {
+       "name": "paperWidth",
+       "value": "8.27"
+      },
+      {
+       "name": "paperHeight",
+       "value": "11.7"
+      },
+      {
+       "name": "marginTop",
+       "value": "0"
+      },
+      {
+       "name": "marginBottom",
+       "value": "0"
+      },
+      {
+       "name": "marginLeft",
+       "value": "0"
+      },
+      {
+       "name": "marginRight",
+       "value": "0"
+      },
+      {
+       "name": "printBackground",
+       "value": "true"
+      },
+      {
+       "name": "preferCssPageSize",
+       "value": "true"
+      }
+     ]
+    },
+    "options": {
+     "response": {
+      "response": {
+       "responseFormat": "file",
+       "outputPropertyName": "lettre"
+      }
+     },
+     "timeout": 60000
+    }
+   },
+   "id": "df6650ba-4db9-4a20-af4d-1fed6801e2ae",
+   "name": "Convert PDF – Lettre",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    2080,
+    320
+   ],
+   "credentials": {
+    "httpBasicAuth": {
+     "id": "IWVLJhLijNXzyrKJ",
+     "name": "Gotenberg"
+    }
+   },
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Réunit les deux PDF (CV + lettre) sur chaque mail. Une candidature sans ses deux PDF n'est PAS envoyée :\n// elle reste en file d'attente et repartira à la prochaine exécution (quota PDF épuisé, panne...).\nconst fiches = $('Rédaction CV + lettre + mail').all();\nconst cvs = $('Convert PDF – CV').all();\nconst lettres = $input.all();\nconst estPdf = b => !!(b && b.mimeType && /pdf/i.test(b.mimeType));\nconst out = [];\nconst manquants = [];\nfor (let i = 0; i < fiches.length; i++) {\n  const j = fiches[i].json || {};\n  const cv = cvs[i] && cvs[i].binary && cvs[i].binary.cv;\n  const lm = lettres[i] && lettres[i].binary && lettres[i].binary.lettre;\n  let ok = estPdf(cv) && estPdf(lm);\n  if (ok) {\n    try {\n      const buf = await this.helpers.getBinaryDataBuffer(i, 'lettre');\n      if (buf && buf.length && buf.slice(0, 4).toString('latin1') !== '%PDF') ok = false;\n    } catch (err) { /* lecture impossible : on se fie au type du fichier */ }\n  }\n  if (!ok) { manquants.push(j.entreprise || 'élément ' + i); continue; }\n  const { cv_html, lettre_html, ...reste } = j;\n  out.push({\n    json: { ...reste, pdf_manquants: 0 },\n    binary: {\n      cv: { ...cv, fileName: j.cv_fichier, mimeType: 'application/pdf', fileExtension: 'pdf' },\n      lettre: { ...lm, fileName: j.lettre_fichier, mimeType: 'application/pdf', fileExtension: 'pdf' },\n    },\n  });\n}\nif (out.length === 0) {\n  throw new Error(`PDF manquant pour toutes les candidatures (${manquants.join(', ')}). Aucun mail n'a été envoyé ; elles restent en file d'attente. Vérifie que Gotenberg tourne sur le serveur et que l'identifiant Basic Auth est correct.`);\n}\nfor (const o of out) { o.json.pdf_manquants = manquants.length; o.json.pdf_manquants_noms = manquants.join(', '); }\nreturn out;\n"
+   },
+   "id": "7e5897fd-11c5-42d6-aa20-8bc7f0574e4b",
+   "name": "Assembler les pièces jointes",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    2304,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "sendTo": "={{ $json.destinataire }}",
+    "subject": "={{ $json.mail_objet }}",
+    "message": "={{ $json.mail_html }}",
+    "options": {
+     "appendAttribution": false,
+     "attachmentsUi": {
+      "attachmentsBinary": [
+       {
+        "property": "cv"
+       },
+       {
+        "property": "lettre"
+       }
+      ]
+     },
+     "senderName": "Adam Soufane"
+    }
+   },
+   "id": "32d8dea9-cac1-40eb-a419-dc24bee5df56",
+   "name": "Envoyer le mail",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    2544,
+    320
+   ],
+   "webhookId": "8440942a-5153-46f8-8cd1-35ed782fccb9",
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "b1ihlxrV9zkjTWDv",
+     "name": "Gmail account"
+    }
+   },
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "jsCode": "// Mémorise les entreprises contactées (anti-doublon) et prépare le récapitulatif\nconst cfg = $('Config').first().json;\nconst sd = $getWorkflowStaticData('global');\nsd.vus = sd.vus || {};\nconst prets = $('Assembler les pièces jointes').all().map(i => i.json);\nconst resultats = $input.all().map(i => i.json || {});\nconst parti = i => !!(resultats[i] && !resultats[i].error && (resultats[i].id || resultats[i].messageId || resultats[i].threadId));\nconst envois = prets.filter((e, i) => parti(i));\nconst echecs = prets.filter((e, i) => !parti(i));\nconst jour = new Date().toISOString().slice(0, 10);\nconst modeTest = prets.length ? prets[0].mode_test : true;\nconst esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nif (!modeTest) {\n  const attente = { ...(sd.attente || {}) };\n  const vus = { ...(sd.vus || {}) };\n  for (const e of envois) { vus[e.siren] = { statut: 'envoye', date: jour, entreprise: e.entreprise, email: e.email_pdg, dirigeant: e.dirigeant_prenom + ' ' + e.dirigeant_nom }; delete attente[e.siren]; }\n  sd.vus = vus; sd.attente = attente; sd.maj = Date.now();\n}\nconst total = Object.values(sd.vus).filter(v => v.statut === 'envoye').length;\nconst lignes = envois.map(e => `<tr><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(e.entreprise)}</td><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(e.dirigeant_prenom + ' ' + e.dirigeant_nom)}</td><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(e.email_pdg || '—')}</td><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(e.email_statut)}</td></tr>`).join('');\nconst titre = modeTest ? `[TEST] ${envois.length} candidature(s) générée(s) et envoyée(s) à ton adresse` : `${envois.length} candidature(s) envoyée(s) aujourd'hui`;\nconst html = `<div style=\"font-family:Arial,sans-serif;font-size:14px\"><p><b>${esc(titre)}</b></p>` +\n  `<table style=\"border-collapse:collapse;font-size:13px\"><tr><th style=\"padding:4px 8px;border:1px solid #ccc\">Entreprise</th><th style=\"padding:4px 8px;border:1px solid #ccc\">Dirigeant</th><th style=\"padding:4px 8px;border:1px solid #ccc\">E-mail (Scalelist)</th><th style=\"padding:4px 8px;border:1px solid #ccc\">Statut</th></tr>${lignes}</table>` +\n  (prets.length ? `<p>Recherches Scalelist effectuées : ${esc(prets[0].nb_recherches)} · crédits consommés : ${esc(prets[0].credits_utilises)} · objectif du jour : ${esc(prets[0].objectif)} · envoyés : ${esc(envois.length)}${prets[0].credits_scalelist !== null && prets[0].credits_scalelist !== undefined ? ' · crédits Scalelist avant recherche : ' + esc(prets[0].credits_scalelist) : ''}.</p>` : '') +\n  (prets.length && prets[0].pdf_manquants ? `<p style=\"color:#b00020\"><b>${esc(prets[0].pdf_manquants)} candidature(s) sans PDF (Gotenberg indisponible ?), reprises à la prochaine exécution :</b> ${esc(prets[0].pdf_manquants_noms)}</p>` : '') +\n  (echecs.length ? `<p style=\"color:#b00020\"><b>${echecs.length} envoi(s) en échec, repris à la prochaine exécution :</b> ${esc(echecs.map(e => e.entreprise).join(', '))}</p>` : '') +\n  (prets.length && prets[0].alerte_quota ? `<p style=\"color:#b00020\"><b>Limite Scalelist atteinte (50 recherches/jour sur le plan gratuit) : la recherche s'est arrêtée avant l'objectif.</b></p>` : '') +\n  (prets.length && prets[0].alerte_credits ? `<p style=\"color:#b00020\"><b>Crédits Scalelist épuisés : la recherche s'est arrêtée avant l'objectif.</b></p>` : '') +\n  (modeTest ? `<p>Mode test : aucun mail n'est parti vers un dirigeant.</p>` : `<p>Total envoyé depuis le début : ${total}.</p>`) + `</div>`;\nreturn [{ json: { destinataire: cfg.EMAIL_TEST, objet: (modeTest ? '[TEST] ' : '') + `Récap candidatures alternance – ${jour} – ${envois.length} envoi(s)`, html, nb: envois.length, mode_test: modeTest } }];\n"
+   },
+   "id": "2282835e-38b8-4838-b8f7-224084ae3ff5",
+   "name": "Journal anti-doublon",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    2768,
+    320
+   ]
+  },
+  {
+   "parameters": {
+    "sendTo": "={{ $json.destinataire }}",
+    "subject": "={{ $json.objet }}",
+    "message": "={{ $json.html }}",
+    "options": {
+     "appendAttribution": false
+    }
+   },
+   "id": "38025fc7-0055-4e64-8bbc-931d79d5f8cd",
+   "name": "Récap pour Adam",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    2992,
+    320
+   ],
+   "webhookId": "64ec488a-c0cf-4358-b2c7-10cfa35b61c9",
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "b1ihlxrV9zkjTWDv",
+     "name": "Gmail account"
+    }
+   },
+   "onError": "continueRegularOutput"
+  },
+  {
+   "parameters": {
+    "content": "## Candidatures alternance – PDG des grandes entreprises d'Île-de-France\n**1. Test (obligatoire avant tout envoi réel)** : clique sur « Execute workflow ». Une exécution manuelle part **toujours** vers EMAIL_TEST, quel que soit MODE_TEST.\n**2. Envoi réel** : dans **Config**, passe MODE_TEST à false, puis **active** le workflow. Il tourne alors seul chaque jour ouvré à 9h07 et cherche des e-mails jusqu'à obtenir CANDIDATURES_PAR_JOUR adresses valides (10), puis envoie les candidatures.\n**Anti-doublon** : chaque entreprise n'est contactée qu'une fois (mémoire interne du workflow, alimentée par les exécutions planifiées). Une adresse valide trouvée mais pas encore envoyée (panne PDF, quota) reste en file d'attente et part à l'exécution suivante, sans nouvelle recherche payante.\n**Config** : MAX_TEST = nombre de mails de test · MAX_RECHERCHES_PAR_JOUR = plafond de recherches Scalelist par jour (protège tes crédits) · PAGES_PAR_RUN = pages data.gouv lues par exécution (25 entreprises par page) · ACCEPTER_EMAILS_RISKY = écrire aussi aux adresses non vérifiables (déconseillé).",
+    "height": 328,
+    "width": 760,
+    "color": 4
+   },
+   "id": "4cd9c12a-03c5-4086-8e02-ee0d19ce2667",
+   "name": "Note – Mode d'emploi",
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    -352,
+    -144
+   ]
+  },
+  {
+   "parameters": {
+    "content": "### 1 · Ciblage\nAPI Recherche d'entreprises (data.gouv) : catégorie GE, région 11. Le code garde les sociétés dont le **siège** est en IDF, et choisit le PDG / président / DG. **Exclusions (node Config)** : EXCLURE_NAF = débuts de code NAF écartés (64.1, 64.3, 64.9 banques et crédit · 65 assurance · 66 courtage et gestion financière · 96.03 funéraire) · EXCLURE_NOMS = mots du nom écartés (VEOLIA) · SECTEURS_NAF = lettres de sections à garder, vide = toutes.",
+    "height": 194,
+    "width": 660,
+    "color": 5
+   },
+   "id": "275b562b-a47f-46ac-8ad1-c2c197918167",
+   "name": "Note – Sources",
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    448,
+    -64
+   ]
+  },
+  {
+   "parameters": {
+    "content": "### 2 · Recherche de l'e-mail (Scalelist)\nNœud Scalelist officiel « Find Email ». 1 crédit par e-mail trouvé, 0 sinon. Arrêt dès que CANDIDATURES_PAR_JOUR crédits ont été consommés.",
+    "height": 110,
+    "width": 880,
+    "color": 6
+   },
+   "id": "c84f081b-8c4f-4dec-8c20-07fd9aefe2da",
+   "name": "Note – Scalelist",
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1104,
+    800
+   ]
+  },
+  {
+   "parameters": {
+    "content": "### 3 · CV + lettre personnalisés → PDF → mail\nLe texte s'adapte à l'entreprise, à son secteur (code NAF) et au dirigeant. Pour modifier ton CV ou ta lettre : node « Rédaction CV + lettre + mail ».",
+    "height": 130,
+    "width": 1100,
+    "color": 3
+   },
+   "id": "4b4a2f3e-9342-408f-9cba-a389ea07f9a9",
+   "name": "Note – Documents",
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    1568,
+    160
+   ]
+  },
+  {
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "strict",
+      "version": 1
+     },
+     "conditions": [
+      {
+       "id": "c1",
+       "leftValue": "={{ typeof $json.email === 'string' && $json.email.includes('@') || /credit|quota|payment|rate|limit|too many|requests/i.test(String($json.error || '')) }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "options": {}
+   },
+   "id": "5e927574-9e45-46ca-acf9-7f9cf6efd257",
+   "name": "Scalelist a trouvé ?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2,
+   "position": [
+    2304,
+    576
+   ]
+  },
+  {
+   "parameters": {
+    "amount": 1.5
+   },
+   "id": "df3a2d9b-b249-4854-bc07-59cd1d0bd9e4",
+   "name": "Pause Scalelist",
+   "type": "n8n-nodes-base.wait",
+   "typeVersion": 1.1,
+   "position": [
+    1712,
+    560
+   ],
+   "webhookId": "cfff6d13-48fa-42b7-a5a6-d4ef863a3c8b"
+  }
+ ],
+ "connections": {
+  "Lancer le test (manuel)": {
+   "main": [
+    [
+     {
+      "node": "Config",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Config": {
+   "main": [
+    [
+     {
+      "node": "Scalelist – Solde de crédits",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Scalelist – Solde de crédits": {
+   "main": [
+    [
+     {
+      "node": "Préparer la recherche",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Préparer la recherche": {
+   "main": [
+    [
+     {
+      "node": "data.gouv – Grandes entreprises IDF",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "data.gouv – Grandes entreprises IDF": {
+   "main": [
+    [
+     {
+      "node": "Sélection du PDG",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Sélection du PDG": {
+   "main": [
+    [
+     {
+      "node": "Une entreprise à la fois",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Une entreprise à la fois": {
+   "main": [
+    [
+     {
+      "node": "Candidatures retenues",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Objectif du jour atteint ?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Candidatures retenues": {
+   "main": [
+    [
+     {
+      "node": "Rédaction CV + lettre + mail",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Rédaction CV + lettre + mail": {
+   "main": [
+    [
+     {
+      "node": "Convert PDF – CV",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Convert PDF – CV": {
+   "main": [
+    [
+     {
+      "node": "Convert PDF – Lettre",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Convert PDF – Lettre": {
+   "main": [
+    [
+     {
+      "node": "Assembler les pièces jointes",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Assembler les pièces jointes": {
+   "main": [
+    [
+     {
+      "node": "Envoyer le mail",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Envoyer le mail": {
+   "main": [
+    [
+     {
+      "node": "Journal anti-doublon",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Journal anti-doublon": {
+   "main": [
+    [
+     {
+      "node": "Récap pour Adam",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Objectif du jour atteint ?": {
+   "main": [
+    [
+     {
+      "node": "Une entreprise à la fois",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Pause Scalelist",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Scalelist – Trouver l'e-mail du PDG": {
+   "main": [
+    [
+     {
+      "node": "Scalelist a trouvé ?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "E-mail trouvé et vérifié ?": {
+   "main": [
+    [
+     {
+      "node": "Une entreprise à la fois",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Scalelist a trouvé ?": {
+   "main": [
+    [
+     {
+      "node": "E-mail trouvé et vérifié ?",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "E-mail trouvé et vérifié ?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Pause Scalelist": {
+   "main": [
+    [
+     {
+      "node": "Scalelist – Trouver l'e-mail du PDG",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Chaque jour ouvré à 14h00": {
+   "main": [
+    [
+     {
+      "node": "Config",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ }
+}
