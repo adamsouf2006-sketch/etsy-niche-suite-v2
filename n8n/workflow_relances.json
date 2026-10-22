@@ -1,0 +1,404 @@
+{
+ "name": "Alternance – Relances des candidatures sans réponse (21 jours) / Adam",
+ "nodes": [
+  {
+   "id": "b8027c08-5b82-45da-8c15-2c59370ffa5f",
+   "name": "Lancer (manuel)",
+   "type": "n8n-nodes-base.manualTrigger",
+   "typeVersion": 1,
+   "position": [
+    0,
+    0
+   ],
+   "parameters": {}
+  },
+  {
+   "id": "ca70fcdc-ff88-41d8-ad7f-13edc3be47c6",
+   "name": "Chaque jour ouvré à 10h15",
+   "type": "n8n-nodes-base.scheduleTrigger",
+   "typeVersion": 1.2,
+   "position": [
+    0,
+    200
+   ],
+   "parameters": {
+    "rule": {
+     "interval": [
+      {
+       "field": "cronExpression",
+       "expression": "0 15 10 * * 1-5"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "d794f143-b078-4b17-968a-66c1f3866ff7",
+   "name": "Config",
+   "type": "n8n-nodes-base.set",
+   "typeVersion": 3.4,
+   "position": [
+    220,
+    100
+   ],
+   "parameters": {
+    "assignments": {
+     "assignments": [
+      {
+       "id": "c1",
+       "name": "JOURS_AVANT_RELANCE",
+       "value": 21,
+       "type": "number"
+      },
+      {
+       "id": "c2",
+       "name": "MAX_RELANCES_PAR_JOUR",
+       "value": 20,
+       "type": "number"
+      },
+      {
+       "id": "c3",
+       "name": "SIMULATION",
+       "value": false,
+       "type": "boolean"
+      },
+      {
+       "id": "c4",
+       "name": "EMAIL_MOI",
+       "value": "adamsouf2006@gmail.com",
+       "type": "string"
+      }
+     ]
+    },
+    "options": {}
+   }
+  },
+  {
+   "id": "d986981d-73e5-480c-8cc3-eada2771bec9",
+   "name": "Gmail – candidatures envoyées",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    440,
+    100
+   ],
+   "parameters": {
+    "method": "GET",
+    "url": "={{ 'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&q=' + encodeURIComponent('in:sent subject:\"Candidature alternance Data Analyst\" -subject:TEST older_than:' + $json.JOURS_AVANT_RELANCE + 'd') }}",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "gmailOAuth2",
+    "options": {
+     "timeout": 30000
+    }
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "b1ihlxrV9zkjTWDv",
+     "name": "Gmail account"
+    }
+   }
+  },
+  {
+   "id": "d22441ef-61a6-4a99-9cf0-fd04197e0875",
+   "name": "Un fil par candidature",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    660,
+    100
+   ],
+   "parameters": {
+    "jsCode": "// Un élément par fil de discussion (une candidature = un fil)\nconst msgs = ($input.first().json.messages) || [];\nconst vus = new Set();\nconst out = [];\nfor (const m of msgs) { if (m.threadId && !vus.has(m.threadId)) { vus.add(m.threadId); out.push({ json: { threadId: m.threadId } }); } }\nreturn out;\n"
+   }
+  },
+  {
+   "id": "b462b035-c975-467f-85f1-419a56c0792d",
+   "name": "Gmail – lire le fil",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    880,
+    100
+   ],
+   "parameters": {
+    "method": "GET",
+    "url": "={{ 'https://gmail.googleapis.com/gmail/v1/users/me/threads/' + $json.threadId + '?format=metadata&metadataHeaders=From&metadataHeaders=To&metadataHeaders=Subject&metadataHeaders=Message-ID' }}",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "gmailOAuth2",
+    "options": {
+     "timeout": 30000,
+     "batching": {
+      "batch": {
+       "batchSize": 5,
+       "batchInterval": 500
+      }
+     }
+    }
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "b1ihlxrV9zkjTWDv",
+     "name": "Gmail account"
+    }
+   }
+  },
+  {
+   "id": "c5ea45a8-f8c5-4a6f-8fa8-d71ee9fc83ee",
+   "name": "À relancer ?",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1100,
+    100
+   ],
+   "parameters": {
+    "jsCode": "// Décide quelles candidatures relancer : envoyées il y a JOURS_AVANT_RELANCE jours ou plus, sans réponse, jamais relancées.\nconst cfg = $('Config').first().json;\nconst moi = String(cfg.EMAIL_MOI || '').toLowerCase();\nconst jours = Number(cfg.JOURS_AVANT_RELANCE) || 21;\nconst max = Number(cfg.MAX_RELANCES_PAR_JOUR) || 20;\nconst simulation = cfg.SIMULATION === true || String(cfg.SIMULATION).toLowerCase() === 'true';\nconst limite = Date.now() - jours * 24 * 3600 * 1000;\n\nconst entete = (m, nom) => {\n  const h = ((m.payload && m.payload.headers) || []).find(x => String(x.name).toLowerCase() === nom.toLowerCase());\n  return h ? String(h.value) : '';\n};\nconst adresse = v => { const m = String(v).match(/<([^>]+)>/); return (m ? m[1] : String(v)).trim().toLowerCase(); };\nconst dateFr = ms => new Date(ms).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' });\n\nconst decisions = [];\nfor (const item of $input.all()) {\n  const fil = item.json || {};\n  const msgs = (fil.messages || []).slice().sort((a, b) => Number(a.internalDate) - Number(b.internalDate));\n  if (!msgs.length) continue;\n  const premier = msgs[0];\n  const sujet = entete(premier, 'Subject');\n  const dest = adresse(entete(premier, 'To'));\n  const entreprise = sujet.split(' - ').slice(1).join(' - ').trim() || dest.split('@')[1] || '';\n  const base = { threadId: fil.id, entreprise, destinataire: dest, sujet, envoye_le: dateFr(Number(premier.internalDate)) };\n  const deMoi = msgs.filter(m => adresse(entete(m, 'From')) === moi);\n  const autres = msgs.filter(m => adresse(entete(m, 'From')) !== moi);\n  let statut = 'a_relancer';\n  if (adresse(entete(premier, 'From')) !== moi) statut = 'ignore_pas_de_moi';\n  else if (!dest || dest === moi) statut = 'ignore_test';\n  else if (autres.some(m => /mailer-daemon|postmaster|no-?reply.*bounce/i.test(entete(m, 'From')))) statut = 'non_distribue';\n  else if (autres.length) statut = 'a_repondu';\n  else if (deMoi.length >= 2) statut = 'deja_relance';\n  else if (Number(premier.internalDate) > limite) statut = 'trop_recent';\n  decisions.push({ ...base, statut, message_id: entete(premier, 'Message-ID'), t: Number(premier.internalDate) });\n}\n\nconst aRelancer = decisions.filter(d => d.statut === 'a_relancer').sort((a, b) => a.t - b.t).slice(0, max); // les plus anciennes d'abord\nconst compte = decisions.reduce((a, d) => (a[d.statut] = (a[d.statut] || 0) + 1, a), {});\n\n// Message de relance (HTML), envoyé en réponse dans le même fil\nconst MOI = { prenom: 'Adam', nom: 'SOUFANE', tel: '+33 7 45 45 05 95', email: 'adamsouf2006@gmail.com',\n  portfolio: 'https://portfolioadamsoufane.netlify.app/', linkedin: 'https://www.linkedin.com/in/adam-soufane-72aaa2366/' };\nconst esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nfunction corps(d) {\n  const paras = [\n    'Madame, Monsieur,',\n    `Je me permets de revenir vers vous au sujet de ma candidature pour une alternance de Data Analyst (12 mois) au sein de ${d.entreprise}, que je vous ai adressée le ${d.envoye_le}.`,\n    \"Je reste très motivé à l'idée de rejoindre vos équipes. Si le poste ne relève pas de votre périmètre, pourriez-vous transmettre ma candidature à la personne en charge du recrutement ? Mon CV et ma lettre de motivation figurent dans le message ci-dessous.\",\n    'Je vous remercie par avance pour votre retour et reste disponible pour un échange.',\n    'Bien cordialement,',\n  ];\n  return '<div style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#222\">' +\n    paras.map(p => `<p style=\"margin:0 0 12px 0\">${esc(p)}</p>`).join('') +\n    `<p style=\"margin:0\"><b>${MOI.prenom} ${MOI.nom}</b><br>${MOI.tel}<br><a href=\"mailto:${MOI.email}\">${MOI.email}</a><br>` +\n    `<a href=\"${MOI.portfolio}\">Portfolio</a> · <a href=\"${MOI.linkedin}\">LinkedIn</a></p></div>`;\n}\nconst b64 = s => Buffer.from(s, 'utf8').toString('base64');\nconst b64url = s => Buffer.from(s, 'utf8').toString('base64').replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/, '');\nconst enteteUtf8 = s => `=?UTF-8?B?${b64(s)}?=`;\nfunction mime(d) {\n  const sujet = /^re\\s*:/i.test(d.sujet) ? d.sujet : 'Re: ' + d.sujet;\n  const lignes = [\n    `From: ${enteteUtf8('Adam Soufane')} <${moi}>`,\n    `To: ${d.destinataire}`,\n    `Subject: ${enteteUtf8(sujet)}`,\n    ...(d.message_id ? [`In-Reply-To: ${d.message_id}`, `References: ${d.message_id}`] : []),\n    'MIME-Version: 1.0',\n    'Content-Type: text/html; charset=UTF-8',\n    'Content-Transfer-Encoding: base64',\n    '',\n    b64(corps(d)).replace(/(.{76})/g, '$1\\r\\n'),\n  ];\n  return b64url(lignes.join('\\r\\n'));\n}\n\nif (!aRelancer.length) return [{ json: { aucune: true, simulation, compte, jours } }];\nreturn aRelancer.map(d => ({ json: { ...d, simulation, compte, jours, raw: mime(d) } }));\n"
+   }
+  },
+  {
+   "id": "0614fb62-613d-4b5e-a64a-2200ad9efe4a",
+   "name": "Simulation ou rien à faire ?",
+   "type": "n8n-nodes-base.if",
+   "typeVersion": 2,
+   "position": [
+    1320,
+    100
+   ],
+   "parameters": {
+    "conditions": {
+     "options": {
+      "caseSensitive": true,
+      "leftValue": "",
+      "typeValidation": "loose",
+      "version": 2
+     },
+     "conditions": [
+      {
+       "id": "s1",
+       "leftValue": "={{ $json.aucune === true || $json.simulation === true }}",
+       "rightValue": "",
+       "operator": {
+        "type": "boolean",
+        "operation": "true",
+        "singleValue": true
+       }
+      }
+     ],
+     "combinator": "and"
+    },
+    "looseTypeValidation": true,
+    "options": {}
+   }
+  },
+  {
+   "id": "d2188ff2-0346-4b3a-961c-8c69ea795955",
+   "name": "Gmail – envoyer la relance",
+   "type": "n8n-nodes-base.httpRequest",
+   "typeVersion": 4.2,
+   "position": [
+    1540,
+    200
+   ],
+   "parameters": {
+    "method": "POST",
+    "url": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+    "authentication": "predefinedCredentialType",
+    "nodeCredentialType": "gmailOAuth2",
+    "options": {
+     "timeout": 30000,
+     "batching": {
+      "batch": {
+       "batchSize": 1,
+       "batchInterval": 2000
+      }
+     }
+    },
+    "sendBody": true,
+    "specifyBody": "json",
+    "jsonBody": "={{ JSON.stringify({ raw: $json.raw, threadId: $json.threadId }) }}"
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "b1ihlxrV9zkjTWDv",
+     "name": "Gmail account"
+    }
+   },
+   "onError": "continueRegularOutput"
+  },
+  {
+   "id": "9ea4d03b-e9d2-49a9-b32b-a0d83395faea",
+   "name": "Récap relances",
+   "type": "n8n-nodes-base.code",
+   "typeVersion": 2,
+   "position": [
+    1760,
+    100
+   ],
+   "parameters": {
+    "jsCode": "// Récapitulatif des relances envoyées (ou simulées)\nconst cfg = $('Config').first().json;\nconst lignes = $('À relancer ?').all().map(i => i.json);\nconst premier = lignes[0] || {};\nconst envois = $input.all().map(i => i.json || {});\nconst esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst LIB = { a_repondu: 'ont répondu', deja_relance: 'déjà relancées', trop_recent: 'trop récentes', non_distribue: 'non distribuées', ignore_test: 'mails de test', ignore_pas_de_moi: 'autres' };\nconst faits = premier.aucune ? [] : lignes.map((l, i) => ({ ...l, ok: premier.simulation ? null : !!(envois[i] && envois[i].id && !envois[i].error) }));\nconst titre = premier.simulation ? `[SIMULATION] ${faits.length} relance(s) qui seraient envoyées` : `${faits.filter(f => f.ok).length} relance(s) envoyée(s)`;\nconst tableau = faits.length ? '<table style=\"border-collapse:collapse;font-size:13px\"><tr><th style=\"padding:4px 8px;border:1px solid #ccc\">Entreprise</th><th style=\"padding:4px 8px;border:1px solid #ccc\">Destinataire</th><th style=\"padding:4px 8px;border:1px solid #ccc\">Candidature du</th><th style=\"padding:4px 8px;border:1px solid #ccc\">Relance</th></tr>' +\n  faits.map(f => `<tr><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(f.entreprise)}</td><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(f.destinataire)}</td><td style=\"padding:4px 8px;border:1px solid #ccc\">${esc(f.envoye_le)}</td><td style=\"padding:4px 8px;border:1px solid #ccc\">${f.ok === null ? 'simulée' : f.ok ? 'envoyée' : 'échec'}</td></tr>`).join('') + '</table>' : '<p>Aucune candidature à relancer aujourd\\'hui.</p>';\nconst autres = Object.entries(premier.compte || {}).filter(([k]) => k !== 'a_relancer').map(([k, v]) => `${v} ${LIB[k] || k}`).join(' · ');\nconst html = `<div style=\"font-family:Arial,sans-serif;font-size:14px\"><p><b>${esc(titre)}</b></p>${tableau}<p>Candidatures de plus de ${esc(premier.jours)} jours examinées${autres ? ' — ' + esc(autres) : ''}.</p></div>`;\nconst jour = new Date().toISOString().slice(0, 10);\nreturn [{ json: { destinataire: cfg.EMAIL_MOI, objet: `${premier.simulation ? '[SIMULATION] ' : ''}Récap relances alternance – ${jour} – ${faits.filter(f => f.ok !== false).length}`, html } }];\n"
+   }
+  },
+  {
+   "id": "4149f627-4fb2-4526-8d74-89054c29c1cd",
+   "name": "Récap pour Adam",
+   "type": "n8n-nodes-base.gmail",
+   "typeVersion": 2.1,
+   "position": [
+    1980,
+    100
+   ],
+   "parameters": {
+    "sendTo": "={{ $json.destinataire }}",
+    "subject": "={{ $json.objet }}",
+    "message": "={{ $json.html }}",
+    "options": {
+     "appendAttribution": false
+    }
+   },
+   "credentials": {
+    "gmailOAuth2": {
+     "id": "b1ihlxrV9zkjTWDv",
+     "name": "Gmail account"
+    }
+   }
+  },
+  {
+   "id": "1c42a41f-1dc4-4377-9660-56310d8f502e",
+   "name": "Note – Relances",
+   "type": "n8n-nodes-base.stickyNote",
+   "typeVersion": 1,
+   "position": [
+    220,
+    -260
+   ],
+   "parameters": {
+    "width": 640,
+    "height": 220,
+    "content": "### Relances des candidatures\nChaque jour ouvré à 10h15 : retrouve dans Gmail (Messages envoyés) les candidatures envoyées il y a **JOURS_AVANT_RELANCE jours (21)** ou plus.\nUne candidature est relancée **une seule fois**, **dans le même fil**, seulement si **personne n'a répondu** (et si le mail n'a pas été rejeté).\n**SIMULATION = true** : n'envoie rien, envoie seulement le récap de ce qui serait relancé."
+   }
+  }
+ ],
+ "connections": {
+  "Lancer (manuel)": {
+   "main": [
+    [
+     {
+      "node": "Config",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Chaque jour ouvré à 10h15": {
+   "main": [
+    [
+     {
+      "node": "Config",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Config": {
+   "main": [
+    [
+     {
+      "node": "Gmail – candidatures envoyées",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail – candidatures envoyées": {
+   "main": [
+    [
+     {
+      "node": "Un fil par candidature",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Un fil par candidature": {
+   "main": [
+    [
+     {
+      "node": "Gmail – lire le fil",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail – lire le fil": {
+   "main": [
+    [
+     {
+      "node": "À relancer ?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "À relancer ?": {
+   "main": [
+    [
+     {
+      "node": "Simulation ou rien à faire ?",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Simulation ou rien à faire ?": {
+   "main": [
+    [
+     {
+      "node": "Récap relances",
+      "type": "main",
+      "index": 0
+     }
+    ],
+    [
+     {
+      "node": "Gmail – envoyer la relance",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Gmail – envoyer la relance": {
+   "main": [
+    [
+     {
+      "node": "Récap relances",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  },
+  "Récap relances": {
+   "main": [
+    [
+     {
+      "node": "Récap pour Adam",
+      "type": "main",
+      "index": 0
+     }
+    ]
+   ]
+  }
+ },
+ "settings": {
+  "executionOrder": "v1",
+  "timezone": "Europe/Paris"
+ }
+}
