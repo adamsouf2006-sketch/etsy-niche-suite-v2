@@ -169,7 +169,7 @@ function traiterPage(res) {
 const helpers = this.helpers;
 const sleep = ms => new Promise(ok => setTimeout(ok, ms));
 async function lirePage(p) {
-  for (let essai = 0; essai < 3; essai++) {
+  for (let essai = 0; essai < 6; essai++) {
     try {
       return await helpers.httpRequest({ method: 'GET', url: 'https://recherche-entreprises.api.gouv.fr/search', qs: Object.assign({ categorie_entreprise: cfg.CATEGORIE || 'GE', region: '11', etat_administratif: 'A', per_page: 25, page: p }, cfg.TRANCHES_EFFECTIF ? { tranche_effectif_salarie: cfg.TRANCHES_EFFECTIF } : {}), json: true, timeout: 30000 });
     } catch (e) { await sleep(2000 * (essai + 1)); }
